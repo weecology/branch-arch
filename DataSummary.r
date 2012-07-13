@@ -2,6 +2,7 @@
 
 branch <- read.csv("BranchSegments.csv", sep=',', header=T)
 twig <- read.csv("TwigSegments.csv", sep=',', header=T)
+tree15 <- read.csv("WholeTree15.csv", sep=',', header=T)
 
 
 hist(branch$order)
@@ -49,7 +50,30 @@ for (i in 1:(branches15-1)){
 	summary_twigs[i,1] = i
 	summary_twigs[i,3] = length(sub_twig[sub_twig$spur=='y',][,1]) #spurs
 	summary_twigs[i,4] = length(sub_twig[sub_twig$length==0,][,1]) #scars
-	summary_twigs[i,2] =length(sub_twig[,1]-(summary_twigs[i,3]+summary_twigs[i,4])) #twigs
+	summary_twigs[i,2] = length(sub_twig[,1]-(summary_twigs[i,3]+summary_twigs[i,4])) #twigs
 }
 
 write.csv(summary_twigs,"TwigSummary15.csv")
+
+#length vs. twigs/scars/stems
+plot(branch$length_cm, branch$twigs)
+plot(branch$length_cm, branch$scars)
+plot(branch$length_cm, branch$spurs)
+
+#order vs. twigs/scars/stems
+plot(branch$order, branch$twigs)
+plot(branch$order, branch$scars)
+plot(branch$order, branch$spurs)
+
+#rank vs. order
+branches <- tree15[1:265,]
+plot(branches$order,log(branches$rank))
+g_rank_v_order <- glm(log(branches$rank)~branches$order, family = gaussian)
+rank_v_order <- lm(log(branches$rank)~branches$order) #R2 = 0.4153
+
+#length vs. order/rank
+plot(tree15$order, tree15$length_cm)
+plot(log(branches$rank), branches$length_cm) #What could be causing this separation?
+
+
+#vertical accumulation of stems/leaves/mass (by scaffold)
