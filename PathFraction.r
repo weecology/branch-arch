@@ -2,7 +2,6 @@ data <- read.csv("WholeTree15.csv", sep=',', head=T)
 
 sum_lengths <- function(start_node){
 	twig <- subdata[subdata$node==start_node,]
-	total_length = 0
 	total_length = total_length + twig$length_cm
 	if (twig$attach==0)
 		return(total_length)
@@ -55,3 +54,4 @@ subdata = just_twigs
 path_fractions[5,] = c("Twigs only", get_path_fraction())
 subdata = just_whole_twigs
 path_fractions[6,] = c("Whole Twigs", get_path_fraction())
+
