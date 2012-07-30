@@ -3,6 +3,7 @@
 branch <- read.csv("BranchSegments.csv", sep=',', header=T)
 twig <- read.csv("TwigSegments.csv", sep=',', header=T)
 tree15 <- read.csv("WholeTree15.csv", sep=',', header=T)
+branches <- tree15[1:265,]
 
 
 hist(branch$order)
@@ -10,7 +11,7 @@ hist(branch$length_cm, breaks=30) #gamma dist
 hist(log(branch$length_cm), breaks=30) #log normal
 
 plot(log(branch$length_cm), log(branch$diameter_mm))
-volumelm <- lm(log(branch$diameter)~log(branch$length_cm)) #NS R^2 = 0.003
+volumelm <- lm(log(branch$diameter_mm)~log(branch$length_cm)) #NS R^2 = 0.003
 trees = c(1,7,10,15)
 
 ##Branching Ratio
@@ -55,10 +56,21 @@ for (i in 1:(branches15-1)){
 
 write.csv(summary_twigs,"TwigSummary15.csv")
 
-#length vs. twigs/scars/stems
+#length vs. twigs/scars/stems/order/rank
 plot(branch$length_cm, branch$twigs)
 plot(branch$length_cm, branch$scars)
 plot(branch$length_cm, branch$spurs)
+plot(tree15$order, tree15$length_cm)
+plot(log(branches$rank), branches$length_cm) #What could be causing this separation?
+
+#diameter vs. twigs/scars/stems/order/rank
+plot(branch$diameter_mm, branch$twigs) #NS
+plot(branch$diameter_mm, branch$scars) #NS
+plot(branch$diameter_mm, branch$spurs) #NS
+plot(tree15$order, tree15$diameter_mm) #NS
+plot(log(branches$rank), log(branches$diameter_mm)) #S!
+rank_v_diameter <- lm(log(branches$diameter_mm)~log(branches$rank)) #R2 = 0.7959
+
 
 #order vs. twigs/scars/stems
 plot(branch$order, branch$twigs)
@@ -66,14 +78,8 @@ plot(branch$order, branch$scars)
 plot(branch$order, branch$spurs)
 
 #rank vs. order
-branches <- tree15[1:265,]
 plot(branches$order,log(branches$rank))
 g_rank_v_order <- glm(log(branches$rank)~branches$order, family = gaussian)
 rank_v_order <- lm(log(branches$rank)~branches$order) #R2 = 0.4153
-
-#length vs. order/rank
-plot(tree15$order, tree15$length_cm)
-plot(log(branches$rank), branches$length_cm) #What could be causing this separation?
-
 
 #vertical accumulation of stems/leaves/mass (by scaffold)
