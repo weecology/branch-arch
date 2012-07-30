@@ -19,7 +19,7 @@ correct_length <- function(start_node){
 }
 
 get_path_fraction <- function(){ 
-	#get pat fraction requires the assignment of a global variable subdata
+	#get path fraction requires the assignment of a global variable subdata
 	paths <- c()
 	for (i in 266:length(subdata[,1])){
 		total_length = 0
@@ -27,14 +27,14 @@ get_path_fraction <- function(){
 		paths <- c(paths,path_length)
 	}
 	path_fraction = mean(paths)/max(paths)
-	return( c(round(path_fraction, digits = 3), 
+	return( c(round(path_fraction, digits = 3), mean(paths), sd(paths), 
 			as.integer(length(paths))))
 }
 
 
 #Path Fraction
-path_fractions <- matrix(ncol=3, nrow=6)
-colnames(path_fractions) <- c("Group", "Pf", "No_Twigs")
+path_fractions <- matrix(ncol=5, nrow=6)
+colnames(path_fractions) <- c("Group", "Pf", "avg_path", "sd_path", "No_Twigs")
 
 no_spurs <- data[data$spur!='y',]
 no_scars <- data[data$length_cm!=0,]
@@ -43,15 +43,21 @@ just_twigs <- no_spurs[no_spurs$length_cm!=0,]
 just_whole_twigs <- just_twigs[just_twigs$broken!='y',]
 
 subdata = data
+total_length = 0
 path_fractions[1,] = c("All", get_path_fraction())
 subdata = no_spurs
+total_length = 0
 path_fractions[2,] = c("No spurs", get_path_fraction())
 subdata = no_scars
+total_length = 0
 path_fractions[3,] = c("No scars", get_path_fraction())
 subdata = no_broken
+total_length = 0
 path_fractions[4,] = c("No broken", get_path_fraction())
 subdata = just_twigs
+total_length = 0
 path_fractions[5,] = c("Twigs only", get_path_fraction())
 subdata = just_whole_twigs
+total_length = 0
 path_fractions[6,] = c("Whole Twigs", get_path_fraction())
 
