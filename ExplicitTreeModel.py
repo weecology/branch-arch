@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as p
 import math as m
 import csv
+import mayavi.mlab as my
     
 data = np.genfromtxt('TreeReconstruction.csv', delimiter = ',', 
                          names=True, missing_values='NULL',
@@ -11,7 +12,7 @@ branches = data[0:265]
 twigs = data[266:]
 
 ###Tree Model
-xyzs = [[[0,0],[0,93],[0,0]]] #origin and trunk distance
+xyzs = [[[0,0],[0,93],[0,0],180]] #origin and trunk distance
 
 for branch in branches[1:100]:
     x_start = xyzs[(branch['parent']-1)][0][1]
@@ -23,14 +24,22 @@ for branch in branches[1:100]:
         x_end = x_start - m.cos(m.radians(branch['declination']))*branch['length_cm']
     y_end = y_start + m.sin(m.radians(branch['declination']))*branch['length_cm']
     z_end = z_start + m.cos(m.radians(branch['bearing']))*branch['length_cm']
-    xyzs.append([[x_start,x_end],[y_start,y_end],[z_start,z_end]])          
+    xyzs.append([[x_start,x_end],[y_start,y_end],[z_start,z_end],branch['diameter_mm']]) 
+    
+output_file = open('TreeReconstructionXYZ.csv', 'w')
+datawriter = csv.writer(output_file)
+datawriter.writerows(xyzs)
+output_file.close()
     
 for xyz in xyzs:
-        p.plot(xyz[0],xyz[1], 'k-')
+        p.plot(xyz[0],xyz[1], 'k-', lw = xyz[3]/10)
 
 for xyz in xyzs:
-    p.plot(xyz[0],xyz[2], 'k-')
-    
+    p.plot(xyz[0],xyz[2], 'k-', lw = xyz[3]/10)
+
+for xyz in xyzs:
+    my.plot3d(xyz[0],xyz[1], xyz[2],tube_radius= xyz[3]/10)
+
 ###Data clean-up
 #generate declination angle from opp_length
 for branch in branches:
