@@ -11,20 +11,26 @@ branches = data[0:265]
 twigs = data[266:]
 
 ###Tree Model
-xyzs = [[[0,0,0],[0,93,0]]] #origin and trunk distance
+xyzs = [[[0,0],[0,93],[0,0]]] #origin and trunk distance
 
-for branch in branches[1:]:
-    x_start = xyzs[(branch['parent']-1)][1][0]
+for branch in branches[1:100]:
+    x_start = xyzs[(branch['parent']-1)][0][1]
     y_start = xyzs[(branch['parent']-1)][1][1]
-    z_start = xyzs[(branch['parent']-1)][1][2]
-    x_end = x_start + m.cos(m.radians(branch['declination']))*branch['length_cm']
+    z_start = xyzs[(branch['parent']-1)][2][1]
+    if branch['bearing'] < 180:
+        x_end = x_start + m.cos(m.radians(branch['declination']))*branch['length_cm']
+    else:
+        x_end = x_start - m.cos(m.radians(branch['declination']))*branch['length_cm']
     y_end = y_start + m.sin(m.radians(branch['declination']))*branch['length_cm']
     z_end = z_start + m.cos(m.radians(branch['bearing']))*branch['length_cm']
-    xyzs.append([xyzs[(branch['parent']-1)][1],[x_end,y_end,z_end]])          
+    xyzs.append([[x_start,x_end],[y_start,y_end],[z_start,z_end]])          
     
+for xyz in xyzs:
+        p.plot(xyz[0],xyz[1], 'k-')
 
-
-
+for xyz in xyzs:
+    p.plot(xyz[0],xyz[2], 'k-')
+    
 ###Data clean-up
 #generate declination angle from opp_length
 for branch in branches:
@@ -54,7 +60,7 @@ datawriter = csv.writer(output_file)
 datawriter.writerows(branches)
 output_file.close()
 
-p.plot(test[0],test[1], 'k-')
+
 
 #find extending twigs (should be empty with cleaned data
 ext_twigs = []
