@@ -2,18 +2,28 @@ import numpy as np
 import matplotlib.pyplot as p
 import math as m
 import csv
-
-datafile = open('TreeReconstruction.csv', 'r')
-datalist = []
-for row in datafile:
-    datalist.append(row.strip().split(','))
     
 data = np.genfromtxt('TreeReconstruction.csv', delimiter = ',', 
                          names=True, missing_values='NULL',
-                         dtype=['i8','i8','i8','i8','f8','i8','f8','f8','i8','f8'])
+                         dtype=['i8','i8','i8','i8','i8','f8','f8','i8','f8'])
     
 branches = data[0:265]
 twigs = data[266:]
+
+###Tree Model
+xyzs = [[[0,0,0],[0,93,0]]] #origin and trunk distance
+
+for branch in branches[1:]:
+    x_start = xyzs[(branch['parent']-1)][1][0]
+    y_start = xyzs[(branch['parent']-1)][1][1]
+    z_start = xyzs[(branch['parent']-1)][1][2]
+    x_end = x_start + m.cos(m.radians(branch['declination']))*branch['length_cm']
+    y_end = y_start + m.sin(m.radians(branch['declination']))*branch['length_cm']
+    z_end = z_start + m.cos(m.radians(branch['bearing']))*branch['length_cm']
+    xyzs.append([xyzs[(branch['parent']-1)][1],[x_end,y_end,z_end]])          
+    
+
+
 
 ###Data clean-up
 #generate declination angle from opp_length
