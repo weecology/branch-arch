@@ -1,7 +1,7 @@
 branch,parent,order,bearing,declination,length_cm,diameter_mm,angle,parent_dist
 1,0,1,0,90,93,180,NULL,NULL
 2,1,2,210,30,24.5,107,NULL,NULL
-3,1,1,0,0,22.5,178,NULL,NULL
+3,1,1,0,90,22.5,178,NULL,NULL
 4,3,2,260,40,28,125,NULL,NULL
 5,4,3,350,35,107,60.3,NULL,NULL
 6,4,2,230,80,73,92,NULL,NULL
