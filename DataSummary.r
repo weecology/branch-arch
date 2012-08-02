@@ -68,8 +68,12 @@ plot(branch$diameter_mm, branch$twigs) #NS
 plot(branch$diameter_mm, branch$scars) #NS
 plot(branch$diameter_mm, branch$spurs) #NS
 plot(tree15$order, tree15$diameter_mm) #NS
-plot(log(branches$rank), log(branches$diameter_mm)) #S!
-rank_v_diameter <- lm(log(branches$diameter_mm)~log(branches$rank)) #R2 = 0.7959
+plot(log(branches$diameter_mm), log(branches$rank)) #S!
+rank_v_diameter <- lm(log(branches$rank)~log(branches$diameter_mm)) #R2 = 0.7959
+
+#For poster
+plot(log(branches$diameter_mm), log(branches$rank), xlab="log D", ylab="No. of supported twigs", font.lab=4, cex.lab=1.5)
+abline(-0.88,1.52)
 
 
 #order vs. twigs/scars/stems
