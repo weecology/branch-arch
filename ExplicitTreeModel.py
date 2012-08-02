@@ -1,7 +1,7 @@
 import numpy as np
-import matplotlib.pyplot as p
 import math as m
 import csv
+import matplotlib.pyplot as p
 import mayavi.mlab as my
     
 data = np.genfromtxt('TreeReconstruction.csv', delimiter = ',', 
@@ -14,7 +14,7 @@ twigs = data[266:]
 ###Tree Model
 xyzs = [[[0,0],[0,93],[0,0],180]] #origin and trunk distance
 
-for branch in branches[1:100]:
+for branch in branches[1:]:
     x_start = xyzs[(branch['parent']-1)][0][1]
     y_start = xyzs[(branch['parent']-1)][1][1]
     z_start = xyzs[(branch['parent']-1)][2][1]
