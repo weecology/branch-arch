@@ -13,23 +13,25 @@ twigs = data[266:]
 
 ###Tree Model
 xyzs = [[[0,0],[0,93],[0,0],180]] #origin and trunk distance
+orient = -1
 
 for branch in branches[1:]:
     x_start = xyzs[(branch['parent']-1)][0][1]
     y_start = xyzs[(branch['parent']-1)][1][1]
     z_start = xyzs[(branch['parent']-1)][2][1]
     if branch['bearing'] < 180:
-        x_end = x_start + m.cos(m.radians(branch['declination']))*branch['length_cm']
-    else:
         x_end = x_start - m.cos(m.radians(branch['declination']))*branch['length_cm']
+    else:
+        x_end = x_start + m.cos(m.radians(branch['declination']))*branch['length_cm']
     y_end = y_start + m.sin(m.radians(branch['declination']))*branch['length_cm']
     z_end = z_start + m.cos(m.radians(branch['bearing']))*branch['length_cm']
-    xyzs.append([[x_start,x_end],[y_start,y_end],[z_start,z_end],branch['diameter_mm']]) 
-    
-output_file = open('TreeReconstructionXYZ.csv', 'w')
-datawriter = csv.writer(output_file)
-datawriter.writerows(xyzs)
-output_file.close()
+    if branch['bearing']== orient:
+        xyzs.append([[x_start,x_end],[y_start,y_end],[z_start,z_end],(branch['diameter_mm']*10)])
+    else:    
+        xyzs.append([[x_start,x_end],[y_start,y_end],[z_start,z_end],branch['diameter_mm']])
+        
+for xyz in xyzs:
+    my.plot3d(xyz[0],xyz[1], xyz[2],tube_radius= xyz[3]/10)
     
 for xyz in xyzs:
         p.plot(xyz[0],xyz[1], 'k-', lw = xyz[3]/10)
@@ -37,8 +39,11 @@ for xyz in xyzs:
 for xyz in xyzs:
     p.plot(xyz[0],xyz[2], 'k-', lw = xyz[3]/10)
 
-for xyz in xyzs:
-    my.plot3d(xyz[0],xyz[1], xyz[2],tube_radius= xyz[3]/10)
+output_file = open('TreeReconstructionXYZ.csv', 'w')
+datawriter = csv.writer(output_file)
+datawriter.writerows(xyzs)
+output_file.close()
+
 
 ###Data clean-up
 #generate declination angle from opp_length
