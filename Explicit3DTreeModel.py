@@ -1,3 +1,5 @@
+"""This module takes spatially explicit branching architecture data in the form of branchID, parent branch id, bearing, declination, length, and diameter. With this data, the module generates a 3D representation of the branching architecture data."""
+
 import numpy as np
 import math as m
 import csv
