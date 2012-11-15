@@ -17,12 +17,12 @@ def make_xyzs(start_xyz, length, bifurcation, rotation):
 	z_end = round(xyz[2][1] + length*m.cos(m.radians(bifurcation)),3)
 	return [[xyz[0][1],x_end],[xyz[1][1],y_end],[xyz[2][1],z_end]]
 
-def get_bifurcation_angles(low_value, high_value, bifurcation_set=[]):
+def get_bifurcation_angles(low_value, high_value, constant=[]):
 	"""This function returns two bifurcation angles ordered from with the larger angle first as a list of two numbers. For the simulation to work properly, the low and high values should be within the range [0-90]. A constant set of values can be input by setting bifurcation_set to a list of one or two values."""
-	if len(bifurcation_set) == 2:
-		return bifurcation_set
-	if len(bifurcation_set) == 1:
-		one = bifurcation_set[0]
+	if len(constant) == 2:
+		return constant
+	if len(constant) == 1:
+		one = constant[0]
 		two = r.randrange(low_value, high_value)
 		if one >= two:
 			return [one,two]
@@ -58,7 +58,7 @@ def get_termination_value(termination_probability):
 if __name__ == "__main__":
 	xyzs = [[[0, 0], [0, 0], [0, 1]]]
 	
-	termination_probability = 0.4
+	termination_probability = 0.6
 	bifurcation_set = []
 	bifurcation_low = 10
 	bifurcation_high = 20
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 		if term_value == 0:
 			bifurcation = get_bifurcation_angles(
 			                 bifurcation_low, bifurcation_high,
-			                 bifurcation_set=bifuracation_set)
+			                 constant=bifurcation_set)
 			rotation = get_rotation_angles()
 			xyzs.append(make_xyzs(xyz, length,bifurcation[0],
 			                      rotation[0]))
