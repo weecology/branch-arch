@@ -17,6 +17,26 @@ def make_xyzs(start_xyz, length, bifurcation, rotation):
 	z_end = round(xyz[2][1] + length*m.cos(m.radians(bifurcation)),3)
 	return [[xyz[0][1],x_end],[xyz[1][1],y_end],[xyz[2][1],z_end]]
 
+def make_all_xyzs(start_xyz, termination_probability, length, bifurcation_set,
+                  rotation_angle):
+	"""This function is the primary loop of the simulation module. It requires all inputs for make_xyzs as well as the termination probability, and bifercation parameters (set, high, and low)."""
+	if len(start_xyz) > 10:
+		pass
+	else:
+		term_value = get_termination_value(termination_probability)
+		if term_value == 0:
+			results = []
+			bifurcation = get_bifurcation_angles(bifurcation_set[0],
+			                                     bifurcation_set[1],
+			                                     bifurcation_set[2])
+			rotation = get_rotation_angles(rotation_angle)
+			results.append(make_xyzs(start_xyz, length, bifurcation[0],
+					         rotation[0]))
+			results.append(make_xyzs(start_xyz, length, bifurcation[1],
+					         rotation[1]))
+			for xyz in results:
+				xyzs.append(xyz)	
+
 def get_bifurcation_angles(low_value, high_value, constant=[]):
 	"""This function returns two bifurcation angles ordered from with the larger angle first as a list of two numbers. For the simulation to work properly, the low and high values should be within the range [0-90]. A constant set of values can be input by setting bifurcation_set to a list of one or two values."""
 	if len(constant) == 2:
@@ -38,14 +58,22 @@ def get_bifurcation_angles(low_value, high_value, constant=[]):
 		else:
 			return [two,one]
 
-def get_rotation_angles():
-	"""This function returns two rotation angles ordered from with the larger angle first as a list of two numbers. The second angle is exactly opposite or 180 degrees away from the first. For the simulation to work properly, the range of values has been defined as [0-180]"""
-	one = r.randrange(0,180)
-	two = -1*one
-	if one <= 90:
-		return [one,two]
+def get_rotation_angles(value=[]):
+	"""This function returns two rotation angles ordered from with the larger angle first as a list of two numbers. The second angle is exactly opposite or 180 degrees away from the first. For the simulation to work properly, the range of values has been defined as [0-180]. A constant set of values can be input by providing a single positive value."""
+	if value:
+		one = value
+		two = -1*one
+		if one <= 90:
+			return [one,two]
+		else:
+			return [two,one]
 	else:
-		return [two,one]
+		one = r.randrange(0,180)
+		two = -1*one
+		if one <= 90:
+			return [one,two]
+		else:
+			return [two,one]		
 
 def get_termination_value(termination_probability):
 	"""This function returns a binomial response (0 or 1) in a frequency defined by the termination probability with range [0-1]. If the termination_probability is low more branches will be generated and vice versa."""
@@ -54,31 +82,52 @@ def get_termination_value(termination_probability):
 		return 1
 	else:
 		return 0
+	
+def make_plot(coordinates):
+	"""This function contructs a figure from a set of xyz coordinates organized as a list of lists of the form [[xstart, xend],[ystart,yend],[zstart,zend]]. Axes are set to square as per the largest single coordinate value."""
+	fig = p.figure()
+	ax = fig.gca(projection='3d')
+	maximum = [0]
+	for xyz in coordinates:
+		flat = xyz[0] + xyz[1] + xyz[2] + maximum
+		maximum = [max(flat)]
+		ax.plot(xyz[0],xyz[1], xyz[2])
+	ax.set_xlim3d(-maximum[0],maximum[0])
+	ax.set_ylim3d(-maximum[0],maximum[0])
+	ax.set_zlim3d(0,maximum[0])
+	p.show()	
 
 if __name__ == "__main__":
 	xyzs = [[[0, 0], [0, 0], [0, 1]]]
 	
-	termination_probability = 0.6
-	bifurcation_set = []
-	bifurcation_low = 10
-	bifurcation_high = 20
+	termination_probability = 0.45
+	bifurcation_set = [0,90,[2]]
+	rotation_angle = [] #can provide value in range [0-180]
 	length = 1
 	diameter = 1
-
-	for xyz in xyzs:
-		term_value = get_termination_value(termination_probability)
-		if term_value == 0:
-			bifurcation = get_bifurcation_angles(
-			                 bifurcation_low, bifurcation_high,
-			                 constant=bifurcation_set)
-			rotation = get_rotation_angles()
-			xyzs.append(make_xyzs(xyz, length,bifurcation[0],
-			                      rotation[0]))
-			xyzs.append(make_xyzs(xyz, length,bifurcation[1],
-			                      rotation[1]))
+	max_branching = 10000
+	method = "TD" #Choose TD = Termination Driven or BD = Branching Driven
+	
+	if method == "TD":
+		for xyz in xyzs:
+			if len(xyzs) < max_branching:
+				make_all_xyzs(xyz, termination_probability, length, 
+					      bifurcation_set, rotation_angle)
+	
+		if len(xyzs) >= max_branching:
+			print "Ahh! Too much information! Abort! Abort!!!"
+	
+		elif len(xyzs) == 1:
+			print "Nothing doing. Let's try again."
+		else:
+			print "There were " + str(len(xyzs)) + " branching events!"
+			make_plot(xyzs)
 		
-	fig = p.figure()
-	ax = fig.gca(projection='3d')	
-	for xyz in xyzs:
-		ax.plot(xyz[0],xyz[1], xyz[2])
-	p.show()
+	if method == "BD":
+		while len(xyzs) < 1000:
+			print "Still going: " + str(len(xyzs)) + " coordinates strong..."
+			for xyz in xyzs:
+				make_all_xyzs(xyz, termination_probability, length, 
+					      bifurcation_set, rotation_angle)
+			
+		make_plot(xyzs)
