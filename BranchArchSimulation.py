@@ -82,8 +82,3 @@ if __name__ == "__main__":
 	for xyz in xyzs:
 		ax.plot(xyz[0],xyz[1], xyz[2])
 	p.show()
-#for xyz in xyzs:
-
-    #my.plot3d(xyz[0],xyz[1], xyz[2],tube_radius= xyz[3]/10)
-    
-#my.show()
