@@ -1,4 +1,4 @@
-"""This module simulates the range of possible branching architectures as defined by the required inputs of bifurcation angle, rotation angle, and probability of a terminal branching event. The simulation is submitted to Ethan White to satissfy the written comprehensive exam requirement. [Developed by: Zack Brym, 15 Nov 2012]"""
+"""This module simulates the range of possible branching architectures as defined by the required inputs of bifurcation angle, rotation angle, and probability of a terminal branching event. The simulation is submitted to Ethan White to satissfy the written comprehensive exam requirement for Ph.D. candidacy at Utah State University. [Developed by: Zack Brym, 15 Nov 2012]"""
 
 import numpy as np
 import math as m
@@ -9,7 +9,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as p
 
 def make_xyzs(start_xyz, length, bifurcation, rotation):
-	"""This function returns a list of xyz coordinate pairs generated as a function of radial length, bifurcation angle, and rotation angle. The staring coordinates must be in the general form [[0,0],[0,0],[0,0]]."""
+	"""This function returns a list of xyz coordinate pairs generated as a function of radial length, bifurcation angle, and rotation angle. The starting coordinates must be in the general form [[0,0],[0,0],[0,0]]."""
 	x_end = round(xyz[0][1] + length*m.sin(m.radians(bifurcation))*
 	              m.cos(m.radians(rotation)),3)
 	y_end = round(xyz[1][1] + length*m.sin(m.radians(bifurcation))*
@@ -19,7 +19,7 @@ def make_xyzs(start_xyz, length, bifurcation, rotation):
 
 def make_all_xyzs(start_xyz, termination_probability, length, bifurcation_set,
                   rotation_angle):
-	"""This function is the primary loop of the simulation module. It requires all inputs for make_xyzs as well as the termination probability, and bifercation parameters (set, high, and low)."""
+	"""This function is the primary loop of the simulation module. It requires all inputs for make_xyzs as well as the termination probability, and bifurcation parameters (high and low, and constant)."""
 	if len(start_xyz) > 10:
 		pass
 	else:
@@ -59,7 +59,7 @@ def get_bifurcation_angles(low_value, high_value, constant=[]):
 			return [two,one]
 
 def get_rotation_angles(value=[]):
-	"""This function returns two rotation angles ordered from with the larger angle first as a list of two numbers. The second angle is exactly opposite or 180 degrees away from the first. For the simulation to work properly, the range of values has been defined as [0-180]. A constant set of values can be input by providing a single positive value."""
+	"""This function returns two rotation angles ordered with the larger angle first as a list of two numbers. The second angle is exactly opposite or 180 degrees away from the first. For the simulation to work properly, the range of values has been defined as [0-180]. A constant set of values can be input by providing a single positive value."""
 	if value:
 		one = value
 		two = -1*one
@@ -98,15 +98,18 @@ def make_plot(coordinates):
 	p.show()	
 
 if __name__ == "__main__":
-	xyzs = [[[0, 0], [0, 0], [0, 1]]]
 	
-	termination_probability = 0.45
-	bifurcation_set = [0,90,[2]]
-	rotation_angle = [] #can provide value in range [0-180]
+	"""The current parameters set for this simulation are meant to develop an architecture representative of the main structural branches of a free-standing temperate deciduous tree or more specifically a cherry tree. The "branching driven" method is being used to ensure a positive output on the first try. You are welcome to change the parameters and try out the "termination driven" method, as well. Future development will provide loops to vary the existing parameters and generate figures and branching metrics (i.e., canopy volume) so a more rigorous test can be performed to match empirical data. Also, branch length and diameter will be allowed to vary so as to include terminal branching patterns in the analysis. Thanks for taking the time to look over this. I look forward to hearing your thoughts and incorporating an extention of this simulation into my initial data analysis. I hope you have fun playing with the methods and paramters! ~Zack"""
+	
+	method = "BD" #Choose TD = Termination Driven or BD = Branching Driven
+	max_branching = 35 #Maximum loop before abort in TD or number of branching events in BD
+	termination_probability = 0.90 #[0-1]
+	bifurcation_set = [70,90,[40]] #[min,max,[1 or 2 optional constants]
+	rotation_angle = 0 #can provide value in range [0-180] or empty set []
 	length = 1
 	diameter = 1
-	max_branching = 10000
-	method = "TD" #Choose TD = Termination Driven or BD = Branching Driven
+	
+	xyzs = [[[0, 0], [0, 0], [0, 1]]]
 	
 	if method == "TD":
 		for xyz in xyzs:
@@ -124,7 +127,7 @@ if __name__ == "__main__":
 			make_plot(xyzs)
 		
 	if method == "BD":
-		while len(xyzs) < 1000:
+		while len(xyzs) < max_branching:
 			print "Still going: " + str(len(xyzs)) + " coordinates strong..."
 			for xyz in xyzs:
 				make_all_xyzs(xyz, termination_probability, length, 
