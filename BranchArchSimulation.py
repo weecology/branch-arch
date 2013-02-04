@@ -2,7 +2,6 @@
 
 import numpy as np
 import math as m
-import csv
 import random as r
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
