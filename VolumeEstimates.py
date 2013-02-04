@@ -14,9 +14,9 @@ def import_data(file_name, data_type):
     return data
 
 def output_data(file_out, data_array):
-    output_file = open(file_name, 'w')
+    output_file = open(file_out, 'w')
     datawriter = csv.writer(output_file)
-    datawriter.writerows(branches)
+    datawriter.writerows(data_array)
     output_file.close()    
     
 if __name__ == '__main__':    
