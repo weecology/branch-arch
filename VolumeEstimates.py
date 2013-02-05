@@ -23,4 +23,11 @@ if __name__ == '__main__':
     data = import_data('CanopyVolume.csv', 
                        ['i8','i8','S5','f8','f8','i8'])
     
-    output_data('CanopyEstimates.csv', [])
+    position = [0,2,4,6,8]
+    
+    for i in set(data['tree']):
+        tree = data[data['tree']==i]
+        for j in position:
+            
+    
+    output_data('VolumeEstimates.csv', [])
