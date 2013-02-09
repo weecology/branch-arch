@@ -4,6 +4,7 @@ branch <- read.csv("BranchSegments.csv", sep=',', header=T)
 twig <- read.csv("TwigSegments.csv", sep=',', header=T)
 tree15 <- read.csv("WholeTree15.csv", sep=',', header=T)
 branches <- tree15[1:265,]
+space <- branch[1:265,]
 
 
 hist(branch$order)
@@ -53,8 +54,12 @@ for (i in 1:(branches15-1)){
 	summary_twigs[i,4] = length(sub_twig[sub_twig$length==0,][,1]) #scars
 	summary_twigs[i,2] = length(sub_twig[,1]-(summary_twigs[i,3]+summary_twigs[i,4])) #twigs
 }
-
 write.csv(summary_twigs,"TwigSummary15.csv")
+
+t<-hist(twig$length)
+mean(twig$length, na.rm=T) #21.223
+median(twig$length, na.rm=T) #15
+
 
 #length vs. twigs/scars/stems/order/rank
 plot(branch$length_cm, branch$twigs)
@@ -87,3 +92,9 @@ g_rank_v_order <- glm(log(branches$rank)~branches$order, family = gaussian)
 rank_v_order <- lm(log(branches$rank)~branches$order) #R2 = 0.4153
 
 #vertical accumulation of stems/leaves/mass (by scaffold)
+
+#spatial
+hist(space$declination)
+hist(space$bearing)
+plot(space$order, space$declination)
+order_v_declination <- lm(space$declination~space$order) #R2 = 0.2944
