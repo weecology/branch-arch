@@ -7,12 +7,18 @@ import mayavi.mlab as my
 data = np.genfromtxt('TreeReconstruction.csv', delimiter = ',', 
                          names=True, missing_values='NULL',
                          dtype=['i8','i8','i8','i8','i8','f8','f8','i8','f8'])
-    
-branches = data[0:265]
-twigs = data[266:]
+ind=4
 
-###Tree Model
-xyzs = [[[0,0],[0,93],[0,0],180]] #origin and trunk distance
+if ind == 15:
+    branches = data[0:265]
+    twigs = data[266:]
+else:
+    for i in [3,4,5]:
+        i=3
+        branches = data[(data['tree']==i)]
+        
+    ###Tree Model
+xyzs = [[[0,0],[0,(branches['length_cm'][0])],[0,0],(branches['diameter_mm'][0])]] #origin and trunk distance
 orient = -1
 
 for branch in branches[1:]:
@@ -23,8 +29,12 @@ for branch in branches[1:]:
         x_end = x_start - m.cos(m.radians(branch['declination']))*branch['length_cm']
     else:
         x_end = x_start + m.cos(m.radians(branch['declination']))*branch['length_cm']
-    y_end = y_start + m.sin(m.radians(branch['declination']))*branch['length_cm']
-    z_end = z_start + m.cos(m.radians(branch['bearing']))*branch['length_cm']
+    if branch['declination'] == 90:
+        y_end = y_start + branch['length_cm']
+        z_end = z_start
+    else:
+        y_end = y_start + m.sin(m.radians(branch['declination']))*branch['length_cm']
+        z_end = z_start + m.cos(m.radians(branch['bearing']))*branch['length_cm']
     if branch['bearing']== orient:
         xyzs.append([[x_start,x_end],[y_start,y_end],[z_start,z_end],(branch['diameter_mm']*10)])
     else:    
@@ -76,7 +86,7 @@ output_file.close()
 
 
 
-#find extending twigs (should be empty with cleaned data
+#find extending twigs (should be empty with cleaned data)
 ext_twigs = []
 for branch in branches:
     if branch['opp_length_cm']:
