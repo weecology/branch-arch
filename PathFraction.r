@@ -46,16 +46,16 @@ for (j in 1:6){
   path_fractions[(4*j-3):(4*j), 1] = "apple"
   path_fractions[(4*j-3):(4*j), 2] = apple_trees[j]
   total_length = 0
-  subdata<-tree
+  subdata <- tree
   path_fractions[(4*j-3), 3:7] = c("All", get_path_fraction(twig_start))
   total_length = 0
-  subdata<-no_scars
+  subdata <- no_scars
   path_fractions[(4*j-2), 3:7] = c("No scars", get_path_fraction(twig_start))
   total_length = 0
-  subdata<-no_spurs
+  subdata <- no_spurs
   path_fractions[(4*j-1), 3:7] = c("No spurs", get_path_fraction(twig_start))
   total_length = 0
-  subdata<-just_twigs
+  subdata <- just_twigs
   path_fractions[(4*j), 3:7] = c("Twigs only", get_path_fraction(twig_start))
 } 
 
@@ -68,16 +68,16 @@ just_twigs <- no_spurs[no_spurs$length_cm!=0,]
 path_fractions[25:28, 1] = "cherry"
 path_fractions[25:28, 2] = 15
 total_length = 0
-subdata<-tree
+subdata <- tree
 path_fractions[25, 3:7] = c("All", get_path_fraction(twig_start))
 total_length = 0
-subdata<-no_scars
+subdata <- no_scars
 path_fractions[26, 3:7] = c("No scars", get_path_fraction(twig_start))
 total_length = 0
-subdata<-no_spurs
+subdata <- no_spurs
 path_fractions[27, 3:7] = c("No spurs", get_path_fraction(twig_start))
 total_length = 0
-subdata<-just_twigs
+subdata <- just_twigs
 path_fractions[28, 3:7] = c("Twigs only", get_path_fraction(twig_start))
 
 #write.csv(path_fractions,"PathFractions.csv")
