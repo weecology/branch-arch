@@ -4,7 +4,7 @@ data <- read.csv("TreeReconstruction.csv", sep=',', head=T)
 apple_trees <- c(3,4,5,13,14,15)
 
 spp <- data[data$species=="apple",]
-for (j in 1:2){
+for (j in 1:7){
   if (j==7) 
     tree <- data[data$species=="cherry",]
   else 
