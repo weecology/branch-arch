@@ -1,30 +1,45 @@
-data <- read.csv("WholeTree15.csv", sep=',', head=T)
+data <- read.csv("TreeReconstruction.csv", sep=',', head=T)
 
-n=data[,1] #branch ID
-a=data[,2] #attachment ID (parent)
-d=data[,4]#*1000 #diameter, convert as needed
-l=data[,3]#*100 #length, ditto
-r=0 
-tree=data.frame(n=n,a=a,r=r,d=d,l=l,x1=NA,y1=NA,x2=NA,y2=NA) #define the tree
-twg=stack(tree[,1:2]) #put node and attach together
-twg=unique(twg$values,fromLast=T) #find unique numbers. Starting from the last effectively cuts out parent node numbers from the "node" side. Zero marks the differnce between node and attaches
-cut=which(twg==0) #find the position of the zero
-prnt=twg[(cut+1):length(twg)] #parents after the zero
-twg=twg[1:(cut-1)] #Twigs before the zero
+apple_trees <- c(3,4,5,13,14,15)
 
-#####assign ranks, 1 twig at a time#######
-for(i in 1:length(twg)){ 
-  ma=twg[i] #mother
-  mai=which(tree$n==ma) #mother's index
-  tree$r[mai]=tree$r[mai]+1 #increase rank
-  while(ma>0){
-    ma=tree$a[mai] #find mother's mother (attachment)
-    mai=which(tree$n==ma) #new index
-    tree$r[mai]=tree$r[mai]+1 #up the rank
+spp <- data[data$species=="apple",]
+for (j in 1:7){
+  if (j==7)
+    tree <- data[data$species=="cherry",]
+  else
+    tree <- spp[spp$tree==apple_trees[j],]
+
+  n = tree$branch #branch ID
+  a = tree$parent #attachment ID (parent)
+  d = tree$diameter_mm #*1000 #diameter, convert as needed
+  l = tree$length_cm #*100 #length, ditto
+  r = 0
+  
+  tree_config = data.frame(n=n,a=a,r=r) #define the tree
+  twg=stack(tree_config[,1:2]) #put node and attach together
+  twg=unique(twg$values,fromLast=T) #find unique numbers. Starting from the last effectively cuts out parent node numbers from the "node" side. Zero marks the differnce between node and attaches
+  cut=which(twg==0) #find the position of the zero
+  prnt=twg[(cut+1):length(twg)] #parents after the zero
+  twg=twg[1:(cut-1)] #Twigs before the zero
+  
+  #####assign ranks, 1 twig at a time#######
+  for(i in 1:length(twg)){ 
+    ma=twg[i] #mother
+    mai=which(tree_config$n==ma) #mother's index
+    tree_config$r[mai]=tree_config$r[mai]+1 #increase rank
+    while(ma>0){
+      ma=tree_config$a[mai] #find mother's mother (attachment)
+      mai=which(tree_config$n==ma) #new index
+      tree_config$r[mai]=tree_config$r[mai]+1 #up the rank
+    }
   }
+  if (exists('trees_out'))
+    trees_out = rbind(trees_out, tree_config)
+  else
+    trees_out <- tree_config
 }
 
-write.csv(tree, "treetemp.csv")
+write.csv(trees_out, "Ranks.csv")
 
 #Recursion attempt
 get_rank <- function(start_node){
