@@ -1,22 +1,131 @@
 ###This file summarizes data for the Branching Architecture analysis.
 
-branch <- read.csv("BranchSegments.csv", sep=',', header=T)
-twig <- read.csv("TwigSegments.csv", sep=',', header=T)
-tree15 <- read.csv("WholeTree15.csv", sep=',', header=T)
-branches <- tree15[1:265,]
-space <- branch[1:265,]
+data <- read.csv("TreeReconstruction.csv", sep = ',', header = T)
 
+#hist(order)
+apple_trees <- c(3,5,4,13,15,14)
+par(mfrow=c(3,3))
+for (j in 1:6){
+  spp <- data[data$species=="apple",]
+  tree <- spp[spp$tree==apple_trees[j],]
+  hist(tree$order)
+}
+tree <- data[data$species=="cherry",]
+hist(tree$order)
+#####
 
-hist(branch$order)
-hist(branch$length_cm, breaks=30) #gamma dist
-hist(log(branch$length_cm), breaks=30) #log normal
+#hist(length)  
+apple_trees <- c(3,5,4,13,15,14)
+par(mfrow=c(3,3))
+for (j in 1:6){
+  spp <- data[data$species=="apple",]
+  tree <- spp[spp$tree==apple_trees[j],]
+  hist(tree$length_cm, breaks=30)
+}
+tree <- data[data$species=="cherry",]
+hist(tree$length_cm, breaks=30)
+#####
 
+#hist(log(branch$length_cm), breaks=30) #log normal
+apple_trees <- c(3,5,4,13,15,14)
+par(mfrow=c(3,3))
+for (j in 1:6){
+  spp <- data[data$species=="apple",]
+  tree <- spp[spp$tree==apple_trees[j],]
+  hist(log(tree$length_cm), breaks=30)
+}
+tree <- data[data$species=="cherry",]
+hist(log(tree$length_cm), breaks=30)
+#####
+
+#plot(log(length),log(diameter))                     NS
+apple_trees <- c(3,5,4,13,15,14)
+volumelm <- vector(length = 7)
+par(mfrow=c(3,3))
+for (j in 1:6){
+  spp <- data[data$species=="apple",]
+  tree <- spp[spp$tree==apple_trees[j],]
+  branch <- tree[tree$parent_dist==0,]
+  plot(log(branch$length_cm), log(branch$diameter_mm))
+  volumelm[j] = summary(lm(log(branch$diameter_mm)~log(branch$length_cm)))$r.squared
+}
+tree <- data[data$species=="cherry",]
+branch <- tree[tree$parent_dist==0,]
 plot(log(branch$length_cm), log(branch$diameter_mm))
-volumelm <- lm(log(branch$diameter_mm)~log(branch$length_cm)) #NS R^2 = 0.003
-trees = c(1,7,10,15)
+volumelm[7] = summary(lm(log(branch$diameter_mm)~log(branch$length_cm)))$r.squared
+
+#hist(declination)
+apple_trees <- c(3,5,4,13,15,14)
+par(mfrow=c(3,3))
+for (j in 1:6){
+  spp <- data[data$species=="apple",]
+  tree <- spp[spp$tree==apple_trees[j],]
+  branch <- tree[tree$parent_dist==0,]
+  hist(branch$declination, breaks=10, freq=F, xlim=c(0,100))
+}
+tree <- data[data$species=="cherry",]
+branch <- tree[tree$parent_dist==0,]
+hist(branch$declination, breaks=20, freq=F, xlim=c(0,100))
+#####
+
+#hist(bearing)
+apple_trees <- c(3,5,4,13,15,14)
+par(mfrow=c(3,3))
+for (j in 1:6){
+  spp <- data[data$species=="apple",]
+  tree <- spp[spp$tree==apple_trees[j],]
+  branch <- tree[tree$parent_dist==0,]
+  hist(branch$bearing, breaks=10, freq=F, xlim=c(0,360))
+}
+tree <- data[data$species=="cherry",]
+branch <- tree[tree$parent_dist==0,]
+hist(branch$bearing, breaks=20, freq=F, xlim=c(0,360))
+#####
+
+#plot(order, declination)                              S!
+apple_trees <- c(3,5,4,13,15,14)
+order_declination <- list()
+par(mfrow=c(3,3))
+for (j in 1:6){
+  spp <- data[data$species=="apple",]
+  tree <- spp[spp$tree==apple_trees[j],]
+  branch <- tree[tree$parent_dist==0,]
+  plot(branch$order, branch$declination)
+  order_declination[[j]] <- lm(branch$declination~branch$order)
+}
+tree <- data[data$species=="cherry",]
+branch <- tree[tree$parent_dist==0,]
+plot(branch$order, branch$declination)
+order_declination[[7]] <- lm(branch$declination~branch$order)
+
+order_dec_r <- vector(length = 7)
+for (i in 1:7){ order_dec_r[i] = summary(order_declination[[i]])$r.squared }
+#####
+
+#plot(log(diameter), log(rank))
+apple_trees <- c(3,5,4,13,15,14)
+diameter_rank <- list()
+par(mfrow=c(3,3))
+for (j in 1:6){
+  spp <- data[data$species=="apple",]
+  tree <- spp[spp$tree==apple_trees[j],]
+  branch <- tree[tree$parent_dist==0,]
+  plot(log(branch$diameter_mm), log(branch$rank))
+  diameter_rank[[j]] <- lm(log(branch$rank)~log(branch$diameter_mm))
+}
+tree <- data[data$species=="cherry",]
+branch <- tree[tree$parent_dist==0,]
+plot(log(branch$diameter_mm), log(branch$rank))
+diameter_rank[[7]] <- lm(log(branch$rank)~log(branch$diameter_mm))
+
+diameter_rank_r <- vector(length = 7)
+for (i in 1:7){ diameter_rank_r[i] = summary(diameter_rank[[i]])$r.squared }
+#####
+plot(log(branches$diameter_mm), log(branches$rank)) #S!
+rank_v_diameter <- lm(log(branches$rank)~log(branches$diameter_mm))
 
 ##Branching Ratio
-#all 
+#all  
 no_branched <- list()
 avg_ratio <- matrix(ncol=2, nrow=15)
 for(i in trees){
@@ -93,8 +202,3 @@ rank_v_order <- lm(log(branches$rank)~branches$order) #R2 = 0.4153
 
 #vertical accumulation of stems/leaves/mass (by scaffold)
 
-#spatial
-hist(space$declination)
-hist(space$bearing)
-plot(space$order, space$declination)
-order_v_declination <- lm(space$declination~space$order) #R2 = 0.2944
