@@ -5,17 +5,19 @@ import matplotlib.pyplot as p
 import mayavi.mlab as my
     
 data = np.genfromtxt('TreeReconstruction.csv', delimiter = ',', 
-                         names=True, missing_values='NULL',
-                         dtype=['i8','i8','i8','i8','i8','f8','f8','i8','f8'])
-ind=4
+                         names=True, missing_values='',
+                         dtype=['S5','i8','i8','i8','i8','i8','i8','f8','f8','i8','f8','S5','i8'])
 
-if ind == 15:
-    branches = data[0:265]
-    twigs = data[266:]
-else:
-    for i in [3,4,5]:
-        i=3
-        branches = data[(data['tree']==i)]
+#if ind == 15:
+#    branches = data[0:265]
+#    twigs = data[266:]
+#else:
+#    for i in [3,4,5,13,14,15]:
+#        tree = data[(data['tree']==i)]
+
+spp = data[(data['species']=='apple')] # Choose Species
+tree = spp[(spp['tree']==15)]   #Choose Individual
+branches = tree[(tree['parent_dist']==0)]
         
     ###Tree Model
 xyzs = [[[0,0],[0,(branches['length_cm'][0])],[0,0],(branches['diameter_mm'][0])]] #origin and trunk distance
@@ -42,9 +44,13 @@ for branch in branches[1:]:
         
 for xyz in xyzs:
     my.plot3d(xyz[0],xyz[1], xyz[2],tube_radius= xyz[3]/10)
+
+#Edit Mayavi Scene. Drag to size. Toggle axis indicator. View along the +Z axis. 
+#Rotate along x-z plane so x indicator shadows z indicator. Configure the scene. Light 2 & 3 maroon.
     
+     ###EXTRA
 for xyz in xyzs:
-        p.plot(xyz[0],xyz[1], 'k-', lw = xyz[3]/10)
+    p.plot(xyz[0],xyz[1], 'k-', lw = xyz[3]/10)
 
 for xyz in xyzs:
     p.plot(xyz[0],xyz[2], 'k-', lw = xyz[3]/10)
@@ -55,7 +61,7 @@ datawriter.writerows(xyzs)
 output_file.close()
 
 
-###Data clean-up
+     ###Data clean-up
 #generate declination angle from opp_length
 for branch in branches:
     if branch['declination'] >= 0:
