@@ -2,6 +2,25 @@
 
 data <- read.csv("TreeReconstruction.csv", sep = ',', header = T)
 
+#branch twig no.
+apple_trees <- c(3,5,4,13,15,14)
+segments <- matrix(nrow = 7, ncol = 3)
+par(mfrow=c(3,3))
+for (j in 1:6){
+  spp <- data[data$species=="apple",]
+  tree <- spp[spp$tree==apple_trees[j],]
+  branches <- tree[tree$parent_dist==0,]
+  segments[j,1] = apple_trees[j]
+  segments[j,2] = length(branches[,1])
+  segments[j,3] = length(tree[,1]) - length(branches[,1])
+}
+tree <- data[data$species=="cherry",]
+branches <- tree[tree$parent_dist==0,]
+segments[7,1] = 51
+segments[7,2] = length(branches[,1])
+segments[7,3] = length(tree[,1]) - length(branches[,1])
+#####
+
 #hist(order)
 apple_trees <- c(3,5,4,13,15,14)
 par(mfrow=c(3,3))
@@ -20,10 +39,23 @@ par(mfrow=c(3,3))
 for (j in 1:6){
   spp <- data[data$species=="apple",]
   tree <- spp[spp$tree==apple_trees[j],]
-  hist(tree$length_cm, breaks=30)
+  hist(tree$length_cm, breaks=30, freq = F)
 }
 tree <- data[data$species=="cherry",]
-hist(tree$length_cm, breaks=30)
+hist(tree$length_cm, breaks=30, freq = F)
+#####
+
+#hist(twig_length)  
+apple_trees <- c(3,5,4,13,15,14)
+par(mfrow=c(3,3))
+for (j in 1:6){
+  spp <- data[data$species=="apple",]
+  tree <- spp[spp$tree==apple_trees[j],]
+  twig <- tree[tree$parent_dist!=0,]
+  hist(twig$length_cm, breaks=20, freq = F, xlim = c(0,200))
+}
+twig <- tree[tree$parent_dist!=0,]
+hist(twig$length_cm, breaks=20, freq = F, xlim = c(0,200))
 #####
 
 #hist(log(branch$length_cm), breaks=30) #log normal
@@ -85,18 +117,23 @@ hist(branch$bearing, breaks=20, freq=F, xlim=c(0,360))
 #plot(order, declination)                              S!
 apple_trees <- c(3,5,4,13,15,14)
 order_declination <- list()
-par(mfrow=c(3,3))
+par(mfrow=c(2,2))
 for (j in 1:6){
   spp <- data[data$species=="apple",]
   tree <- spp[spp$tree==apple_trees[j],]
   branch <- tree[tree$parent_dist==0,]
-  plot(branch$order, branch$declination)
   order_declination[[j]] <- lm(branch$declination~branch$order)
+  plot(branch$order, branch$declination, cex = 1.5, ylim = c(-10,100),
+       ylab = "branch angle", xlab = "branch order", 
+       main = round(summary(order_declination[[j]])$r.squared, digits = 3))
 }
 tree <- data[data$species=="cherry",]
 branch <- tree[tree$parent_dist==0,]
-plot(branch$order, branch$declination)
 order_declination[[7]] <- lm(branch$declination~branch$order)
+plot(branch$order, branch$declination, cex = 1.5, ylim = c(-10,100),
+     ylab = "branch angle", xlab = "branch order", 
+     main = round(summary(order_declination[[7]])$r.squared, digits = 3))
+
 
 order_dec_r <- vector(length = 7)
 for (i in 1:7){ order_dec_r[i] = summary(order_declination[[i]])$r.squared }
@@ -105,18 +142,25 @@ for (i in 1:7){ order_dec_r[i] = summary(order_declination[[i]])$r.squared }
 #plot(log(diameter), log(rank))
 apple_trees <- c(3,5,4,13,15,14)
 diameter_rank <- list()
-par(mfrow=c(3,3))
+par(mfrow=c(2,2))
 for (j in 1:6){
   spp <- data[data$species=="apple",]
   tree <- spp[spp$tree==apple_trees[j],]
   branch <- tree[tree$parent_dist==0,]
-  plot(log(branch$diameter_mm), log(branch$rank))
   diameter_rank[[j]] <- lm(log(branch$rank)~log(branch$diameter_mm))
+  plot(log(branch$diameter_mm), log(branch$rank), cex = 1.5, ylim = c(2,8), xlim = c(2,6),
+       ylab = "log ( no. supported twigs )", xlab = "log ( branch diameter )", 
+       main = paste(round(summary(diameter_rank[[j]])$r.squared, digits = 3), ",",
+                    round(summary(diameter_rank[[j]])$coef[2,1], digits = 2)))
+
 }
 tree <- data[data$species=="cherry",]
 branch <- tree[tree$parent_dist==0,]
-plot(log(branch$diameter_mm), log(branch$rank))
 diameter_rank[[7]] <- lm(log(branch$rank)~log(branch$diameter_mm))
+plot(log(branch$diameter_mm), log(branch$rank), cex = 1.25, ylim = c(2,8), xlim = c(2,6),
+     ylab = "log ( no. supported twigs )", xlab = "log ( branch diameter )", 
+     main = paste(round(summary(diameter_rank[[7]])$r.squared, digits = 3), ",",
+                  round(summary(diameter_rank[[7]])$coef[2,1], digits = 2)))
 
 diameter_rank_r <- vector(length = 7)
 for (i in 1:7){ diameter_rank_r[i] = summary(diameter_rank[[i]])$r.squared }
