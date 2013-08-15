@@ -114,53 +114,59 @@ branch <- tree[tree$parent_dist==0,]
 hist(branch$bearing, breaks=20, freq=F, xlim=c(0,360))
 #####
 
-#plot(order, declination)                              S!
+#plot(order, declination)                            S!
 apple_trees <- c(3,5,4,13,15,14)
 order_declination <- list()
-par(mfrow=c(2,2))
+par(mfrow=c(2,2), ps = 28, pch= 19)
 for (j in 1:6){
   spp <- data[data$species=="apple",]
   tree <- spp[spp$tree==apple_trees[j],]
   branch <- tree[tree$parent_dist==0,]
   order_declination[[j]] <- lm(branch$declination~branch$order)
-  plot(branch$order, branch$declination, cex = 1.5, ylim = c(-10,100),
+  plot(branch$order, branch$declination, cex = 2, ylim = c(-10,100),
        ylab = "branch angle", xlab = "branch order", 
        main = round(summary(order_declination[[j]])$r.squared, digits = 3))
+  abline(a = summary(order_declination[[j]])$coef[1,1], 
+         b = summary(order_declination[[j]])$coef[2,1], lwd = 3, lty = 3)
 }
 tree <- data[data$species=="cherry",]
 branch <- tree[tree$parent_dist==0,]
 order_declination[[7]] <- lm(branch$declination~branch$order)
-plot(branch$order, branch$declination, cex = 1.5, ylim = c(-10,100),
+plot(branch$order, branch$declination, cex = 2, ylim = c(-10,100),
      ylab = "branch angle", xlab = "branch order", 
      main = round(summary(order_declination[[7]])$r.squared, digits = 3))
+abline(a = summary(order_declination[[7]])$coef[1,1], 
+       b = summary(order_declination[[7]])$coef[2,1], lwd = 3, lty = 3)
 
 
 order_dec_r <- vector(length = 7)
 for (i in 1:7){ order_dec_r[i] = summary(order_declination[[i]])$r.squared }
 #####
 
-#plot(log(diameter), log(rank))
+#plot(log(diameter), log(rank))                       S!
 apple_trees <- c(3,5,4,13,15,14)
 diameter_rank <- list()
-par(mfrow=c(2,2))
+par(mfrow=c(2,2), ps = 28, pch= 19)
 for (j in 1:6){
   spp <- data[data$species=="apple",]
   tree <- spp[spp$tree==apple_trees[j],]
   branch <- tree[tree$parent_dist==0,]
   diameter_rank[[j]] <- lm(log(branch$rank)~log(branch$diameter_mm))
-  plot(log(branch$diameter_mm), log(branch$rank), cex = 1.5, ylim = c(2,8), xlim = c(2,6),
+  plot(log(branch$diameter_mm), log(branch$rank), cex = 2, ylim = c(2,8), xlim = c(2,6),
        ylab = "log ( no. supported twigs )", xlab = "log ( branch diameter )", 
        main = paste(round(summary(diameter_rank[[j]])$r.squared, digits = 3), ",",
                     round(summary(diameter_rank[[j]])$coef[2,1], digits = 2)))
+  abline(a = summary(diameter_rank[[j]])$coef[1,1], b = summary(diameter_rank[[j]])$coef[2,1], lwd = 3, lty = 3)
 
 }
 tree <- data[data$species=="cherry",]
 branch <- tree[tree$parent_dist==0,]
 diameter_rank[[7]] <- lm(log(branch$rank)~log(branch$diameter_mm))
-plot(log(branch$diameter_mm), log(branch$rank), cex = 1.25, ylim = c(2,8), xlim = c(2,6),
+plot(log(branch$diameter_mm), log(branch$rank), cex = 2, ylim = c(2,8), xlim = c(2,6),
      ylab = "log ( no. supported twigs )", xlab = "log ( branch diameter )", 
      main = paste(round(summary(diameter_rank[[7]])$r.squared, digits = 3), ",",
                   round(summary(diameter_rank[[7]])$coef[2,1], digits = 2)))
+abline(a = summary(diameter_rank[[7]])$coef[1,1], b = summary(diameter_rank[[7]])$coef[2,1], lwd = 3, lty = 3)
 
 diameter_rank_r <- vector(length = 7)
 for (i in 1:7){ diameter_rank_r[i] = summary(diameter_rank[[i]])$r.squared }
