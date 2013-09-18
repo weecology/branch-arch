@@ -1,0 +1,49 @@
+LAI <- read.table("LAISummary.txt", sep = "\t", head = T)
+Volumes <- read.csv("VolumeEstimates.csv", sep = ",", head = F)
+Canopies <- read.csv("CanopyVolume.csv", sep = ",", head = T)
+sp_Can <- Canopies[Canopies$species=="cherry",]
+
+###Avg LAI per tree
+avgLAI <- matrix(nrow = 15, ncol = 2)
+for (i in 1:15){
+	ind <- LAI[as.numeric(LAI$Rspns1)==i,]
+	avgLAI[i,1] = i
+	avgLAI[i,2] = mean(ind$LAI)
+}
+	
+plot(Volumes[,3], avgLAI[,2]) #NS
+volume_LAI <- lm(avgLAI[,2]~Volumes[,3])
+
+###tree height
+height <- vector(length = 15)
+for (i in 1:15){
+	ind <- sp_Can[sp_Can$tree==i,]
+	location <- ind[ind$location==4,]
+	height[i] = as.numeric(subset(location, position=="mh", select = m))
+}
+
+plot(height, avgLAI[,2]) #NS
+height_LAI <- lm(avgLAI[,2]~height)
+
+###Distance
+quadrant <- matrix(nrow = 30, ncol = 5)
+for (i in 1:15){
+	ind_Can <- sp_Can[sp_Can$tree==i,]
+	ind_LAI <- LAI[as.numeric(LAI$Rspns1)==i,]
+	loc_Can <- ind_Can[ind_Can$location==4,]
+
+	quadrant[(2*i-1),1] = i
+	quadrant[(2*i-1),2] = "north"
+	quadrant[(2*i-1),3] = as.numeric(subset(loc_Can, position=="nh", select = m))
+	quadrant[(2*i-1),4] = as.numeric(subset(loc_Can, position=="nd", select = m))
+	quadrant[(2*i-1),5] = as.numeric(subset(ind_LAI, Rspns2=="11", select = LAI))
+
+	quadrant[(2*i),1] = i
+	quadrant[(2*i),2] = "south"
+	quadrant[(2*i),3] = as.numeric(subset(loc_Can, position=="sh", select = m))
+	quadrant[(2*i),4] = as.numeric(subset(loc_Can, position=="sd", select = m))
+	quadrant[(2*i),5] = as.numeric(subset(ind_LAI, Rspns2=="31", select = LAI))
+}	
+
+
+
