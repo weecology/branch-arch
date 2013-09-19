@@ -26,10 +26,16 @@ cherry_trees <- c(1,7,10,15)
 spp <- data[data$species=="cherry",]
 
 #Sum mass
-sum_mass <- matrix(nrow = 389, ncol = 3)
-
-
-
+for (i in 1:4){
+	ind <- spp[spp$tree==cherry_trees[i],]
+	subout = data.frame(tree = ind$tree, branch = ind$branch, tot_stem_m = 0)
+	for (j in 1:length(ind[,1])){
+    		subout$tot_stem_m[j] = sum_mass(ind$branch[j])
+  	}
+  	for (i in 1:length(ind[,1])){
+      	subout$order[i] = tree$order[parent]+1
+	}
+}
 
 #Mass Fraction
 mass_fractions <- matrix(ncol=6, nrow=4)
