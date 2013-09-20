@@ -1,6 +1,16 @@
 data <- read.csv("BranchSegments.csv", sep=',', head=T)
 
-sum_mass <- function(start_node){
+sum_up_mass <- function(start_nodes){
+  total_mass = total_mass + sum(subdata$stem_m[start_nodes])
+  daughters <- subdata[subdata$parent==c(start_nodes[[1]]),]
+	if (length(daughters[,1]) > 0){
+    total_mass + sum(daughters$stem_m)
+    return(sum_up_mass(daughters$branch))}
+	else
+		return(total_mass)
+}
+
+sum_down_mass <- function(start_node){
 	twig <- subdata[subdata$branch==start_node,]
 	total_mass = total_mass + as.numeric(as.character(twig$stem_m))
 	if (twig$parent==0)
@@ -28,13 +38,16 @@ spp <- data[data$species=="cherry",]
 #Sum mass
 for (i in 1:4){
 	ind <- spp[spp$tree==cherry_trees[i],]
-	subout = data.frame(tree = ind$tree, branch = ind$branch, tot_stem_m = 0)
-	for (j in 1:length(ind[,1])){
-    		subout$tot_stem_m[j] = sum_mass(ind$branch[j])
-  	}
-  	for (i in 1:length(ind[,1])){
-      	subout$order[i] = tree$order[parent]+1
-	}
+  subdata <- ind[-1,]
+	subout = data.frame(tree = subdata$tree, branch = subdata$branch, tot_stem_m = 0)
+	for (j in 1:length(subdata[,1])){
+        total_mass = 0
+    		subout$tot_stem_m[j] = sum_up_mass(list(j))
+  }
+  if (exists('trees_out'))
+      trees_out = rbind(trees_out, subout)
+  else
+      trees_out <- subout
 }
 
 #Mass Fraction
