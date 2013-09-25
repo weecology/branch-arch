@@ -1,6 +1,7 @@
 ###This file summarizes data for the Branching Architecture analysis.
 
 data <- read.csv("TreeReconstruction.csv", sep = ',', header = T)
+branch <- read.csv("BranchSegments.csv", sep = ',', header = T)
 
 #branch twig no.
 apple_trees <- c(3,5,4,13,15,14)
@@ -144,6 +145,32 @@ for (i in 1:7){ order_dec_r[i] = summary(order_declination[[i]])$r.squared }
 #####
 
 #plot(log(diameter), log(rank))                       S!
+diameter_ranks <- lm(log(data$rank)~log(data$diameter_mm))
+plot(log(data$diameter_mm), log(data$rank), xlab="log ( Diameter )", ylab="log ( Rank )", 
+     main = round(summary(diameter_rank)$r.squared, digits = 3), ps = 28, pch= 19, cex.lab=1.5)
+abline(summary(diameter_ranks)$coef[1,1], summary(diameter_ranks)$coef[2,1], lwd = 3, lty = 3)
+
+#same graph
+tree <- data[data$species=="cherry",]
+branch <- tree[tree$parent_dist==0,]
+par(ps = 28, pch= 19)
+plot(log(branch$diameter_mm), log(branch$rank), cex = 2, ylim = c(2,8), xlim = c(2,6),
+     ylab = "log ( Rank )", xlab = "log ( Diameter )",
+     main = round(summary(diameter_ranks)$r.squared, digits = 3), ps = 28, pch= 19)
+abline(summary(diameter_ranks)$coef[1,1], summary(diameter_ranks)$coef[2,1], lwd = 3, lty = 3)
+apple_trees <- c(3,5,4,13,15,14)
+colors <- c( "lightyellow", "yellow", "orange", "red", "darkred", "maroon") 
+for (j in 1:6){
+  spp <- data[data$species=="apple",]
+  tree <- spp[spp$tree==apple_trees[j],]
+  branch <- tree[tree$parent_dist==0,]
+  diameter_rank[[j]] <- lm(log(branch$rank)~log(branch$diameter_mm))
+  par(new = T)
+  color = heat.colors(j*2)
+  points(log(branch$diameter_mm), log(branch$rank), cex = 2, col = colors[j])
+}
+
+#separate graphs
 apple_trees <- c(3,5,4,13,15,14)
 diameter_rank <- list()
 par(mfrow=c(2,2), ps = 28, pch= 19)
@@ -152,12 +179,12 @@ for (j in 1:6){
   tree <- spp[spp$tree==apple_trees[j],]
   branch <- tree[tree$parent_dist==0,]
   diameter_rank[[j]] <- lm(log(branch$rank)~log(branch$diameter_mm))
-  plot(log(branch$diameter_mm), log(branch$rank), cex = 2, ylim = c(2,8), xlim = c(2,6),
+  par(new = T)
+  plot(log(branch$diameter_mm), log(branch$rank), cex = 2, ylim = c(2,8), xlim = c(2,6), 
        ylab = "log ( no. supported twigs )", xlab = "log ( branch diameter )", 
        main = paste(round(summary(diameter_rank[[j]])$r.squared, digits = 3), ",",
                     round(summary(diameter_rank[[j]])$coef[2,1], digits = 2)))
   abline(a = summary(diameter_rank[[j]])$coef[1,1], b = summary(diameter_rank[[j]])$coef[2,1], lwd = 3, lty = 3)
-
 }
 tree <- data[data$species=="cherry",]
 branch <- tree[tree$parent_dist==0,]
@@ -170,9 +197,32 @@ abline(a = summary(diameter_rank[[7]])$coef[1,1], b = summary(diameter_rank[[7]]
 
 diameter_rank_r <- vector(length = 7)
 for (i in 1:7){ diameter_rank_r[i] = summary(diameter_rank[[i]])$r.squared }
+
 #####
 plot(log(branches$diameter_mm), log(branches$rank)) #S!
 rank_v_diameter <- lm(log(branches$rank)~log(branches$diameter_mm))
+
+#plot(log(diameter), log(tot_stem_m))                       S!
+spp <- branch[branch$species=="cherry",]
+masses <- spp[spp$stem_m > 0,]
+diameter_masses <- lm(log(masses$stem_m)~log(masses$diameter_mm))
+diameter_mass <- list()
+
+ind <- masses[masses$tree==15,]
+par(ps = 28, pch= 19)
+plot(log(ind$diameter_mm), log(ind$stem_m), cex = 2, ylim = c(0,14), xlim = c(0,6),
+     col = "darkred", ylab = "log ( Stem Mass )", xlab = "log ( Diameter )",
+     main = round(summary(diameter_masses)$r.squared, digits = 3), ps = 28, pch= 19)
+abline(summary(diameter_masses)$coef[1,1], summary(diameter_masses)$coef[2,1], lwd = 3, lty = 3)
+cherry_trees <- c(1,10,7)
+colors <- c("maroon", "red", "orange") 
+for (j in 1:3){
+  ind <- masses[masses$tree==cherry_trees[j],]
+  diameter_mass[[j]] <- lm(log(ind$stem_m)~log(ind$diameter_mm))
+  par(new = T)
+  points(log(ind$diameter_mm), log(ind$stem_m), cex = 2, col = colors[j])
+}
+
 
 ##Branching Ratio
 #all  

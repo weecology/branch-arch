@@ -1,4 +1,4 @@
-data <- read.csv("BranchSegment.csv", sep=',', head=T)
+data <- read.csv("BranchSegments.csv", sep=',', head=T)
 
 cherry_trees <- c(1,7,10,15)
 
