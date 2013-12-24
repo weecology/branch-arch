@@ -153,21 +153,24 @@ abline(summary(diameter_ranks)$coef[1,1], summary(diameter_ranks)$coef[2,1], lwd
 #same graph
 tree <- data[data$species=="cherry",]
 branch <- tree[tree$parent_dist==0,]
-par(ps = 28, pch= 19)
-plot(log(branch$diameter_mm), log(branch$rank), cex = 2, ylim = c(2,8), xlim = c(2,6),
-     ylab = "log ( Rank )", xlab = "log ( Diameter )",
-     main = round(summary(diameter_ranks)$r.squared, digits = 3), ps = 28, pch= 19)
+par(ps = 28, pch= 19, mar = c(5,5,4,2))
+colors <- heat.colors(8, alpha = 1)
+plot(log(branch$diameter_mm), log(branch$rank), cex = 2, ylim = c(0,8), xlim = c(0,8),
+     ylab = "log ( Rank )", xlab = "log ( Diameter )", col = colors[4])
+     #main = round(summary(diameter_ranks)$r.squared, digits = 3), ps = 28, pch= 19)
+legend('topleft', legend=expression(R^2 == 0.928), bty='n')
 abline(summary(diameter_ranks)$coef[1,1], summary(diameter_ranks)$coef[2,1], lwd = 3, lty = 3)
 apple_trees <- c(3,5,4,13,15,14)
-colors <- c( "lightyellow", "yellow", "orange", "red", "darkred", "maroon") 
+diameter_rank <- list()
+colors <- terrain.colors(14, alpha = 1)
 for (j in 1:6){
   spp <- data[data$species=="apple",]
-  tree <- spp[spp$tree==apple_trees[j],]
+  tree <- spp[spp$tree==apple_trees[(7-j)],]
   branch <- tree[tree$parent_dist==0,]
   diameter_rank[[j]] <- lm(log(branch$rank)~log(branch$diameter_mm))
   par(new = T)
   color = heat.colors(j*2)
-  points(log(branch$diameter_mm), log(branch$rank), cex = 2, col = colors[j])
+  points(log(branch$diameter_mm), log(branch$rank), cex = 1.8, pch = 23, bg = colors[j], col = colors[j])
 }
 
 #separate graphs
@@ -207,20 +210,22 @@ spp <- branch[branch$species=="cherry",]
 masses <- spp[spp$stem_m > 0,]
 diameter_masses <- lm(log(masses$stem_m)~log(masses$diameter_mm))
 diameter_mass <- list()
+colors <- heat.colors(8, alpha = 1)
 
 ind <- masses[masses$tree==15,]
 par(ps = 28, pch= 19)
-plot(log(ind$diameter_mm), log(ind$stem_m), cex = 2, ylim = c(0,14), xlim = c(0,6),
-     col = "darkred", ylab = "log ( Stem Mass )", xlab = "log ( Diameter )",
-     main = round(summary(diameter_masses)$r.squared, digits = 3), ps = 28, pch= 19)
+plot(log(ind$diameter_mm), log(ind$stem_m), cex = 2, ylim = c(0,12), xlim = c(0,5.5),
+     col = colors[3], ylab = "log ( Stem Mass )", xlab = "log ( Diameter )")
+     #main = round(summary(diameter_masses)$r.squared, digits = 3), ps = 28, pch= 19)
+legend('topleft', legend=expression(R^2 == 0.858), bty='n')
 abline(summary(diameter_masses)$coef[1,1], summary(diameter_masses)$coef[2,1], lwd = 3, lty = 3)
+abline(0, 2.667, lwd = 3, lty = 1)
 cherry_trees <- c(1,10,7)
-colors <- c("maroon", "red", "orange") 
 for (j in 1:3){
   ind <- masses[masses$tree==cherry_trees[j],]
   diameter_mass[[j]] <- lm(log(ind$stem_m)~log(ind$diameter_mm))
   par(new = T)
-  points(log(ind$diameter_mm), log(ind$stem_m), cex = 2, col = colors[j])
+  points(log(ind$diameter_mm), log(ind$stem_m), cex = 2, col = colors[(3+j)])
 }
 
 
