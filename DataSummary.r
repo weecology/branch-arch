@@ -206,6 +206,9 @@ plot(log(branches$diameter_mm), log(branches$rank)) #S!
 rank_v_diameter <- lm(log(branches$rank)~log(branches$diameter_mm))
 
 #plot(log(diameter), log(tot_stem_m))                       S!
+masses <- branch[branch$stem_m > 0,]
+diameter_masses <- lm(log(masses$stem_m)~log(masses$diameter_mm))
+
 spp <- branch[branch$species=="cherry",]
 masses <- spp[spp$stem_m > 0,]
 diameter_masses <- lm(log(masses$stem_m)~log(masses$diameter_mm))
@@ -217,17 +220,38 @@ par(ps = 28, pch= 19)
 plot(log(ind$diameter_mm), log(ind$stem_m), cex = 2, ylim = c(0,12), xlim = c(0,5.5),
      col = colors[3], ylab = "log ( Stem Mass )", xlab = "log ( Diameter )")
      #main = round(summary(diameter_masses)$r.squared, digits = 3), ps = 28, pch= 19)
-legend('topleft', legend=expression(R^2 == 0.858), bty='n')
+legend('topleft', legend=expression(R^2 == 0.792), bty='n')
 abline(summary(diameter_masses)$coef[1,1], summary(diameter_masses)$coef[2,1], lwd = 3, lty = 3)
 abline(0, 2.667, lwd = 3, lty = 1)
-cherry_trees <- c(1,10,7)
-for (j in 1:3){
+cherry_trees <- c(1,10,13,7)
+for (j in 1:4){
   ind <- masses[masses$tree==cherry_trees[j],]
   diameter_mass[[j]] <- lm(log(ind$stem_m)~log(ind$diameter_mm))
   par(new = T)
   points(log(ind$diameter_mm), log(ind$stem_m), cex = 2, col = colors[(3+j)])
 }
 
+spp <- branch[branch$species=="apple",]
+masses <- spp[spp$stem_m > 0,]
+diameter_masses <- lm(log(masses$stem_m)~log(masses$diameter_mm))
+diameter_mass <- list()
+colors <- heat.colors(8, alpha = 1)
+
+ind <- masses[masses$tree==20,]
+par(ps = 28, pch= 19)
+plot(log(ind$diameter_mm), log(ind$stem_m), cex = 2, ylim = c(0,12), xlim = c(0,5.5),
+     col = colors[3], ylab = "log ( Stem Mass )", xlab = "log ( Diameter )")
+#main = round(summary(diameter_masses)$r.squared, digits = 3), ps = 28, pch= 19)
+legend('topleft', legend=expression(R^2 == 0.573), bty='n')
+abline(summary(diameter_masses)$coef[1,1], summary(diameter_masses)$coef[2,1], lwd = 3, lty = 3)
+abline(0, 2.667, lwd = 3, lty = 1)
+cherry_trees <- c(19,18,17,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)
+for (j in 1:18){
+  ind <- masses[masses$tree==cherry_trees[j],]
+  diameter_mass[[j]] <- lm(log(ind$stem_m)~log(ind$diameter_mm))
+  par(new = T)
+  points(log(ind$diameter_mm), log(ind$stem_m), cex = 2, col = colors[(3+j)])
+}
 
 ##Branching Ratio
 #all  
