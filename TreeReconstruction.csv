@@ -1,4 +1,4 @@
-species,tree,branch,parent,order,bearing,declination,length_cm,diameter_mm,angle,parent_dist,spur,rank
+species,tree,branch,parent,order,bearing,declination,length_cm,diameter_mm,angle,parent_dist,spur,rank_twig
 apple,0,1,0,1,0,90,100,100,,0,N,1
 apple,0,2,1,1,0,90,80,80,,0,N,1
 apple,0,3,2,1,0,90,60,60,,0,N,1
