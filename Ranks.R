@@ -1,13 +1,12 @@
-data <- read.csv("TreeReconstruction.csv", sep=',', head=T)
+data <- read.csv("BranchSegments.csv", sep=',', head=T)
 
-apple_trees <- c(3,4,5,13,14,15)
+cherry_trees <- c(1,7,10,13,15)
+apple_trees <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20)
 
 spp <- data[data$species=="apple",]
-for (j in 1:7){
-  if (j==7)
-    tree <- data[data$species=="cherry",]
-  else
-    tree <- spp[spp$tree==apple_trees[j],]
+for (j in 3:3){
+
+  tree <- spp[spp$tree==apple_trees[3],]
 
   n = tree$branch #branch ID
   a = tree$parent #attachment ID (parent)
@@ -16,7 +15,7 @@ for (j in 1:7){
   r = 0
   
   tree_config = data.frame(n=n,a=a,r=r) #define the tree
-  twg=stack(tree_config[,1:2]) #put node and attach together
+  twg=stack(tree_config[,1:2]) #put node and attach togetherspp
   twg=unique(twg$values,fromLast=T) #find unique numbers. Starting from the last effectively cuts out parent node numbers from the "node" side. Zero marks the differnce between node and attaches
   cut=which(twg==0) #find the position of the zero
   prnt=twg[(cut+1):length(twg)] #parents after the zero
