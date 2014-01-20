@@ -283,6 +283,32 @@ for (i in trees){
 }
 
 ##Twigs Summary for 15
+apple_trees <- c(3,4,5,13,14,15)
+spp <- data[data$species=='apple',]
+for (i in 1:6){
+  ind <- spp[spp$tree==apple_trees[i],]
+  ind_branch <- ind[ind$parent_dist==0,]
+  ind_twig <- ind[ind$parent_dist!=0,]
+  subout <- matrix(ncol = 6, nrow = length(ind_branch[,1]))
+  for (j in 1:length(ind_branch[,1])){
+    sub_twig <- ind_twig[ind_twig$parent==j,]
+    subout[j,1] = 'apple'
+    subout[j,2] = apple_trees[i]
+    subout[j,3] = j
+    subout[j,5] = length(sub_twig[sub_twig$spur=='Y',][,1]) #spurs
+    subout[j,6] = length(sub_twig[sub_twig$length_cm==0,][,1]) #scars
+    subout[j,4] = length(sub_twig[,1])-(as.numeric(subout[j,5]) +
+                                        as.numeric(subout[j,6])) #twigs
+  }
+  if (i==1)
+    summary_twigs <- subout
+  else
+    summary_twigs = rbind(summary_twigs, subout)
+}
+
+write.csv(summary_twigs,"TwigSummary.csv")
+
+### old cherry 15 ### NEEDS UPDATE
 branches15 <- length(branch[branch$tree==15,][,1])
 summary_twigs <- matrix(ncol=4, nrow=(branches15-1))
 for (i in 1:(branches15-1)){
