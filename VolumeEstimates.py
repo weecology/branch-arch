@@ -32,49 +32,57 @@ def output_data(file_out, data_array):
     
 if __name__ == '__main__':    
     data = import_data('CanopyVolume.csv', 
-                       ['i8','i8','S5','f8','f8','i8'])
+                       ['S6','i8','i8','S5','f8','f8','i8'])
     
     locations = [2,4,6]
-    volumes = []
+    volumes = [['species','tree', 'height', 'triangles', 'center_r', 'avg_r', 'avg_volume']]
     radii = []
     
-    for i in set(data['tree']):
-        tree = data[data['tree']==i]
+    for s in set(data['species']):
+	spp = data[data['species']==s]
 	
-	xyz = [[],[],[]]
-	coordinates = []
-	radius = []
-	area = []
-        for j in locations:
-            location = tree[tree['location']==j]
-            high = round(location[location['position']=='mh'][0][3],3)
-            low = round(location[location['position']=='ml'][0][3],3)
-            north = round(location[location['position']=='nd'][0][3],3)
-            south = round(location[location['position']=='sd'][0][3],3)
-	    r = (high+low)/2
-	    if j == 4:
-		center = [j,0,(r+low),r]
-            xyz[0].append([j,j,j,j,j])
-	    xyz[1].append([0,-south,0,north,0])
-	    xyz[2].append([low,(r+low),high,(r+low),low])
-	    coordinates.extend([[j,0,low],[j,-south,(r+low)],[j,0,high],[j,north,(r+low)]])
-	    area.extend([(high-low)*north/2 + (high-low*south/2)])
-	    radius.append(r)
-	
-	euclidians = []
-	for coord in coordinates:
-	    euclidians.extend([m.sqrt((coord[0]-center[0])**2+
-	                             (coord[1]-center[1])**2+
-	                             (coord[2]-center[2])**2)])
-	volumes.append([i, 
-	                area[0]+2*area[1]+area[2],                               #triangles
-	                4*m.pi*center[3]**3/3,                                   #radius of center
-	                4*m.pi*(sum(euclidians)/len(euclidians))**3/3])          #average radius of all points-center
+	for i in set(spp['tree']):
+	    tree = spp[spp['tree']==i]
+	    
+	    xyz = [[],[],[]]
+	    coordinates = []
+	    radius = []
+	    area = []
+	    for j in locations:
+		location = tree[tree['location']==j]
+		high = round(location[location['position']=='mh'][0][4],3)
+		low = round(location[location['position']=='ml'][0][4],3)
+		if s == 'cherry':
+		    north = round(location[location['position']=='nd'][0][4],3)
+		    south = round(location[location['position']=='sd'][0][4],3)
+		else:
+		    north = round(location[location['position']=='ed'][0][4],3)
+		    south = round(location[location['position']=='wd'][0][4],3)
+		r = (high+low)/2
+		if j == 4:
+		    center = [j,0,(r+low),r]
+		    height = round(location[location['position']=='mh'][0][4],3)
+		xyz[0].append([j,j,j,j,j])
+		xyz[1].append([0,-south,0,north,0])
+		xyz[2].append([low,(r+low),high,(r+low),low])
+		coordinates.extend([[j,0,low],[j,-south,(r+low)],[j,0,high],[j,north,(r+low)]])
+		area.extend([(high-low)*north/2 + (high-low*south/2)])
+		radius.append(r)
+	    
+	    euclidians = []
+	    for coord in coordinates:
+		euclidians.extend([m.sqrt((coord[0]-center[0])**2+
+		                         (coord[1]-center[1])**2+
+		                         (coord[2]-center[2])**2)])
+	    volumes.append([s,i, height, 
+		            area[0]+2*area[1]+area[2],                               #triangles
+		            4*m.pi*center[3]**3/3,                                   #radius of center
+		            4*m.pi*(sum(euclidians)/len(euclidians))**3/3])          #average radius of all points-center
 	
 	#make_plot(xyz[0], xyz[1], xyz[2])
 	
-    for v in range(0,(len(volumes))):
-	volumes[v].extend([sum(volumes[v][1:4])/3])
+    for v in range(1,(len(volumes))):
+	volumes[v].extend([sum(volumes[v][3:5])/3])
 	    
         
             
