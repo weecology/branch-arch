@@ -1,4 +1,5 @@
 # This script summarizes individual tree-level data.
+
 data <- read.csv("BranchSegments.csv", sep = ",", head=T)
 volume <- read.csv("VolumeEstimates.csv", sep=",", head=T)
 
@@ -15,10 +16,10 @@ species <- list(list("apple",
 for (i in 1:2){
   spp <- data[data$species==species[[i]][1],]
   spp_volume <- volume[volume$species==species[[i]][1],]
-  subout <- matrix(ncol = 12, nrow = length(species[[i]][[2]]))
+  subout <- matrix(ncol = 13, nrow = length(species[[i]][[2]]))
   colnames(subout) <- c("species", "tree", "rootstock", "trunk_diam", "height", "canopy_volume",
                        "tot_stem_m", "tot_twig_m", "tot_leaf_m", 
-                       "tot_no_branch", "tot_no_twigs", "tot_no_scars")
+                       "tot_no_branch", "tot_no_twigs", "tot_no_spurs", "tot_no_scars")
   
   for (j in 1:length(species[[i]][[2]])){
     ind <- spp[spp$tree==species[[i]][[2]][j],]
@@ -40,6 +41,9 @@ for (i in 1:2){
     subout[j,8]  = sum(ind$twig_m, na.rm = T)
     subout[j,9]  = sum(ind$leaf_m, na.rm = T)
     subout[j,10] = length(ind$branch)
+    subout[j,11]  = sum(ind$no_twigs, na.rm = T)
+    subout[j,12]  = sum(ind$no_spurs, na.rm = T)
+    subout[j,13]  = sum(ind$no_scars, na.rm = T)
     
   if (i==1)
     trees_temp <- subout
@@ -48,6 +52,8 @@ for (i in 1:2){
   }
 }
  
+write.csv(trees_out,"TreeSummary.csv")
+
 Diameter_Mass <- lm(log(as.numeric(trees_out[,7]))~log(as.numeric(trees_out[,4])))
 plot(log(as.numeric(trees_out[,4])), log(as.numeric(trees_out[,7])), xlim = c(0,6), ylim = c(0,12),
      xlab = "log ( Trunk Diameter  )", ylab = "log ( Total Stem Mass )")
