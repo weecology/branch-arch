@@ -1,5 +1,6 @@
 # This script summarizes individual tree-level data.
 data <- read.csv("BranchSegments.csv", sep = ",", head=T)
+volume <- read.csv("VolumeEstimates.csv", sep=",", head=T)
 
 species <- list(list("apple",
                      c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20),
@@ -13,6 +14,7 @@ species <- list(list("apple",
 
 for (i in 1:2){
   spp <- data[data$species==species[[i]][1],]
+  spp_volume <- volume[volume$species==species[[i]][1],]
   subout <- matrix(ncol = 12, nrow = length(species[[i]][[2]]))
   colnames(subout) <- c("species", "tree", "rootstock", "trunk_diam", "height", "canopy_volume",
                        "tot_stem_m", "tot_twig_m", "tot_leaf_m", 
@@ -20,6 +22,7 @@ for (i in 1:2){
   
   for (j in 1:length(species[[i]][[2]])){
     ind <- spp[spp$tree==species[[i]][[2]][j],]
+    ind_volume <- spp_volume[spp_volume$tree==species[[i]][[2]][j],]
     trunk <- ind[ind$branch==1,] 
     
     subout[j,1] = species[[i]][[1]]
@@ -30,10 +33,13 @@ for (i in 1:2){
     else
       subout[j,3] = species[[i]][[3]][1]
     
-    subout[j,4] = trunk$diameter_mm
-    
-    
-    subout[j,7] = sum(ind$stem_m, na.rm = T)
+    subout[j,4]  = trunk$diameter_mm
+    subout[j,5]  = round(ind_volume$height, digits = 1)
+    subout[j,6]  = round(ind_volume$avg_r, digits = 1)
+    subout[j,7]  = sum(ind$stem_m, na.rm = T)
+    subout[j,8]  = sum(ind$twig_m, na.rm = T)
+    subout[j,9]  = sum(ind$leaf_m, na.rm = T)
+    subout[j,10] = length(ind$branch)
     
   if (i==1)
     trees_temp <- subout
