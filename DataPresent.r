@@ -72,11 +72,11 @@ treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
 
 Diameter_Mass <- lm(log(treesum$tot_stem_m)~log(treesum$trunk_diam))
 plot(log(treesum$trunk_diam[1:19]), log(treesum$tot_stem_m[1:19]), xlim = c(0,6), ylim = c(0,12),
-     xlab = "log ( Trunk Diameter  )", ylab = "log ( Total Stem Mass )", cex = 2, pch = 19, col = "black")
-points(log(treesum$trunk_diam[20:24]), log(treesum$tot_stem_m[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
+     xlab = "log ( Trunk Diameter  )", ylab = "log ( Total Stem Mass )", cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
+points(log(treesum$trunk_diam[20:24]), log(treesum$tot_stem_m[20:24]), cex = 2.5, pch = 19, col = "red", bg = "red")
 abline(summary(Diameter_Mass)$coef[1,1], summary(Diameter_Mass)$coef[2,1], lwd = 3, lty = 3)
 abline(0, 2.667, lwd = 3, lty = 1)
-legend('topleft', legend=expression(R^2 == 0.975), bty='n', cex=3)
+legend('bottomright', legend=expression(R^2 == 0.975), bty='n', cex=3)
 
 #trunk diameter vs. height
 
@@ -146,32 +146,35 @@ legend('topleft', legend=expression(R^2 == 0.790), bty='n', cex=3)
 
 ### Yield
 
-Diameter_Yield <- lm(log(data$yield[1:19])~log(data$trunk_diam[1:19]))
-plot(log(data$trunk_diam[1:19]), log(data$yield[1:19]), #xlim = c(0,6), ylim = c(0,12),
-     xlab = "log ( Trunk Diameter  )", ylab = "log ( Yield )")
-abline(summary(Diameter_Mass)$coef[1,1], summary(Diameter_Mass)$coef[2,1], lwd = 3, lty = 3)
-abline(0, 2.667, lwd = 3, lty = 1)
-legend('topleft', legend=expression(R^2 == 0.193), bty='n', cex=3)
-
-Diameter_Fruit <- lm(log(data$no_fruit[1:19])~log(data$trunk_diam[1:19]))
-plot(log(data$trunk_diam[1:19]), log(data$no_fruit[1:19]), #xlim = c(0,6), ylim = c(0,12),
-     xlab = "log ( Trunk Diameter  )", ylab = "log ( No. of Fruit )")
-abline(summary(Diameter_Mass)$coef[1,1], summary(Diameter_Mass)$coef[2,1], lwd = 3, lty = 3)
-abline(0, 2.667, lwd = 3, lty = 1)
-legend('topleft', legend=expression(R^2 == 0.278), bty='n', cex=3)
+Diameter_Yield <- lm(log(treesum$yield[1:19])~log(treesum$trunk_diam[1:19]))
+plot(log(treesum$trunk_diam[1:19]), log(treesum$yield[1:19]), #xlim = c(0,6), ylim = c(0,12),
+     xlab = "log ( Trunk Diameter  )", ylab = "log ( Yield )", cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
+abline(summary(Diameter_Yield)$coef[1,1], summary(Diameter_Yield)$coef[2,1], lwd = 3, lty = 3)
+legend('bottomleft', legend=expression(R^2 == 0.193), bty='n', cex=3)
 
 
-Spurs_Yield <- lm(data$yield[1:19])~data$tot_no_spurs[1:19]))
-plot(data$tot_no_spurs[1:19], data$yield[1:19], #xlim = c(0,6), ylim = c(0,12),
-     xlab = "log ( Spurs )", ylab = "log ( Yield )")
-abline(summary(Diameter_Mass)$coef[1,1], summary(Diameter_Mass)$coef[2,1], lwd = 3, lty = 3)
-abline(0, 2.667, lwd = 3, lty = 1)
-legend('topleft', legend=expression(R^2 == 0.193), bty='n', cex=3)
+Spurs_Yield <- lm(treesum$yield[1:19]~(treesum$tot_no_scars[1:19]/treesum$tot_no_spurs[1:19]))
+plot(treesum$tot_no_scars[1:19]/treesum$tot_no_spurs[1:19], treesum$yield[1:19], #xlim = c(0,6), ylim = c(0,12),
+     xlab = "log ( Scars / Spurs )", ylab = "log ( Yield )")
+#abline(summary(Spurs_Yield)$coef[1,1], summary(Spurs_Yield)$coef[3,1], lwd = 3, lty = 3)
+legend('topleft', legend=expression(R^2 == 0.594), bty='n', cex=3)
 
-Volume_Yield <- lm(log(data$yield[1:19])~log(data$canopy_volume[1:19]))
-plot(log(data$canopy_volume[1:19]), log(data$yield[1:19]), #xlim = c(0,6), ylim = c(0,12),
+Volume_Yield <- lm(log(treesum$yield[1:19])~log(treesum$canopy_volume[1:19]))
+plot(log(treesum$canopy_volume[1:19]), log(treesum$yield[1:19]), #xlim = c(0,6), ylim = c(0,12),
      xlab = "log ( Canopy Volume  )", ylab = "log ( Yield )")
-abline(summary(Diameter_Mass)$coef[1,1], summary(Diameter_Mass)$coef[2,1], lwd = 3, lty = 3)
-abline(0, 2.667, lwd = 3, lty = 1)
+abline(summary(Volume_Yield)$coef[1,1], summary(Volume_Yield)$coef[2,1], lwd = 3, lty = 3)
 legend('topleft', legend=expression(R^2 == 0.278), bty='n', cex=3)
 
+Pf_Yield <- lm(treesum$yield[1:19])~log(treesum$canopy_volume[1:19]))
+plot(treesum$Pf[1:19], treesum$yield[1:19]), #xlim = c(0,6), ylim = c(0,12),
+     xlab = "log ( Pf  )", ylab = "log ( Yield )")
+abline(summary(Pf_Yield)$coef[1,1], summary(Pf_Yield)$coef[2,1], lwd = 3, lty = 3)
+legend('topleft', legend=expression(R^2 == 0.278), bty='n', cex=3)
+
+PredYield<-glm(treesum$yield[1:19]~log(treesum$trunk_diam[1:19])+treesum$Pf[1:19]+
+		treesum$tot_no_scars[1:19]/treesum$tot_no_spurs[1:19], data=treesum, family = gaussian())
+YieldFit<-lm(predict(fit, type="response")~1+treesum$yield[1:19])
+plot(treesum$yield[1:19],predict(fit, type="response"),
+	xlab = "Observed Yield", ylab = "Predicted Yield", cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
+abline(0, 1, lwd = 3, lty = 3)
+legend('bottomright', legend=expression(R^2 == 0.409), bty='n', cex=3)
