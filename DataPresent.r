@@ -1,4 +1,4 @@
-# There are two major data tables in the orchard scaling project (2012-2013) conducted at Kaysville Research Farm, USU.
+# There are three major data tables in the orchard scaling project (2012-2013) conducted at Kaysville Research Farm, USU.
 # Five 24 year old tart cherry (Prunus cerasus Montmorency, P. mahaleb) from one block and 
 # 19 8 year old apples (Malus domestica "Golden Delicious") from one block with various rootstocks were sampled.
 
@@ -49,18 +49,100 @@ branch_arch <- read.csv("TreeReconstruction.csv", sep = ',', header = T)
 # # # spur - indicates if twig segment is classified as spur (i.e., branching unit with entirely apical growth) [y,n]
 # # # rank_twig - total number of succeding branches (1 denotes a terminal twig segment) [integer]
 
-#trunk diameter vs total tree mass
+treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
+
+# # # X - updated ID of tree sorted by species, trunk diameter, and rootstock.
+# # # species -
+# # # tree -
+# # # rootstock -
+# # # trunk_diam -
+# # # height - 
+# # # canopy_volume -
+# # # tot_stem_m -
+# # # tot_twig_m -
+# # # tot_leaf_m -
+# # # tot_no_branch -
+# # # tot_no_twigs - 
+# # # tot_no_spurs -
+# # # tot_no_scars -
+
+### Tree Level
+
+#trunk diameter vs total stem mass
+
+Diameter_Mass <- lm(log(treesum$tot_stem_m)~log(treesum$trunk_diam))
+plot(log(treesum$trunk_diam[1:19]), log(treesum$tot_stem_m[1:19]), xlim = c(0,6), ylim = c(0,12),
+     xlab = "log ( Trunk Diameter  )", ylab = "log ( Total Stem Mass )", cex = 2, pch = 19, col = "black")
+points(log(treesum$trunk_diam[20:24]), log(treesum$tot_stem_m[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
+abline(summary(Diameter_Mass)$coef[1,1], summary(Diameter_Mass)$coef[2,1], lwd = 3, lty = 3)
+abline(0, 2.667, lwd = 3, lty = 1)
+legend('topleft', legend=expression(R^2 == 0.975), bty='n', cex=3)
 
 #trunk diameter vs. height
 
+Diameter_Height <- lm(log(treesum$height)~log(treesum$trunk_diam))
+plot(log(treesum$trunk_diam[1:19]), log(treesum$height[1:19]), #xlim = c(0,6), ylim = c(0,12),
+     xlab = "log ( Trunk Diameter  )", ylab = "log ( Height )", cex = 2, pch = 19, col = "black")
+points(log(treesum$trunk_diam[20:24]), log(treesum$height[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
+abline(summary(Diameter_Height)$coef[1,1], summary(Diameter_Height)$coef[2,1], lwd = 3, lty = 3)
+legend('topleft', legend=expression(R^2 == 0.668 + 0.843), bty='n', cex=3)
+
 #trunk diameter vs. canopy volume
 
-#height vs. total tree mass
+Diameter_Volume <- lm(log(treesum$canopy_volume)~log(treesum$trunk_diam))
+plot(log(treesum$trunk_diam[1:19]), log(treesum$canopy_volume[1:19]), #xlim = c(0,6), ylim = c(0,12),
+     xlab = "log ( Trunk Diameter  )", ylab = "log ( Canopy Volume )", cex = 2, pch = 19, col = "black")
+points(log(treesum$trunk_diam[20:24]), log(treesum$canopy_volume[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
+abline(summary(Diameter_Volume)$coef[1,1], summary(Diameter_Volume)$coef[2,1], lwd = 3, lty = 3)
+legend('topleft', legend=expression(R^2 == 0.604), bty='n', cex=3)
+
+#trunk diameter vs. rank
+
+Diameter_Rank <- lm(log(treesum$tot_no_branch + treesum$tot_no_twigs + treesum$tot_no_spurs)~log(treesum$trunk_diam))
+plot(log(treesum$trunk_diam[1:19]), log(treesum$tot_no_branch[1:19] + treesum$tot_no_twigs[1:19] + treesum$tot_no_spurs[1:19]), 
+	xlim = c(0,6), ylim = c(0,8), xlab = "log ( Trunk Diameter  )", ylab = "log ( Rank )", cex = 2, pch = 19, col = "black")
+points(log(treesum$trunk_diam[20:24]), log(treesum$tot_no_branch[20:24] + treesum$tot_no_twigs[20:24] + treesum$tot_no_spurs[20:24]), 
+	cex = 1.5, pch = 23, col = "red", bg = "red")
+abline(summary(Diameter_Rank)$coef[1,1], summary(Diameter_Rank)$coef[2,1], lwd = 3, lty = 3)
+legend('topleft', legend=expression(R^2 == 0.695), bty='n', cex=3)
+
+#height vs. total stem mass
+
+Height_Mass <- lm(log(treesum$tot_stem_m)~log(treesum$height))
+plot(log(treesum$height[1:19]), log(treesum$tot_stem_m[1:19]), xlim = c(0,6), ylim = c(0,3),
+     xlab = "log ( Height  )", ylab = "log ( Total Stem Mass )", cex = 2, pch = 19, col = "black")
+points(log(treesum$height[20:24]), log(treesum$tot_stem_m[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
+abline(summary(Height_Mass)$coef[1,1], summary(Height_Mass)$coef[2,1], lwd = 3, lty = 3)
+legend('topleft', legend=expression(R^2 == 0.662), bty='n', cex=3)
+
+#rank vs. tot stem mass
+
+Rank_Mass <- lm(log(treesum$tot_stem_m)~log(treesum$tot_no_branch + treesum$tot_no_twigs + treesum$tot_no_spurs))
+plot(log(treesum$tot_no_branch[1:19] + treesum$tot_no_twigs[1:19] + treesum$tot_no_spurs[1:19]), 
+	log(treesum$tot_stem_m[1:19]), xlim = c(0,7), ylim = c(0,12),
+     	xlab = "log ( Height  )", ylab = "log ( Total Stem Mass )", cex = 2, pch = 19, col = "black")
+points(log(treesum$tot_no_branch[20:24] + treesum$tot_no_twigs[20:24] + treesum$tot_no_spurs[20:24]), 
+	log(treesum$tot_stem_m[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
+abline(summary(Rank_Mass)$coef[1,1], summary(Rank_Mass)$coef[2,1], lwd = 3, lty = 3)
+legend('topleft', legend=expression(R^2 == 0.776), bty='n', cex=3)
+
+
+### Branch Level
+
+#branch diameter vs. total succeeding mass
+
+clean_mass <- branch_size[branch_size$tot_stem_m > 0,]
+clean_diam <- clean_mass[clean_mass$diameter_mm > 0,]
+
+diameter_mass <- lm(log(clean_diam$tot_stem_m)~log(clean_diam$diameter_mm))
+plot(log(clean_diam$diameter_mm), log(clean_diam$tot_stem_m), xlim = c(0,7), ylim = c(0,12),
+     	xlab = "log ( Diameter  )", ylab = "log ( Total Stem Mass )", cex = 2, pch = 19, col = "black")
+abline(summary(diameter_mass)$coef[1,1], summary(diameter_mass)$coef[2,1], lwd = 3, lty = 3)
+legend('topleft', legend=expression(R^2 == 0.790), bty='n', cex=3)
 
 #length ratio
 
 #branch diameter vs. rank
 
-#branch diameter vs. total succeeding mass
 
 
