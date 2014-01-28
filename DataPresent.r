@@ -144,5 +144,34 @@ legend('topleft', legend=expression(R^2 == 0.790), bty='n', cex=3)
 
 #branch diameter vs. rank
 
+### Yield
 
+Diameter_Yield <- lm(log(data$yield[1:19])~log(data$trunk_diam[1:19]))
+plot(log(data$trunk_diam[1:19]), log(data$yield[1:19]), #xlim = c(0,6), ylim = c(0,12),
+     xlab = "log ( Trunk Diameter  )", ylab = "log ( Yield )")
+abline(summary(Diameter_Mass)$coef[1,1], summary(Diameter_Mass)$coef[2,1], lwd = 3, lty = 3)
+abline(0, 2.667, lwd = 3, lty = 1)
+legend('topleft', legend=expression(R^2 == 0.193), bty='n', cex=3)
+
+Diameter_Fruit <- lm(log(data$no_fruit[1:19])~log(data$trunk_diam[1:19]))
+plot(log(data$trunk_diam[1:19]), log(data$no_fruit[1:19]), #xlim = c(0,6), ylim = c(0,12),
+     xlab = "log ( Trunk Diameter  )", ylab = "log ( No. of Fruit )")
+abline(summary(Diameter_Mass)$coef[1,1], summary(Diameter_Mass)$coef[2,1], lwd = 3, lty = 3)
+abline(0, 2.667, lwd = 3, lty = 1)
+legend('topleft', legend=expression(R^2 == 0.278), bty='n', cex=3)
+
+
+Spurs_Yield <- lm(data$yield[1:19])~data$tot_no_spurs[1:19]))
+plot(data$tot_no_spurs[1:19], data$yield[1:19], #xlim = c(0,6), ylim = c(0,12),
+     xlab = "log ( Spurs )", ylab = "log ( Yield )")
+abline(summary(Diameter_Mass)$coef[1,1], summary(Diameter_Mass)$coef[2,1], lwd = 3, lty = 3)
+abline(0, 2.667, lwd = 3, lty = 1)
+legend('topleft', legend=expression(R^2 == 0.193), bty='n', cex=3)
+
+Volume_Yield <- lm(log(data$yield[1:19])~log(data$canopy_volume[1:19]))
+plot(log(data$canopy_volume[1:19]), log(data$yield[1:19]), #xlim = c(0,6), ylim = c(0,12),
+     xlab = "log ( Canopy Volume  )", ylab = "log ( Yield )")
+abline(summary(Diameter_Mass)$coef[1,1], summary(Diameter_Mass)$coef[2,1], lwd = 3, lty = 3)
+abline(0, 2.667, lwd = 3, lty = 1)
+legend('topleft', legend=expression(R^2 == 0.278), bty='n', cex=3)
 

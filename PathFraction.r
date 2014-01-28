@@ -1,4 +1,5 @@
 data <- read.csv("TreeReconstruction.csv", sep=',', head=T)
+data <- read.csv("BranchSegments.csv", sep=',', head=T)
 
 sum_lengths <- function(start_node){
 	twig <- subdata[subdata$branch==start_node,]
@@ -20,7 +21,7 @@ get_path_fraction <- function(start_twig){
 	paths <- c()
 	for (i in start_twig:length(subdata[,1])){
 		total_length = 0
-		path_length = sum_lengths(subdata$branch[i]) - correct_length(subdata$branch[i])
+		path_length = sum_lengths(subdata$branch[i]) #- correct_length(subdata$branch[i])
 		paths <- c(paths,path_length)
 	}
 	path_fraction = mean(paths)/max(paths)
@@ -30,6 +31,7 @@ get_path_fraction <- function(start_twig){
 
 
 #Path Fraction
+###Spatially Explicit
 path_fractions <- matrix(ncol=7, nrow=28)
 colnames(path_fractions) <- c("species", "tree", "group", "Pf", "avg_path", "sd_path", "No_Twigs")
 
@@ -81,6 +83,36 @@ subdata <- just_twigs
 path_fractions[28, 3:7] = c("Twigs only", get_path_fraction(twig_start))
 
 #write.csv(path_fractions,"PathFractions.csv")
+
+###Branch-Level
+path_fractions <- matrix(ncol=6, nrow=19)
+colnames(path_fractions) <- c("species", "tree", "Pf", "avg_path", "sd_path", "no_branches")
+
+apple_trees <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20)
+
+spp <- data[data$species=="apple",]
+for (j in 1:length(apple_trees)){
+  subdata <- spp[spp$tree==apple_trees[j],]
+  
+  path_fractions[j,1] = "apple"
+  path_fractions[j,2] = apple_trees[j]
+  total_length = 0
+  paths <- c()
+  for (i in 1:length(subdata[,1])){
+	if (!(i %in% subdata$parent)){
+		total_length = 0
+		path_length = sum_lengths(subdata$branch[i])		
+		paths <- c(paths,path_length)
+	}
+  }
+  path_fraction = mean(paths)/max(paths)
+  path_fractions[j,3] = round(path_fraction, digits = 3) 
+  path_fractions[j,4] = round(mean(paths), digits = 3) 
+  path_fractions[j,5] = round(sd(paths), digits = 3)
+  path_fractions[j,6] = as.integer(length(paths))
+}
+
+write.csv(path_fractions,"PathFractionsBranch.csv")
 
 #no_broken <- data[data$broken!='y',]
 #just_whole_twigs <- just_twigs[just_twigs$broken!='y',]
