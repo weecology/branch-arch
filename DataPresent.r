@@ -66,15 +66,20 @@ treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
 # # # tot_no_spurs -
 # # # tot_no_scars -
 
+#Data is analysed using Standardized Major Axis (SMA; aka reduced major axis) with R-package 'smatr'
+library('smatr')
+
 ### Tree Level
 
 #trunk diameter vs total stem mass
 
-Diameter_Mass <- lm(log(treesum$tot_stem_m)~log(treesum$trunk_diam))
-plot(log(treesum$trunk_diam[1:19]), log(treesum$tot_stem_m[1:19]), xlim = c(0,6), ylim = c(0,12),
+Diameter_Mass_lm <- lm(log10(treesum$tot_stem_m)~log10(treesum$trunk_diam))
+Diameter_Mass <- sma(log10(treesum$tot_stem_m)~log10(treesum$trunk_diam))
+plot(log10(treesum$trunk_diam[1:19]), log10(treesum$tot_stem_m[1:19]), xlim = c(1.5,2.5), ylim = c(3,5.5),
      xlab = "log ( Trunk Diameter  )", ylab = "log ( Total Stem Mass )", cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
-points(log(treesum$trunk_diam[20:24]), log(treesum$tot_stem_m[20:24]), cex = 2.5, pch = 19, col = "red", bg = "red")
-abline(summary(Diameter_Mass)$coef[1,1], summary(Diameter_Mass)$coef[2,1], lwd = 3, lty = 3)
+points(log10(treesum$trunk_diam[20:24]), log10(treesum$tot_stem_m[20:24]), cex = 2.5, pch = 19, col = "red", bg = "red")
+abline(coef.sma(Diameter_Mass)[1], coef.sma(Diameter_Mass)[2], lwd = 3, lty = 3)
+#abline(summary(Diameter_Mass_lm)$coef[1,1], summary(Diameter_Masse_lm)$coef[2,1], lwd = 3, lty = 4)
 abline(0, 2.667, lwd = 3, lty = 1)
 legend('bottomright', legend=expression(R^2 == 0.975), bty='n', cex=3)
 

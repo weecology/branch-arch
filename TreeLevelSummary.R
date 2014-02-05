@@ -54,6 +54,13 @@ for (i in 1:2){
  
 write.csv(trees_out,"TreeSummary.csv")
 
+Diameter_Mass <- lm(log(as.numeric(trees_out[,7]))~log(as.numeric(trees_out[,4])))
+plot(log(as.numeric(trees_out[,4])), log(as.numeric(trees_out[,7])), xlim = c(0,6), ylim = c(0,12),
+     xlab = "log ( Trunk Diameter  )", ylab = "log ( Total Stem Mass )")
+abline(summary(Diameter_Mass)$coef[1,1], summary(Diameter_Mass)$coef[2,1], lwd = 3, lty = 3)
+abline(0, 2.667, lwd = 3, lty = 1)
+legend('topleft', legend=expression(R^2 == 0.975), bty='n', cex=3)
+
      
 
 
