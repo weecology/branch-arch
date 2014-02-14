@@ -81,7 +81,7 @@ points(log10(treesum$trunk_diam[20:24]), log10(treesum$tot_stem_m[20:24]), cex =
 abline(coef.sma(Diameter_Mass)[1], coef.sma(Diameter_Mass)[2], lwd = 3, lty = 3)
 #abline(summary(Diameter_Mass_lm)$coef[1,1], summary(Diameter_Masse_lm)$coef[2,1], lwd = 3, lty = 4)
 abline(0, 2.667, lwd = 3, lty = 1)
-legend('bottomright', legend=expression(R^2 == 0.975), bty='n', cex=3)
+legend('bottom', legend=expression(R^2 == 0.975), bty='n', cex=3)
 
 #trunk diameter vs. height
 
