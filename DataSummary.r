@@ -2,6 +2,7 @@
 
 data <- read.csv("TreeReconstruction.csv", sep = ',', header = T)
 branch <- read.csv("BranchSegments.csv", sep = ',', header = T)
+treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
 
 #branch twig no.
 apple_trees <- c(3,5,4,13,15,14)
@@ -281,6 +282,22 @@ for (i in trees){
 		avg_ratio_order[i,(j+1)] = mean(order[,2])
 	}
 }
+
+#length ratio
+plot(treesum$trunk_diam, treesum$avg_length_ratio)
+plot(branch$length_cm, branch$length_ratio)
+plot(branch$order, branch$length_ratio)
+
+#diameter ratio
+plot(treesum$trunk_diam, treesum$avg_diameter_ratio)
+plot(branch$diameter_mm, branch$diameter_ratio)#, ylim = c(0,1))
+plot(branch$order, branch$diameter_ratio)
+
+#mass ratio
+plot(treesum$trunk_diam, treesum$avg_mass_ratio)
+plot(branch$stem_m, branch$mass_ratio)#, ylim = c(0,5))
+plot(branch$order, branch$mass_ratio)
+
 
 ##Twigs Summary for 15
 apple_trees <- c(3,4,5,13,14,15)

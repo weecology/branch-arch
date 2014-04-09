@@ -16,10 +16,11 @@ species <- list(list("apple",
 for (i in 1:2){
   spp <- data[data$species==species[[i]][1],]
   spp_volume <- volume[volume$species==species[[i]][1],]
-  subout <- matrix(ncol = 13, nrow = length(species[[i]][[2]]))
+  subout <- matrix(ncol = 16, nrow = length(species[[i]][[2]]))
   colnames(subout) <- c("species", "tree", "rootstock", "trunk_diam", "height", "canopy_volume",
                        "tot_stem_m", "tot_twig_m", "tot_leaf_m", 
-                       "tot_no_branch", "tot_no_twigs", "tot_no_spurs", "tot_no_scars")
+                       "tot_no_branch", "tot_no_twigs", "tot_no_spurs", "tot_no_scars", 
+                       "avg_length_ratio", "avg_diameter_ratio", "avg_mass_ratio")
   
   for (j in 1:length(species[[i]][[2]])){
     ind <- spp[spp$tree==species[[i]][[2]][j],]
@@ -44,6 +45,9 @@ for (i in 1:2){
     subout[j,11]  = sum(ind$no_twigs, na.rm = T)
     subout[j,12]  = sum(ind$no_spurs, na.rm = T)
     subout[j,13]  = sum(ind$no_scars, na.rm = T)
+    subout[j,14] = round(mean(ind$length_ratio, na.rm=T),3)
+    subout[j,15] = round(mean(ind$diameter_ratio, na.rm=T),3)
+    subout[j,16] = round(mean(ind$mass_ratio, na.rm=T),3)
     
   if (i==1)
     trees_temp <- subout
