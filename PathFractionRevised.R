@@ -1,21 +1,31 @@
 branch <- read.csv("BranchSegments.csv", sep=',', head=T)
 twig <- read.csv("TreeReconstruction.csv", sep=',', head=T)
 
-species <- c("apple", "cherry")
-apple_trees <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20)
-cherry_trees <- c(1,7,10,13,15)
+species <- list(list("apple",
+                     c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20)),
+                list("cherry", 
+                     c(1,7,10,13,15)))
 
-spp <- branch[branch$species=="apple",]
-tree <- spp[spp$tree==1,]
-path_length = vector(length = length(tree[,1]))
-for (j in length(tree[,1]):1){
-     daughters <- tree[tree$parent==tree$branch[j],]
-     if (length(daughters[,1]) > 0){
-       tree$path_length[j] = tree$length_cm[j] + sum(daughters$path_length)}
-     else{
-       tree$path_length[j] = tree$length_cm[j]}     
+for (m in 1:2){
+  spp <- branch[branch$species==species[[m]][1],]
+  for (n in 1:length(species[[m]][[2]])){
+    tree <- spp[spp$tree==species[[m]][[2]][n],]
+    for (j in length(tree[,1]):1){
+         daughters <- tree[tree$parent==tree$branch[j],]
+         if (length(daughters[,1]) > 0)
+           tree$tot_stem_m[j] = tree$stem_m[j] + sum(daughters$tot_stem_m)
+         else
+           tree$tot_stem_m[j] = tree$stem_m[j]     
+    }
+    
+    tree_path = data.frame(tree = tree$tree, branch = tree$branch, mass = tree$tot_stem_m)
+    
+    if (exists('paths_out'))
+      paths_out = rbind(paths_out, tree_path)
+    else
+      paths_out <- tree_path
+  }
 }
-
 
 ###Find end lengths INCOMPLETE
 apple_trees <- c(3,4,5,13,14,15)
