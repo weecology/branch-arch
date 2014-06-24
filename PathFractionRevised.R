@@ -23,7 +23,7 @@ for (m in 1:2){
     
     tree_masses = data.frame(tree = tree$tree, branch = tree$branch, mass = tree$tot_stem_m)
     
-    if (exists('paths_out'))
+    if (exists('masses_out'))
       masses_out = rbind(masses_out, tree_masses)
     else
       masses_out <- tree_masses
@@ -41,10 +41,18 @@ for (m in 1:2){
       if (length(daughters[,1]) > 0)
         tree$path_length[j] = tree$length_cm[j] + max(daughters$path_length, na.rm = TRUE)
       else
-        tree$path_length[j] = tree$length_cm[j]     
+        length <- as.numeric(tree$length_cm[j])
+        twig_spp <- twig[twig$species==species[[m]][1],]
+        twig_tree <- twig_spp[twig_spp$tree==species[[m]][[2]][n],]
+        twig_daughters <- twig_tree[twig_tree$parent==tree$branch[j],]
+        end_twig <- daughters[daughters$parent_dist==length,]
+        if (length(end_twig[,1])>0)
+          tree$tot_stem_m[j] = tree$length_cm[j] + max(end_twig$length_cm)
+        else
+          tree$path_length[j] = tree$length_cm[j]     
     }
     
-    tree_path = data.frame(tree = tree$tree, branch = tree$branch, mass = tree$path_length)
+    tree_path = data.frame(tree = tree$tree, branch = tree$branch, path = tree$path_length)
     
     if (exists('paths_out'))
       paths_out = rbind(paths_out, tree_path)
@@ -55,13 +63,7 @@ for (m in 1:2){
 
 ###Find end lengths INCOMPLETE
 
-length <- as.numeric(tree$length_cm[j])
-twig_spp <- twig[twig$species==species[[m]][1],]
-twig_tree <- twig_spp[twig_spp$tree==species[[m]][[2]][n],]
-twig_daughters <- twig_tree[twig_tree$parent==tree$branch[j],]
-end_twig <- daughters[daughters$parent_dist==length,]
-if (length(end_twig[,1])>0)
-  tree$tot_stem_m[j] = tree$length_cm[j] + max(end_twig$length_cm)
+
 
 
 apple_trees <- c(3,4,5,13,14,15)
