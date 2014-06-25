@@ -30,6 +30,8 @@ for (m in 1:2){
   }
 }
 
+write.csv(masses_out,"Sum_masses.csv")
+
 ### Calculates path length above branch node
 
 for (m in 1:2){
@@ -61,3 +63,5 @@ for (m in 1:2){
       paths_out <- tree_path
   }
 }
+
+write.csv(paths_out,"Paths.csv")
