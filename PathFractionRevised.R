@@ -38,18 +38,19 @@ for (m in 1:2){
     tree <- spp[spp$tree==species[[m]][[2]][n],]
     for (j in length(tree[,1]):1){
       daughters <- tree[tree$parent==tree$branch[j],]
-      if (length(daughters[,1]) > 0)
+      if (length(daughters[,1]) > 0){
         tree$path_length[j] = tree$length_cm[j] + max(daughters$path_length, na.rm = TRUE)
-      else
-        length <- as.numeric(tree$length_cm[j])
+        }
+      else{
         twig_spp <- twig[twig$species==species[[m]][1],]
         twig_tree <- twig_spp[twig_spp$tree==species[[m]][[2]][n],]
         twig_daughters <- twig_tree[twig_tree$parent==tree$branch[j],]
-        end_twig <- daughters[daughters$parent_dist==length,]
+        end_twig <- twig_daughters[twig_daughters$parent_dist==tree$length_cm[j],]
         if (length(end_twig[,1])>0)
-          tree$tot_stem_m[j] = tree$length_cm[j] + max(end_twig$length_cm)
+          tree$path_length[j] = tree$length_cm[j] + max(end_twig$length_cm)
         else
-          tree$path_length[j] = tree$length_cm[j]     
+          tree$path_length[j] = tree$length_cm[j]
+        }     
     }
     
     tree_path = data.frame(tree = tree$tree, branch = tree$branch, path = tree$path_length)
@@ -60,24 +61,3 @@ for (m in 1:2){
       paths_out <- tree_path
   }
 }
-
-###Find end lengths INCOMPLETE
-
-
-
-
-apple_trees <- c(3,4,5,13,14,15)
-
-spp <- twig[twig$species=="apple",]
-tree <- spp[spp$tree==3,]
-end <- matrix(ncol=3, nrows = ???)
-for (j in 1:13){
-  length <- as.numeric(tree$length_cm[j])
-  daughters <- tree[tree$parent==j,]
-  end_twig <- daughters[daughters$parent_dist==length,]
-  if (length(end_twig[,1])>0){
-    end[j] = max(end_twig$length_cm)}
-  else{
-    end[j] = 0}
-}
-  
