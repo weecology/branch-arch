@@ -100,11 +100,11 @@ for (j in 1:length(apple_trees)){
   total_length = 0
   paths <- c()
   for (i in 1:length(subdata[,1])){
-	if (!(i %in% subdata$parent)){
+	  if (!(i %in% subdata$parent)){
 		total_length = 0
 		path_length = sum_lengths(subdata$branch[i])		
 		paths <- c(paths,path_length)
-	}
+	  }
   }
   path_fraction = mean(paths)/max(paths)
   path_fractions[j,3] = round(path_fraction, digits = 3)
