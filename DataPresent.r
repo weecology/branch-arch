@@ -1,10 +1,10 @@
-# There are three major data tables in the orchard scaling project (2012-2013) conducted at Kaysville Research Farm, USU.
+# Presented are two major data tables in the orchard scaling project (2012-2013) conducted at Kaysville Research Farm, USU.
 # Five 24 year old tart cherry (Prunus cerasus Montmorency, P. mahaleb) from one block and 
 # 19 8 year old apples (Malus domestica "Golden Delicious") from one block with various rootstocks were sampled.
 
 branch_size <- read.csv("BranchSegments.csv", sep = ',', header = T)
 
-# BranchSegments.csv contains the size and orientation data ("branch_size") for all trees sampled at a "branch"-level. 
+# BranchSegments.csv ("branch_size") contains the size and orientation data for all trees sampled at a "branch"-level. 
 # Terminal compenents of the tree (i.e., "twigs") were colected as twig counts and bulk mass. Fields are:
 # # # species - species common name [apple, cherry]
 # # # tree - individual tree ID; for apple [1-15,17-20], for cherry [1,7,10,13,15]
@@ -17,54 +17,45 @@ branch_size <- read.csv("BranchSegments.csv", sep = ',', header = T)
 # # # opp_length_cm - length of horizontal traverse of branch as if branch is hypotenuse to calculate declination [float]
 # # # declination - angle from horizontal of branch [0 (horizontal) - 90 (vertical)]
 # # # length_cm - length of branch in centimeters [float]
+# # # path_length - total length of branch and longest continuous length of succeding branches [float]
 # # # diameter_mm - diameter at midpoint of branch in millimeters [float]
 # # # root_dia - daimeter at rootstock juncture for trunk segments in millimeters [float]
-# # # no_twigs - number of twig segments on branch (i.e., branching unit with multiple spurs attache) [integer]
+# # # no_twigs - number of twig segments on branch (i.e., branching unit with multiple spurs attached) [integer]
 # # # no_spurs - number of spur segments on branch (i.e., branching unit with entirely apical growth) [integer]
 # # # no_scars - number of pruning scars on branch (i.e., locations of removed branching segments) [integer]
 # # # stem_m - mass of stem in grams [float]
-# # # tot_stem_m0 - total mass of succeding branches in grams from first programming trial [float]
 # # # tot_stem_m - total mass of succeding branches in grams [float]
 # # # twig_m - bulk mass of twigs in grams [float]
 # # # leaf_m - bulk mass of leaves in grams [float]
 # # # flower_m - bulk mass of flowers in grams [float]
+# # # length_ratio - ratio of daughter / parent branch lengths [float]
+# # # path_ratio	- ratio of daughter / parent branch path lengths [float]
+# # # diameter_ratio - ratio of daughter / parent branch diameter [float]
+# # # mass_ratio - ratio of daughter / parent branch stem mass [float]
+# # # summass_ratio - ratio of daughter / parent branch total mass of succeding branches [float]
 
-branch_arch <- read.csv("TreeReconstruction.csv", sep = ',', header = T)
-
-# TreeReconstruction.csv contains the data of 1 cherry and 6 apples for branch architecture ("branch_arch").
-# This is the file that holds spacially explicit and twig level data. Fields are as follows:
-# # # species - species common name [apple, cherry]
-# # # tree - individual tree ID; for apple [1-15,17-20], for cherry [1,7,10,13,15]
-# # # branch - branch-level ID per individual tree [integer]
-# # # parent - branch ID of predecessing branch [integer]
-# # # order - describes successing branch as "continuing" in relative diameter (order stays constant)
-# # # # # or as "daughter" stepwise diminishing in relative diameter (parent order + 1) [integer]
-# # # bearing - compass direction of branch at basipetal node [0 - 359]
-# # # declination - angle from horizontal of branch [0 (horizontal) - 90 (vertical)]
-# # # length_cm - length of branch in centimeters [float]
-# # # diameter_mm - diameter at midpoint of branch in millimeters [float]
-# # # angle - the direction that twig segments leave a branch segment in "O'clocks" [1-12]
-# # # parent_dist - location of twig segment on parent branch segment 
-# # # # # as distance from basipetal end of parent branch segment [float]
-# # # spur - indicates if twig segment is classified as spur (i.e., branching unit with entirely apical growth) [y,n]
-# # # rank_twig - total number of succeding branches (1 denotes a terminal twig segment) [integer]
 
 treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
 
-# # # X - updated ID of tree sorted by species, trunk diameter, and rootstock.
-# # # species -
-# # # tree -
-# # # rootstock -
-# # # trunk_diam -
-# # # height - 
-# # # canopy_volume -
-# # # tot_stem_m -
-# # # tot_twig_m -
-# # # tot_leaf_m -
-# # # tot_no_branch -
-# # # tot_no_twigs - 
-# # # tot_no_spurs -
-# # # tot_no_scars -
+# TreeSummary.csv ("tree_sum") contains the size and orientation data for all trees sampled at a "tree"-level. 
+# Fields are:
+# # # X - Numerical ID of tree ***sorted by species, trunk diameter, and rootstock, NOT YET***.
+# # # species - species common name [apple, cherry]
+# # # tree - individual tree ID; for apple [1-15,17-20], for cherry [1,7,10,13,15]
+# # # rootstock - individual rootstock name [Bud.9, CG.3041, CG.6210, M.26, JM.8, PiAu.5683]
+# # # trunk_diam - diameter at 15cm above graft union of trunck in millimeters [float]
+# # # height - height of individual [float]
+# # # canopy_volume - volume of the canopy as calculated by average radius in VolumeEstimates.py [float]
+# # # tot_stem_m - total mass of stems [float]
+# # # tot_twig_m - total mass of twigs [float]
+# # # tot_leaf_m - total mass of leaves [float]
+# # # tot_no_branch - total number of branch segments [float]
+# # # tot_no_twigs - total number of twig segments [float]
+# # # tot_no_spurs - total number of spurs [float]
+# # # tot_no_scars - total number of scars [float]
+# # # avg_length_ratio - average branch-level ratio of daughter / parent branch lengths 
+# # # avg_diameter_ratio - ratio of daughter / parent branch diameter [float]
+# # # avg_mass_ratio
 
 #Data is analysed using Standardized Major Axis (SMA; aka reduced major axis) with R-package 'smatr'
 library('smatr')
