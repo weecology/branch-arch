@@ -28,7 +28,7 @@ get_mass_fraction <- function(start_twig){
 		paths <- c(paths,path_mass)
 	}
 	mass_fraction = mean(paths)/max(paths)
-	return( c(round(mass_fraction, digits = 3), round(mean(paths), digits = 3), round(sd(paths), digits = 3), 
+	return( c(round(mass_fraction, digits = 3), max(paths), round(mean(paths), digits = 3), round(sd(paths), digits = 3), 
 			as.integer(length(paths))))
 }
 

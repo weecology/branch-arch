@@ -82,13 +82,14 @@ total_length = 0
 subdata <- just_twigs
 path_fractions[28, 3:8] = c("Twigs only", get_path_fraction(twig_start))
 
-#write.csv(path_fractions,"PathFractions.csv")
+write.csv(path_fractions,"PathFractions.csv")
 
 ###Branch-Level
-path_fractions <- matrix(ncol=7, nrow=19)
+path_fractions <- matrix(ncol=7, nrow=24)
 colnames(path_fractions) <- c("species", "tree", "Pf", "max_path", "avg_path", "sd_path", "no_branch_paths")
 
 apple_trees <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20)
+cherry_trees <- c(1,7,10,13,15)
 
 spp <- data[data$species=="apple",]
 for (j in 1:length(apple_trees)){
@@ -111,6 +112,29 @@ for (j in 1:length(apple_trees)){
   path_fractions[j,5] = round(mean(paths), digits = 3) 
   path_fractions[j,6] = round(sd(paths), digits = 3)
   path_fractions[j,7] = as.integer(length(paths))
+}
+
+spp <- data[data$species=="cherry",]
+for (j in 1:length(cherry_trees)){
+  subdata <- spp[spp$tree==cherry_trees[j],]
+  
+  path_fractions[(j+19),1] = "cherry"
+  path_fractions[(j+19),2] = cherry_trees[j]
+  total_length = 0
+  paths <- c()
+  for (i in 1:length(subdata[,1])){
+    if (!(i %in% subdata$parent)){
+      total_length = 0
+      path_length = sum_lengths(subdata$branch[i])		
+      paths <- c(paths,path_length)
+    }
+  }
+  path_fraction = mean(paths)/max(paths)
+  path_fractions[(j+19),3] = round(path_fraction, digits = 3)
+  path_fractions[(j+19),4] = max(paths)
+  path_fractions[(j+19),5] = round(mean(paths), digits = 3) 
+  path_fractions[(j+19),6] = round(sd(paths), digits = 3)
+  path_fractions[(j+19),7] = as.integer(length(paths))
 }
 
 write.csv(path_fractions,"PathFractionsBranch.csv")
