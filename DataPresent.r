@@ -39,7 +39,7 @@ treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
 
 # TreeSummary.csv ("tree_sum") contains the size and orientation data for all trees sampled at a "tree"-level. 
 # Fields are:
-# # # X - Numerical ID of tree ***sorted by species, trunk diameter, and rootstock, NOT YET***.
+# # # X - Numerical ID of tree ***sorted by species, rootstock, and trunk diameter NOT YET***.
 # # # species - species common name [apple, cherry]
 # # # tree - individual tree ID; for apple [1-15,17-20], for cherry [1,7,10,13,15]
 # # # rootstock - individual rootstock name [Bud.9, CG.3041, CG.6210, M.26, JM.8, PiAu.5683]
