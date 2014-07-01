@@ -25,15 +25,15 @@ get_path_fraction <- function(start_twig){
 		paths <- c(paths,path_length)
 	}
 	path_fraction = mean(paths)/max(paths)
-	return( c(round(path_fraction, digits = 3), round(mean(paths), digits = 3), round(sd(paths), digits = 3), 
+	return( c(round(path_fraction, digits = 3), max(paths), round(mean(paths), digits = 3), round(sd(paths), digits = 3), 
 			as.integer(length(paths))))
 }
 
 
 #Path Fraction
 ###Spatially Explicit
-path_fractions <- matrix(ncol=7, nrow=28)
-colnames(path_fractions) <- c("species", "tree", "group", "Pf", "avg_path", "sd_path", "No_Twigs")
+path_fractions <- matrix(ncol=8, nrow=28)
+colnames(path_fractions) <- c("species", "tree", "group", "Pf", "max_path", "avg_path", "sd_path", "no_twig_paths")
 
 apple_trees <- c(3,4,5,13,14,15)
 
@@ -49,16 +49,16 @@ for (j in 1:6){
   path_fractions[(4*j-3):(4*j), 2] = apple_trees[j]
   total_length = 0
   subdata <- tree
-  path_fractions[(4*j-3), 3:7] = c("All", get_path_fraction(twig_start))
+  path_fractions[(4*j-3), 3:8] = c("All", get_path_fraction(twig_start))
   total_length = 0
   subdata <- no_scars
-  path_fractions[(4*j-2), 3:7] = c("No scars", get_path_fraction(twig_start))
+  path_fractions[(4*j-2), 3:8] = c("No scars", get_path_fraction(twig_start))
   total_length = 0
   subdata <- no_spurs
-  path_fractions[(4*j-1), 3:7] = c("No spurs", get_path_fraction(twig_start))
+  path_fractions[(4*j-1), 3:8] = c("No spurs", get_path_fraction(twig_start))
   total_length = 0
   subdata <- just_twigs
-  path_fractions[(4*j), 3:7] = c("Twigs only", get_path_fraction(twig_start))
+  path_fractions[(4*j), 3:8] = c("Twigs only", get_path_fraction(twig_start))
 } 
 
 tree <- data[data$species=="cherry",]
@@ -71,22 +71,22 @@ path_fractions[25:28, 1] = "cherry"
 path_fractions[25:28, 2] = 15
 total_length = 0
 subdata <- tree
-path_fractions[25, 3:7] = c("All", get_path_fraction(twig_start))
+path_fractions[25, 3:8] = c("All", get_path_fraction(twig_start))
 total_length = 0
 subdata <- no_scars
-path_fractions[26, 3:7] = c("No scars", get_path_fraction(twig_start))
+path_fractions[26, 3:8] = c("No scars", get_path_fraction(twig_start))
 total_length = 0
 subdata <- no_spurs
-path_fractions[27, 3:7] = c("No spurs", get_path_fraction(twig_start))
+path_fractions[27, 3:8] = c("No spurs", get_path_fraction(twig_start))
 total_length = 0
 subdata <- just_twigs
-path_fractions[28, 3:7] = c("Twigs only", get_path_fraction(twig_start))
+path_fractions[28, 3:8] = c("Twigs only", get_path_fraction(twig_start))
 
 #write.csv(path_fractions,"PathFractions.csv")
 
 ###Branch-Level
-path_fractions <- matrix(ncol=6, nrow=19)
-colnames(path_fractions) <- c("species", "tree", "Pf", "avg_path", "sd_path", "no_branches")
+path_fractions <- matrix(ncol=7, nrow=19)
+colnames(path_fractions) <- c("species", "tree", "Pf", "max_path", "avg_path", "sd_path", "no_branch_paths")
 
 apple_trees <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20)
 
@@ -106,10 +106,11 @@ for (j in 1:length(apple_trees)){
 	}
   }
   path_fraction = mean(paths)/max(paths)
-  path_fractions[j,3] = round(path_fraction, digits = 3) 
-  path_fractions[j,4] = round(mean(paths), digits = 3) 
-  path_fractions[j,5] = round(sd(paths), digits = 3)
-  path_fractions[j,6] = as.integer(length(paths))
+  path_fractions[j,3] = round(path_fraction, digits = 3)
+  path_fractions[j,4] = max(paths)
+  path_fractions[j,5] = round(mean(paths), digits = 3) 
+  path_fractions[j,6] = round(sd(paths), digits = 3)
+  path_fractions[j,7] = as.integer(length(paths))
 }
 
 write.csv(path_fractions,"PathFractionsBranch.csv")
