@@ -60,28 +60,26 @@ treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
 #Data is analysed using Standardized Major Axis (SMA; aka reduced major axis) with R-package 'smatr'
 library('smatr')
 
-### Tree Level
+### Predicted Relationships
 
-#trunk diameter vs total stem mass
+#trunk diameter vs total stem mass [Predicted: D ~ M^8/3, Estimated: 2.49 +/- 0.18, R2 = 0.974; Niklas & Spatz, 2004]
 
-Diameter_Mass_lm <- lm(log10(treesum$tot_stem_m)~log10(treesum$trunk_diam))
 Diameter_Mass <- sma(log10(treesum$tot_stem_m)~log10(treesum$trunk_diam))
 plot(log10(treesum$trunk_diam[1:19]), log10(treesum$tot_stem_m[1:19]), xlim = c(1.5,2.5), ylim = c(3,5.5),
      xlab = "log ( Trunk Diameter  )", ylab = "log ( Total Stem Mass )", cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
 points(log10(treesum$trunk_diam[20:24]), log10(treesum$tot_stem_m[20:24]), cex = 2.5, pch = 19, col = "red", bg = "red")
 abline(coef.sma(Diameter_Mass)[1], coef.sma(Diameter_Mass)[2], lwd = 3, lty = 3)
-#abline(summary(Diameter_Mass_lm)$coef[1,1], summary(Diameter_Masse_lm)$coef[2,1], lwd = 3, lty = 4)
 abline(0, 2.667, lwd = 3, lty = 1)
-legend('bottom', legend=expression(R^2 == 0.975), bty='n', cex=3)
+legend('bottom', legend=expression(R^2 == 0.974), bty='n', cex=3)
 
-#trunk diameter vs. height
+#trunk diameter vs. height [Predicted: L~M^1/4, Estimated: 0.32 +/- 0.06, R2 = 0.849; Niklas & Enquist, 2001]
 
-Diameter_Height <- lm(log(treesum$height)~log(treesum$trunk_diam))
-plot(log(treesum$trunk_diam[1:19]), log(treesum$height[1:19]), #xlim = c(0,6), ylim = c(0,12),
+Diameter_Height <- sma(log10(treesum$height)~log(treesum$trunk_diam))
+plot(log10(treesum$trunk_diam[1:19]), log10(treesum$height[1:19]), #xlim = c(0,6), ylim = c(0,12),
      xlab = "log ( Trunk Diameter  )", ylab = "log ( Height )", cex = 2, pch = 19, col = "black")
-points(log(treesum$trunk_diam[20:24]), log(treesum$height[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
-abline(summary(Diameter_Height)$coef[1,1], summary(Diameter_Height)$coef[2,1], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.668 + 0.843), bty='n', cex=3)
+points(log10(treesum$trunk_diam[20:24]), log10(treesum$height[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
+abline(coef.sma(Diameter_Height)$coef[1,1], summary(Diameter_Height)$coef[2,1], lwd = 3, lty = 3)
+legend('topleft', legend=expression(R^2 == 0.849), bty='n', cex=3)
 
 #trunk diameter vs. canopy volume
 
