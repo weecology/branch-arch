@@ -53,16 +53,20 @@ treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
 # # # tot_no_twigs - total number of twig segments [float]
 # # # tot_no_spurs - total number of spurs [float]
 # # # tot_no_scars - total number of scars [float]
-# # # avg_length_ratio - average branch-level ratio of daughter / parent branch lengths 
-# # # avg_diameter_ratio - ratio of daughter / parent branch diameter [float]
-# # # avg_mass_ratio
+# # # avg_length_ratio - average branch-level ratio of daughter / parent branch lengths [float]
+# # # avg_diameter_ratio - average branch-level ratio of daughter / parent branch diameter [float]
+# # # avg_mass_ratio - average branch-level ratio of daughter / parent branch mass [float]
 
 #Data is analysed using Standardized Major Axis (SMA; aka reduced major axis) with R-package 'smatr'
 library('smatr')
 
+
 ### Predicted Relationships
 
-#trunk diameter vs total stem mass [Predicted: D ~ M^8/3, Estimated: 2.49 +/- 0.18, R2 = 0.974; Niklas & Spatz, 2004]
+
+## Mass vs. Diameter [Predicted: M ~ D^8/3; Niklas & Spatz, 2004]
+
+# Tree Level [Estimated: 2.49 +/- 0.18, R2 = 0.974]
 
 Diameter_Mass <- sma(log10(treesum$tot_stem_m)~log10(treesum$trunk_diam))
 plot(log10(treesum$trunk_diam[1:19]), log10(treesum$tot_stem_m[1:19]), xlim = c(1.5,2.5), ylim = c(3,5.5),
@@ -72,42 +76,65 @@ abline(coef.sma(Diameter_Mass)[1], coef.sma(Diameter_Mass)[2], lwd = 3, lty = 3)
 abline(0, 2.667, lwd = 3, lty = 1)
 legend('bottom', legend=expression(R^2 == 0.974), bty='n', cex=3)
 
-#trunk diameter vs. height [Predicted: L~M^1/4, Estimated: 0.32 +/- 0.06, R2 = 0.849; Niklas & Enquist, 2001]
+# Branch Level [Estimated 2.47 +/- 0.05, R2 = 0.897]
 
-Diameter_Height <- sma(log10(treesum$height)~log(treesum$trunk_diam))
-plot(log10(treesum$trunk_diam[1:19]), log10(treesum$height[1:19]), #xlim = c(0,6), ylim = c(0,12),
+clean_mass <- branch_size[branch_size$tot_stem_m > 0,] #rm.na mass
+clean_diam <- clean_mass[clean_mass$diameter_mm > 0,]  #rm.na diamter
+
+diameter_mass <- sma(log10(clean_diam$tot_stem_m)~log10(clean_diam$diameter_mm))
+plot(log10(clean_diam$diameter_mm), log10(clean_diam$tot_stem_m), #xlim = c(0,7), ylim = c(0,12),
+     xlab = "log ( Diameter  )", ylab = "log ( Total Stem Mass )", cex = 2, pch = 19, col = "black")
+abline(coef.sma(diameter_mass)[1], coef.sma(diameter_mass)[2], lwd = 3, lty = 3)
+legend('topleft', legend=expression(R^2 == 0.897), bty='n', cex=3)
+
+## Length vs. Diameter [Predicted: L ~ (D/2)^2/3; Price, Enquist & Savage, 2007]
+
+# Tree Level [Estimated: 0.74 +/- 0.12, R2 = 0.849] 
+
+Diameter_Height <- sma(log10(treesum$height)~log10((treesum$trunk_diam/2)))
+plot(log10((treesum$trunk_diam[1:19]/2)), log10(treesum$height[1:19]), #xlim = c(0,6), ylim = c(0,12),
      xlab = "log ( Trunk Diameter  )", ylab = "log ( Height )", cex = 2, pch = 19, col = "black")
-points(log10(treesum$trunk_diam[20:24]), log10(treesum$height[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
-abline(coef.sma(Diameter_Height)$coef[1,1], summary(Diameter_Height)$coef[2,1], lwd = 3, lty = 3)
+points(log10((treesum$trunk_diam[20:24]/2)), log10(treesum$height[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
+abline(coef.sma(Diameter_Height)[1], coef.sma(Diameter_Height)[2], lwd = 3, lty = 3)
 legend('topleft', legend=expression(R^2 == 0.849), bty='n', cex=3)
 
-#trunk diameter vs. canopy volume
 
-Diameter_Volume <- lm(log(treesum$canopy_volume)~log(treesum$trunk_diam))
+## Length vs. Mass [Predicted: L~M^1/4; Niklas & Enquist, 2001]
+
+# Tree Level [Estimated: 0.30 +/- 0.05, R2 = 0.849]
+
+Height_Mass <- sma(log10(treesum$height)~log10(treesum$tot_stem_m))
+plot(log10(treesum$tot_stem_m[1:19]), log10(treesum$height[1:19]), #xlim = c(0,6), ylim = c(0,3),
+     xlab = "log ( Total Stem Mass  )", ylab = "log ( Height )", cex = 2, pch = 19, col = "black")
+points(log10(treesum$tot_stem_m[20:24]), log10(treesum$height[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
+abline(coef.sma(Height_Mass)[1], coef.sma(Height_Mass)[2], lwd = 3, lty = 3)
+legend('topleft', legend=expression(R^2 == 0.849), bty='n', cex=3)
+
+
+## Area Preservation [McCulloh & Sperry, 2005; Price, Enquist & Savage, 2007]
+
+
+
+### Additional Relationships
+
+#trunk diameter vs. canopy volume [Estimate: 1.04 +/- 0.2, R2 = 0.7162]
+
+Diameter_Volume <- sma(log(treesum$canopy_volume)~log(treesum$trunk_diam))
 plot(log(treesum$trunk_diam[1:19]), log(treesum$canopy_volume[1:19]), #xlim = c(0,6), ylim = c(0,12),
      xlab = "log ( Trunk Diameter  )", ylab = "log ( Canopy Volume )", cex = 2, pch = 19, col = "black")
 points(log(treesum$trunk_diam[20:24]), log(treesum$canopy_volume[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
-abline(summary(Diameter_Volume)$coef[1,1], summary(Diameter_Volume)$coef[2,1], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.604), bty='n', cex=3)
+abline(coef.sma(Diameter_Volume)[1], coef.sma(Diameter_Volume)[2], lwd = 3, lty = 3)
+legend('topleft', legend=expression(R^2 == 0.716), bty='n', cex=3)
 
-#trunk diameter vs. rank
+#trunk diameter vs. rank [Estimate: 2.04 +/- 0.5, R2 = 0.698)
 
-Diameter_Rank <- lm(log(treesum$tot_no_branch + treesum$tot_no_twigs + treesum$tot_no_spurs)~log(treesum$trunk_diam))
+Diameter_Rank <- sma(log(treesum$tot_no_branch + treesum$tot_no_twigs + treesum$tot_no_spurs)~log(treesum$trunk_diam))
 plot(log(treesum$trunk_diam[1:19]), log(treesum$tot_no_branch[1:19] + treesum$tot_no_twigs[1:19] + treesum$tot_no_spurs[1:19]), 
 	xlim = c(0,6), ylim = c(0,8), xlab = "log ( Trunk Diameter  )", ylab = "log ( Rank )", cex = 2, pch = 19, col = "black")
 points(log(treesum$trunk_diam[20:24]), log(treesum$tot_no_branch[20:24] + treesum$tot_no_twigs[20:24] + treesum$tot_no_spurs[20:24]), 
 	cex = 1.5, pch = 23, col = "red", bg = "red")
-abline(summary(Diameter_Rank)$coef[1,1], summary(Diameter_Rank)$coef[2,1], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.695), bty='n', cex=3)
-
-#height vs. total stem mass
-
-Height_Mass <- lm(log(treesum$tot_stem_m)~log(treesum$height))
-plot(log(treesum$height[1:19]), log(treesum$tot_stem_m[1:19]), xlim = c(0,6), ylim = c(0,3),
-     xlab = "log ( Height  )", ylab = "log ( Total Stem Mass )", cex = 2, pch = 19, col = "black")
-points(log(treesum$height[20:24]), log(treesum$tot_stem_m[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
-abline(summary(Height_Mass)$coef[1,1], summary(Height_Mass)$coef[2,1], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.662), bty='n', cex=3)
+abline(coef.sma(Diameter_Rank)[1], coef.sma(Diameter_Rank)[2], lwd = 3, lty = 3)
+legend('topleft', legend=expression(R^2 == 0.698), bty='n', cex=3)
 
 #rank vs. tot stem mass
 
@@ -123,52 +150,8 @@ legend('topleft', legend=expression(R^2 == 0.776), bty='n', cex=3)
 
 ### Branch Level
 
-#branch diameter vs. total succeeding mass
 
-clean_mass <- branch_size[branch_size$tot_stem_m > 0,]
-clean_diam <- clean_mass[clean_mass$diameter_mm > 0,]
-
-diameter_mass <- lm(log(clean_diam$tot_stem_m)~log(clean_diam$diameter_mm))
-plot(log(clean_diam$diameter_mm), log(clean_diam$tot_stem_m), xlim = c(0,7), ylim = c(0,12),
-     	xlab = "log ( Diameter  )", ylab = "log ( Total Stem Mass )", cex = 2, pch = 19, col = "black")
-abline(summary(diameter_mass)$coef[1,1], summary(diameter_mass)$coef[2,1], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.790), bty='n', cex=3)
-
-#length ratio
-
-#branch diameter vs. rank
 
 ### Yield
 
-Diameter_Yield <- lm(log(treesum$yield[1:19])~log(treesum$trunk_diam[1:19]))
-plot(log(treesum$trunk_diam[1:19]), log(treesum$yield[1:19]), #xlim = c(0,6), ylim = c(0,12),
-     xlab = "log ( Trunk Diameter  )", ylab = "log ( Yield )", cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
-abline(summary(Diameter_Yield)$coef[1,1], summary(Diameter_Yield)$coef[2,1], lwd = 3, lty = 3)
-legend('bottomleft', legend=expression(R^2 == 0.193), bty='n', cex=3)
 
-
-Spurs_Yield <- lm(treesum$yield[1:19]~(treesum$tot_no_scars[1:19]/treesum$tot_no_spurs[1:19]))
-plot(treesum$tot_no_scars[1:19]/treesum$tot_no_spurs[1:19], treesum$yield[1:19], #xlim = c(0,6), ylim = c(0,12),
-     xlab = "log ( Scars / Spurs )", ylab = "log ( Yield )")
-#abline(summary(Spurs_Yield)$coef[1,1], summary(Spurs_Yield)$coef[3,1], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.594), bty='n', cex=3)
-
-Volume_Yield <- lm(log(treesum$yield[1:19])~log(treesum$canopy_volume[1:19]))
-plot(log(treesum$canopy_volume[1:19]), log(treesum$yield[1:19]), #xlim = c(0,6), ylim = c(0,12),
-     xlab = "log ( Canopy Volume  )", ylab = "log ( Yield )")
-abline(summary(Volume_Yield)$coef[1,1], summary(Volume_Yield)$coef[2,1], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.278), bty='n', cex=3)
-
-Pf_Yield <- lm(treesum$yield[1:19])~log(treesum$canopy_volume[1:19]))
-plot(treesum$Pf[1:19], treesum$yield[1:19]), #xlim = c(0,6), ylim = c(0,12),
-     xlab = "log ( Pf  )", ylab = "log ( Yield )")
-abline(summary(Pf_Yield)$coef[1,1], summary(Pf_Yield)$coef[2,1], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.278), bty='n', cex=3)
-
-PredYield<-glm(treesum$yield[1:19]~log(treesum$trunk_diam[1:19])+treesum$Pf[1:19]+
-		treesum$tot_no_scars[1:19]/treesum$tot_no_spurs[1:19], data=treesum, family = gaussian())
-YieldFit<-lm(predict(fit, type="response")~1+treesum$yield[1:19])
-plot(treesum$yield[1:19],predict(fit, type="response"),
-	xlab = "Observed Yield", ylab = "Predicted Yield", cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
-abline(0, 1, lwd = 3, lty = 3)
-legend('bottomright', legend=expression(R^2 == 0.409), bty='n', cex=3)
