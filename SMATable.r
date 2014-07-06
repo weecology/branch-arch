@@ -60,3 +60,5 @@ for (i in 2:10){
   test <- sma(dratio_temp$diameter_mm~parent_diam)
   sma_test[(i+1),5] = output(test)
 }
+
+write.csv(sma_test, "SMAResults.csv")
