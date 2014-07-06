@@ -73,7 +73,7 @@ library('smatr')
 # Tree Level [Estimated: 2.49 +/- 0.18, R2 = 0.974]
 # I would consider this spot on!!! It's just a little shy of the 8/3 buckling, which is within the statistical limits.
 
-Diameter_Mass <- sma(log10(treesum$tot_stem_m)~log10(treesum$trunk_diam))
+Diameter_Mass <- sma(log10(treesum$tot_stem_m)~log10(treesum$trunk_diam), slope.test = 2.67)
 plot(log10(treesum$trunk_diam[1:19]), log10(treesum$tot_stem_m[1:19]), xlim = c(1.5,2.5), ylim = c(3,5.5),
      xlab = "log ( Trunk Diameter  )", ylab = "log ( Total Stem Mass )", cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
 points(log10(treesum$trunk_diam[20:24]), log10(treesum$tot_stem_m[20:24]), cex = 2.5, pch = 19, col = "red", bg = "red")
