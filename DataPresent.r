@@ -64,6 +64,99 @@ treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
 
 library('smatr')
 
+#graph generation set-up
+
+tree_graph <- function(x, y, test, pred_b, pred_m, labx, laby, position, R2){
+  plot(log10(x[1:19]), log10(y[1:19]), 
+       xlim = c((log10(min(x))-0.2),(log10(max(x))+0.2)), ylim = c((log10(min(y))-0.2),(log10(max(y))+0.2)),
+       xlab = labx, ylab = laby, cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
+  points(log10(x[20:24]), log10(y[20:24]), cex = 2.5, pch = 19, col = "red", bg = "red")
+  abline(coef.sma(test)[1], coef.sma(test)[2], lwd = 3, lty = 2)
+  abline(sma(test)$coef[[1]][1,2], sma(test)$coef[[1]][2,2], lwd = 3, lty = 3)
+  abline(sma(test)$coef[[1]][1,3], sma(test)$coef[[1]][2,3], lwd = 3, lty = 3)
+  abline(pred_b, pred_m, lwd = 3, lty = 1)
+  legend(position, legend=R2, bty='n', cex=3)  
+} #tree-level figures
+branch_graph <- function(x, y, test, pred_b, pred_m, labx, laby, position, R2){
+  group_data_x <- list()
+  group_data_x[[1]] <- x[x$species=="cherry",]
+
+  apple <- x[x$species=="apple",]
+  group_data_x[[2]] <- subset(apple, tree==20 | tree==19 | tree==14)
+  group_data_x[[3]] <- subset(apple, tree==17 | tree==15 | tree==18)
+  group_data_x[[4]] <- subset(apple, tree==13)
+  group_data_x[[5]] <- subset(apple, tree==10 | tree==1 | tree==4 | tree ==9)
+  group_data_x[[6]] <- subset(apple, tree==5 | tree==11 | tree==6 | tree ==8)
+  group_data_x[[7]] <- subset(apple, tree==2 | tree==7 | tree==12 | tree ==3)
+  
+  group_data_y <- list()
+  group_data_y[[1]] <- y[y$species=="cherry",]
+  
+  apple <- y[y$species=="apple",]
+  group_data_y[[2]] <- subset(apple, tree==20 | tree==19 | tree==14)
+  group_data_y[[3]] <- subset(apple, tree==17 | tree==15 | tree==18)
+  group_data_y[[4]] <- subset(apple, tree==13)
+  group_data_y[[5]] <- subset(apple, tree==10 | tree==1 | tree==4 | tree ==9)
+  group_data_y[[6]] <- subset(apple, tree==5 | tree==11 | tree==6 | tree ==8)
+  group_data_y[[7]] <- subset(apple, tree==2 | tree==7 | tree==12 | tree ==3)
+  
+  plot(log10(group_data_x[[1]][,3]), log10(group_data_y[[1]][,3]), 
+       xlim = c((log10(min(x[,3], na.rm=T))-0.2),(log10(max(x[,3], na.rm=T))+0.2)), 
+       ylim = c((log10(min(y[,3], na.rm=T))-0.2),(log10(max(y[,3], na.rm=T))+0.2)),
+       xlab = labx, ylab = laby, cex.lab = 1.5, cex = 1.5, pch = 21, col = "red", bg = "red")
+  points(log10(group_data_x[[2]][,3]), log10(group_data_y[[2]][,3]), cex = 1.5, pch = 21, col = "black", bg = "orange")
+  points(log10(group_data_x[[3]][,3]), log10(group_data_y[[3]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'yellow')
+  points(log10(group_data_x[[4]][,3]), log10(group_data_y[[4]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'green')
+  points(log10(group_data_x[[5]][,3]), log10(group_data_y[[5]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'cyan')
+  points(log10(group_data_x[[6]][,3]), log10(group_data_y[[6]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'blue')
+  points(log10(group_data_x[[7]][,3]), log10(group_data_y[[7]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'purple')
+  abline(coef.sma(test)[1], coef.sma(test)[2], lwd = 3, lty = 2)
+  abline(sma(test)$coef[[1]][1,2], sma(test)$coef[[1]][2,2], lwd = 3, lty = 3)
+  abline(sma(test)$coef[[1]][1,3], sma(test)$coef[[1]][2,3], lwd = 3, lty = 3)
+  abline(pred_b, pred_m, lwd = 3, lty = 1)
+  legend(position, legend=R2, bty='n', cex=3)  
+} #branch-level log10-trans
+branch_graph2 <- function(x, y, test, pred_b, pred_m, labx, laby, position, R2){
+  group_data_x <- list()
+  group_data_x[[1]] <- x[x$species=="cherry",]
+  
+  apple <- x[x$species=="apple",]
+  group_data_x[[2]] <- subset(apple, tree==20 | tree==19 | tree==14)
+  group_data_x[[3]] <- subset(apple, tree==17 | tree==15 | tree==18)
+  group_data_x[[4]] <- subset(apple, tree==13)
+  group_data_x[[5]] <- subset(apple, tree==10 | tree==1 | tree==4 | tree ==9)
+  group_data_x[[6]] <- subset(apple, tree==5 | tree==11 | tree==6 | tree ==8)
+  group_data_x[[7]] <- subset(apple, tree==2 | tree==7 | tree==12 | tree ==3)
+  
+  group_data_y <- list()
+  group_data_y[[1]] <- y[y$species=="cherry",]
+  
+  apple <- y[y$species=="apple",]
+  group_data_y[[2]] <- subset(apple, tree==20 | tree==19 | tree==14)
+  group_data_y[[3]] <- subset(apple, tree==17 | tree==15 | tree==18)
+  group_data_y[[4]] <- subset(apple, tree==13)
+  group_data_y[[5]] <- subset(apple, tree==10 | tree==1 | tree==4 | tree ==9)
+  group_data_y[[6]] <- subset(apple, tree==5 | tree==11 | tree==6 | tree ==8)
+  group_data_y[[7]] <- subset(apple, tree==2 | tree==7 | tree==12 | tree ==3)
+  
+  plot(group_data_x[[1]][,3], group_data_y[[1]][,3], 
+       xlim = c((min(x[,3], na.rm=T)-0.2),(max(x[,3], na.rm=T)+0.2)), 
+       ylim = c((min(y[,3], na.rm=T)-0.2),(max(y[,3], na.rm=T)+0.2)),
+       xlab = labx, ylab = laby, cex.lab = 1.5, cex = 1.5, pch = 21, col = "red", bg = "red")
+  points(group_data_x[[2]][,3], group_data_y[[2]][,3], cex = 1.5, pch = 21, col = "black", bg = "orange")
+  points(group_data_x[[3]][,3], group_data_y[[3]][,3], cex = 1.5, pch = 21, col = "black", bg = 'yellow')
+  points(group_data_x[[4]][,3], group_data_y[[4]][,3], cex = 1.5, pch = 21, col = "black", bg = 'green')
+  points(group_data_x[[5]][,3], group_data_y[[5]][,3], cex = 1.5, pch = 21, col = "black", bg = 'cyan')
+  points(group_data_x[[6]][,3], group_data_y[[6]][,3], cex = 1.5, pch = 21, col = "black", bg = 'blue')
+  points(group_data_x[[7]][,3], group_data_y[[7]][,3], cex = 1.5, pch = 21, col = "black", bg = 'purple')
+  abline(coef.sma(test)[1], coef.sma(test)[2], lwd = 3, lty = 2)
+  abline(sma(test)$coef[[1]][1,2], sma(test)$coef[[1]][2,2], lwd = 3, lty = 3)
+  abline(sma(test)$coef[[1]][1,3], sma(test)$coef[[1]][2,3], lwd = 3, lty = 3)
+  abline(pred_b, pred_m, lwd = 3, lty = 1)
+  legend(position, legend=R2, bty='n', cex=3)  
+} #branch-level no log-trans
+
+
 
 ### Predicted Relationships
 
@@ -74,23 +167,18 @@ library('smatr')
 # I would consider this spot on!!! It's just a little shy of the 8/3 buckling, which is within the statistical limits.
 
 Diameter_Mass <- sma(log10(treesum$tot_stem_m)~log10(treesum$trunk_diam), slope.test = 2.67)
-plot(log10(treesum$trunk_diam[1:19]), log10(treesum$tot_stem_m[1:19]), xlim = c(1.5,2.5), ylim = c(3,5.5),
-     xlab = "log ( Trunk Diameter  )", ylab = "log ( Total Stem Mass )", cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
-points(log10(treesum$trunk_diam[20:24]), log10(treesum$tot_stem_m[20:24]), cex = 2.5, pch = 19, col = "red", bg = "red")
-abline(coef.sma(Diameter_Mass)[1], coef.sma(Diameter_Mass)[2], lwd = 3, lty = 3)
-abline(0, 2.667, lwd = 3, lty = 1)
-legend('bottom', legend=expression(R^2 == 0.974), bty='n', cex=3)
+tree_graph(treesum$trunk_diam, treesum$tot_stem_m, Diameter_Mass, 0, 2.67,
+           "log ( Trunk Diameter  )", "log ( Total Stem Mass )", 'bottomright', expression(R^2 == 0.974))
 
 # Branch Level [Estimated 2.48 +/- 0.05, R2 = 0.905]
 # Again, this is just shallaw of the prediction, and begins to show a signal of pruning (i.e., mass removal)!
 
-clean_mass <- branch_size[branch_size$tot_stem_m > 0,] #rm.na mass It's cherry 10, branch 16!
+diameter_mass <- sma(log10(branch_size$tot_stem_m)~log10(branch_size$diameter_mm))
+branch_graph(subset(branch_size, select = c(species, tree, diameter_mm)),
+             subset(branch_size, select = c(species, tree, tot_stem_m)),
+             diameter_mass, 0, 2.67, "log ( Diameter  )", "log ( Total Stem Mass )",
+             'bottomright', expression(R^2 == 0.905))
 
-diameter_mass <- sma(log10(clean_mass$tot_stem_m)~log10(clean_mass$diameter_mm))
-plot(log10(clean_mass$diameter_mm), log10(clean_mass$tot_stem_m), #xlim = c(0,7), ylim = c(0,12),
-     xlab = "log ( Diameter  )", ylab = "log ( Total Stem Mass )", cex = 2, pch = 19, col = "black")
-abline(coef.sma(diameter_mass)[1], coef.sma(diameter_mass)[2], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.905), bty='n', cex=3)
 
 ## Length vs. Diameter [Predicted: L ~ (D/2)^2/3; Price, Enquist & Savage, 2007]
 
@@ -98,20 +186,18 @@ legend('topleft', legend=expression(R^2 == 0.905), bty='n', cex=3)
 # The statistical result again includes the 2/3 expectation, but suggests closer to a 3/4. I don't have an explanation just yet.
 
 Diameter_Height <- sma(log10(treesum$height)~log10((treesum$trunk_diam/2)))
-plot(log10((treesum$trunk_diam[1:19]/2)), log10(treesum$height[1:19]), #xlim = c(0,6), ylim = c(0,12),
-     xlab = "log ( Trunk Diameter  )", ylab = "log ( Height )", cex = 2, pch = 19, col = "black")
-points(log10((treesum$trunk_diam[20:24]/2)), log10(treesum$height[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
-abline(coef.sma(Diameter_Height)[1], coef.sma(Diameter_Height)[2], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.849), bty='n', cex=3)
+tree_graph((treesum$trunk_diam/2), treesum$height, Diameter_Height, coef.sma(Diameter_Height)[1], 0.67,
+           "log ( Trunk Diameter  )", "log ( Height )", 'bottomright', expression(R^2 == 0.849))
+
 
 # Branch Level [Estimated: 0.86 +/- 0.04, R2 = 0.448]
 # This is even more beyond the 2/3 expectaiton, with more length per diameter. Might be an artifact of vigorous shoots.
 
-diameter_path <- sma(log10(branch_size$path_length)~log10((branch_size$diameter_mm/2)))
-plot(log10((branch_size$diameter_mm/2)), log10(branch_size$path_length), #xlim = c(0,7), ylim = c(0,12),
-     xlab = "log ( Diameter  )", ylab = "log ( Path Length )", cex = 2, pch = 19, col = "black")
-abline(coef.sma(diameter_path)[1], coef.sma(diameter_path)[2], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.442), bty='n', cex=3)
+diameter_path <- sma(log10(branch_size$path_length)~log10(branch_size$diameter_mm))
+branch_graph(subset(branch_size, select = c(species, tree, diameter_mm)),
+             subset(branch_size, select = c(species, tree, path_length)),
+             diameter_path, coef.sma(diameter_path)[1], 0.67, "log ( Diameter  )", "log ( Path Length )",
+             'bottomright', expression(R^2 == 0.442))
 
 
 ## Length vs. Mass [Predicted: L~M^1/4; Niklas & Enquist, 2001]
@@ -120,22 +206,19 @@ legend('topleft', legend=expression(R^2 == 0.442), bty='n', cex=3)
 # Again, the statistics include both reasonable options of 1/4 and 1/3. Hmm.
 
 Height_Mass <- sma(log10(treesum$height)~log10(treesum$tot_stem_m))
-plot(log10(treesum$tot_stem_m[1:19]), log10(treesum$height[1:19]), #xlim = c(0,6), ylim = c(0,3),
-     xlab = "log ( Total Stem Mass  )", ylab = "log ( Height )", cex = 2, pch = 19, col = "black")
-points(log10(treesum$tot_stem_m[20:24]), log10(treesum$height[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
-abline(coef.sma(Height_Mass)[1], coef.sma(Height_Mass)[2], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.849), bty='n', cex=3)
+tree_graph(treesum$tot_stem_m, treesum$height, Height_Mass, coef.sma(Height_Mass)[1], 0.25,
+           "log ( Total Stem Mass  )", "log ( Height )", 'bottomright', expression(R^2 == 0.849))
+
 
 # Branch Level [Estimated: 0.35 +/- 0.1, R2 = 0.632]
 # And, again the branch level pushes beyong the upper limit of the expectation. Apple and cherry are not low density.
 
-clean_mass <- branch_size[branch_size$tot_stem_m > 0,] #rm.na mass It's cherry 10, branch 16!
 
-length_mass <- sma(log10(clean_mass$path_length)~log10(clean_mass$tot_stem_m))
-plot(log10(clean_mass$tot_stem_m), log10(clean_mass$path_length), #xlim = c(0,7), ylim = c(0,12),
-     xlab = "log ( Total Stem Mass  )", ylab = "log ( Path Length )", cex = 2, pch = 19, col = "black")
-abline(coef.sma(length_mass)[1], coef.sma(length_mass)[2], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.632), bty='n', cex=3)
+length_mass <- sma(log10(branch_size$path_length)~log10(branch_size$tot_stem_m))
+branch_graph(subset(branch_size, select = c(species, tree, tot_stem_m)),
+             subset(branch_size, select = c(species, tree, path_length)),
+             length_mass, coef.sma(length_mass)[1], 0.25, "log ( Total Stem Mass  )", "log ( Path Length )",
+             'bottomright', expression(R^2 == 0.632))
 
 
 ## daVinci's Rule of Area Preservation [Predicted: D(k+1)/D(k) = 0.5, McCulloh & Sperry, 2005; Price, Enquist & Savage, 2007]
@@ -143,15 +226,14 @@ legend('topleft', legend=expression(R^2 == 0.632), bty='n', cex=3)
 # Area Decreasing Result [Estimate: 0.68 +/- 0.03, R2 = 0.569, extreme end of reasonalbe values]
 # Major pruning signal! Stems are fatter at the bottom than expected due to removal of end shoots.
 
-dratio_temp_na <- subset(branch_size, select = c(diameter_mm, diameter_ratio))
+dratio_temp_na <- subset(branch_size, select = c(species, tree, diameter_mm, diameter_ratio))
 dratio_temp <- na.omit(dratio_temp_na)
-parent_diam <- dratio_temp$diameter_mm/dratio_temp$diameter_ratio
+parent_diam <- data.frame(species = dratio_temp$species, tree = dratio_temp$tree,
+                          ratio = dratio_temp$diameter_mm/dratio_temp$diameter_ratio)
 
-diameter_ratio <- sma(dratio_temp$diameter_mm~parent_diam)
-plot(parent_diam, dratio_temp$diameter_mm, #xlim = c(0,7), ylim = c(0,12),
-     xlab = "Parent Diameter", ylab = "Daughter Diameter", cex = 2, pch = 19, col = "black")
-abline(coef.sma(diameter_ratio)[1], coef.sma(diameter_ratio)[2], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.632), bty='n', cex=3)
+diameter_ratio <- sma(dratio_temp$diameter_mm~parent_diam$ratio)
+branch_graph2(parent_diam, dratio_temp, diameter_ratio, 0, 0.5, "Parent Diameter", "Daughter Diameter",
+             'topleft', expression(R^2 == 0.632))
 
 
 ## Length Ratio [Predicted: L(k+1)/L(k) = 0.5; Price, Enquist & Savage, 2007]
@@ -159,28 +241,30 @@ legend('topleft', legend=expression(R^2 == 0.632), bty='n', cex=3)
 # Segment Length [Estimate: 1.41 +/- 0.1, R2 = 0.038, data incompatible]
 # My data is not detailed enought to get at this accurately. I ingnored small twig branching events.
 
-sratio_temp_na <- subset(branch_size, select = c(length_cm, length_ratio))
+sratio_temp_na <- subset(branch_size, select = c(species, tree, length_cm, length_ratio))
 sratio_temp <- na.omit(sratio_temp_na)
-parent_length <- sratio_temp$length_cm/sratio_temp$length_ratio
+parent_length <- data.frame(species = sratio_temp$species, tree = sratio_temp$tree,
+                            ratio = sratio_temp$length_cm/sratio_temp$length_ratio)
 
-length_ratio <- sma(sratio_temp$length_cm~parent_length)
-plot(parent_length, sratio_temp$length_cm, #xlim = c(0,7), ylim = c(0,12),
-     xlab = "Parent Segment Length", ylab = "Daughter Segment Length", cex = 2, pch = 19, col = "black")
-abline(coef.sma(length_ratio)[1], coef.sma(length_ratio)[2], lwd = 3, lty = 3)
-legend('topright', legend=expression(R^2 == 0.038), bty='n', cex=3)
+
+length_ratio <- sma(sratio_temp$length_cm~parent_length$ratio)
+branch_graph2(parent_length, sratio_temp, length_ratio, 0, 0.5, "Parent Stem Length", 
+             "Daughter Stem Length",'bottomright', expression(R^2 == 0.038))
+
 
 # Path Length [Estimate: 0.80 +/- 0.03, R2 = 0.545, still extreme end of reasonalbe values]
 # This is closer, but I'm still not sure it hits the mark.
 
-lratio_temp_na <- subset(branch_size, select = c(path_length, path_ratio))
+lratio_temp_na <- subset(branch_size, select = c(species, tree, path_length, path_ratio))
 lratio_temp <- na.omit(lratio_temp_na)
-parent_path <- lratio_temp$path_length/lratio_temp$path_ratio
+parent_path <- data.frame(species = lratio_temp$species, tree = lratio_temp$tree,
+                          ratio = lratio_temp$path_length/lratio_temp$path_ratio)
 
-path_ratio <- sma(lratio_temp$path_length~parent_path)
-plot(parent_path, lratio_temp$path_length, #xlim = c(0,7), ylim = c(0,12),
-     xlab = "Parent Path Length", ylab = "Daughter Path Length", cex = 2, pch = 19, col = "black")
-abline(coef.sma(path_ratio)[1], coef.sma(path_ratio)[2], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.545), bty='n', cex=3)
+
+
+path_ratio <- sma(lratio_temp$path_length~parent_path$ratio)
+branch_graph2(parent_path, lratio_temp, path_ratio, 0, 0.5, "Parent Path Length", 
+             "Daughter Path Length",'topleft', expression(R^2 == 0.545))
 
 
 ### Additional Relationships
@@ -188,32 +272,23 @@ legend('topleft', legend=expression(R^2 == 0.545), bty='n', cex=3)
 # trunk diameter vs. canopy volume [Estimate: 1.04 +/- 0.2, R2 = 0.7162] 
 # This might be indicative of the D ~ M(leaves).
 
-Diameter_Volume <- sma(log(treesum$canopy_volume)~log(treesum$trunk_diam))
-plot(log(treesum$trunk_diam[1:19]), log(treesum$canopy_volume[1:19]), #xlim = c(0,6), ylim = c(0,12),
-     xlab = "log ( Trunk Diameter  )", ylab = "log ( Canopy Volume )", cex = 2, pch = 19, col = "black")
-points(log(treesum$trunk_diam[20:24]), log(treesum$canopy_volume[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
-abline(coef.sma(Diameter_Volume)[1], coef.sma(Diameter_Volume)[2], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.716), bty='n', cex=3)
+Diameter_Volume <- sma(log10(treesum$canopy_volume)~log10(treesum$trunk_diam))
+tree_graph(treesum$trunk_diam, treesum$canopy_volume, Diameter_Volume, coef.sma(Diameter_Volume)[1], 1,
+           "log ( Trunk Diameter  )", "log ( Canopy Volume )", 'bottomright', expression(R^2 == 0.716))
+
 
 # trunk diameter vs. rank [Estimate: 2.04 +/- 0.5, R2 = 0.698] 
 # This might be indicative of the furcation ratio = 2.
 
-Diameter_Rank <- sma(log(treesum$tot_no_branch + treesum$tot_no_twigs + treesum$tot_no_spurs)~log(treesum$trunk_diam))
-plot(log(treesum$trunk_diam[1:19]), log(treesum$tot_no_branch[1:19] + treesum$tot_no_twigs[1:19] + treesum$tot_no_spurs[1:19]), 
-	xlim = c(0,6), ylim = c(0,8), xlab = "log ( Trunk Diameter  )", ylab = "log ( Rank )", cex = 2, pch = 19, col = "black")
-points(log(treesum$trunk_diam[20:24]), log(treesum$tot_no_branch[20:24] + treesum$tot_no_twigs[20:24] + treesum$tot_no_spurs[20:24]), 
-	cex = 1.5, pch = 23, col = "red", bg = "red")
-abline(coef.sma(Diameter_Rank)[1], coef.sma(Diameter_Rank)[2], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.698), bty='n', cex=3)
+Diameter_Rank <- sma(log10(treesum$tot_no_branch + treesum$tot_no_twigs + treesum$tot_no_spurs)~log10(treesum$trunk_diam))
+tree_graph(treesum$trunk_diam, (treesum$tot_no_branch + treesum$tot_no_twigs + treesum$tot_no_spurs), 
+           Diameter_Rank, 0, 0,
+           "log ( Trunk Diameter  )", "log ( Rank )", 'bottomright', expression(R^2 == 0.698))
 
 # rank vs. tot stem mass [Estimate: 1.22 +/- 0.25, R2 = 0.782] 
 # Rank can be a good approximation for mass.
 
-Rank_Mass <- sma(log(treesum$tot_stem_m)~log(treesum$tot_no_branch + treesum$tot_no_twigs + treesum$tot_no_spurs))
-plot(log(treesum$tot_no_branch[1:19] + treesum$tot_no_twigs[1:19] + treesum$tot_no_spurs[1:19]), 
-	log(treesum$tot_stem_m[1:19]), xlim = c(0,7), ylim = c(0,12),
-     	xlab = "log ( Height  )", ylab = "log ( Total Stem Mass )", cex = 2, pch = 19, col = "black")
-points(log(treesum$tot_no_branch[20:24] + treesum$tot_no_twigs[20:24] + treesum$tot_no_spurs[20:24]), 
-	log(treesum$tot_stem_m[20:24]), cex = 1.5, pch = 23, col = "red", bg = "red")
-abline(summary(Rank_Mass)$coef[1,1], summary(Rank_Mass)$coef[2,1], lwd = 3, lty = 3)
-legend('topleft', legend=expression(R^2 == 0.782), bty='n', cex=3)
+Rank_Mass <- sma(log10(treesum$tot_stem_m)~log10(treesum$tot_no_branch + treesum$tot_no_twigs + treesum$tot_no_spurs))
+tree_graph((treesum$tot_no_branch + treesum$tot_no_twigs + treesum$tot_no_spurs), treesum$tot_stem_m, 
+           Rank_Mass, 0, 0,
+           "log ( Rank )", "log ( Total Stem Mass )", 'bottomright', expression(R^2 == 0.782))
