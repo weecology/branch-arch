@@ -191,7 +191,9 @@ tree_graph((treesum$trunk_diam/2), treesum$height, Diameter_Height, coef.sma(Dia
 
 
 # Branch Level [Estimated: 0.86 +/- 0.04, R2 = 0.448]
-# This is even more beyond the 2/3 expectaiton, with more length per diameter. Might be an artifact of vigorous shoots.
+# This is even more beyond the 2/3 expectaiton, with more length per diameter. 
+# Might be an artifact of vigorous shoots or a deviation in methods where I measured diameter at the midpoint 
+# instead of at the node.
 
 diameter_path <- sma(log10(branch_size$path_length)~log10(branch_size$diameter_mm))
 branch_graph(subset(branch_size, select = c(species, tree, diameter_mm)),
