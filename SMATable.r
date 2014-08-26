@@ -66,4 +66,4 @@ for (i in 4:12){
   sma_test[(i+1),5] = output(test)
 }
 
-#write.csv(sma_test, "SMAResults.csv")
+write.csv(sma_test, "SMAResults.csv")
