@@ -135,6 +135,8 @@ hist(B9$path_length, main = paste("Smallest Apples ( n =",length(B9$length_cm),"
 
 ###Diameter Histograms
 
+###Mass Histograms
+
 
 #Scaling in Raw Data and Subtrees (See Table 1 for preditions)
 
