@@ -1,0 +1,170 @@
+---
+title: "Allometry Report for Chuck"
+author: "by Zack Brym"
+output: html_document
+---
+
+```{r data_setup, include=FALSE}
+branch_size <- read.csv("BranchSegments.csv", sep = ',', header = T)
+treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
+apple <- branch_size[branch_size$species == "apple",]
+cherry <- branch_size[branch_size$species == "cherry",]
+PiAu <- subset(apple, tree==20 | tree==19 | tree==14)
+B9 <- subset(apple, tree==2 | tree==7 | tree==12 | tree ==3)
+library('smatr')
+```
+
+```{r graph_generation_functions, include=FALSE}
+tree_graph <- function(x, y, test, pred_b, pred_m, labx, laby, position, R2){
+  plot(log10(x[1:19]), log10(y[1:19]), 
+       xlim = c((log10(min(x))-0.2),(log10(max(x))+0.2)), ylim = c((log10(min(y))-0.2),(log10(max(y))+0.2)),
+       xlab = labx, ylab = laby, cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
+  points(log10(x[20:24]), log10(y[20:24]), cex = 2.5, pch = 19, col = "red", bg = "red")
+  abline(sma(test)$coef[[1]][1,1], sma(test)$coef[[1]][2,1], lwd = 3, lty = 2)
+  abline(sma(test)$coef[[1]][1,2], sma(test)$coef[[1]][2,2], lwd = 3, lty = 3)
+  abline(sma(test)$coef[[1]][1,3], sma(test)$coef[[1]][2,3], lwd = 3, lty = 3)
+  abline(pred_b, pred_m, lwd = 3, lty = 1)
+  legend(position, legend=R2, bty='n', cex=3)  
+} #tree-level figures
+branch_graph <- function(x, y, test, pred_b, pred_m, labx, laby, position, R2){
+  group_data_x <- list()
+  group_data_x[[1]] <- x[x$species=="cherry",]
+
+  apple <- x[x$species=="apple",]
+  group_data_x[[2]] <- subset(apple, tree==20 | tree==19 | tree==14)
+  group_data_x[[3]] <- subset(apple, tree==17 | tree==15 | tree==18)
+  group_data_x[[4]] <- subset(apple, tree==13)
+  group_data_x[[5]] <- subset(apple, tree==10 | tree==1 | tree==4 | tree ==9)
+  group_data_x[[6]] <- subset(apple, tree==5 | tree==11 | tree==6 | tree ==8)
+  group_data_x[[7]] <- subset(apple, tree==2 | tree==7 | tree==12 | tree ==3)
+  
+  group_data_y <- list()
+  group_data_y[[1]] <- y[y$species=="cherry",]
+  
+  apple <- y[y$species=="apple",]
+  group_data_y[[2]] <- subset(apple, tree==20 | tree==19 | tree==14)
+  group_data_y[[3]] <- subset(apple, tree==17 | tree==15 | tree==18)
+  group_data_y[[4]] <- subset(apple, tree==13)
+  group_data_y[[5]] <- subset(apple, tree==10 | tree==1 | tree==4 | tree ==9)
+  group_data_y[[6]] <- subset(apple, tree==5 | tree==11 | tree==6 | tree ==8)
+  group_data_y[[7]] <- subset(apple, tree==2 | tree==7 | tree==12 | tree ==3)
+  
+  plot(log10(group_data_x[[1]][,3]), log10(group_data_y[[1]][,3]), 
+       xlim = c((log10(min(x[,3], na.rm=T))-0.2),(log10(max(x[,3], na.rm=T))+0.2)), 
+       ylim = c((log10(min(y[,3], na.rm=T))-0.2),(log10(max(y[,3], na.rm=T))+0.2)),
+       xlab = labx, ylab = laby, cex.lab = 1.5, cex = 1.5, pch = 21, col = "red", bg = "red")
+  points(log10(group_data_x[[2]][,3]), log10(group_data_y[[2]][,3]), cex = 1.5, pch = 21, col = "black", bg = "orange")
+  points(log10(group_data_x[[3]][,3]), log10(group_data_y[[3]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'yellow')
+  points(log10(group_data_x[[4]][,3]), log10(group_data_y[[4]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'green')
+  points(log10(group_data_x[[5]][,3]), log10(group_data_y[[5]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'cyan')
+  points(log10(group_data_x[[6]][,3]), log10(group_data_y[[6]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'blue')
+  points(log10(group_data_x[[7]][,3]), log10(group_data_y[[7]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'purple')
+  abline(sma(test)$coef[[1]][1,1], sma(test)$coef[[1]][2,1], lwd = 3, lty = 2)
+  abline(sma(test)$coef[[1]][1,2], sma(test)$coef[[1]][2,2], lwd = 3, lty = 3)
+  abline(sma(test)$coef[[1]][1,3], sma(test)$coef[[1]][2,3], lwd = 3, lty = 3)
+  abline(pred_b, pred_m, lwd = 3, lty = 1)
+  legend(position, legend=R2, bty='n', cex=3)  
+} #branch-level log10-trans
+branch_graph2 <- function(x, y, test, pred_b, pred_m, labx, laby, position, R2){
+  group_data_x <- list()
+  group_data_x[[1]] <- x[x$species=="cherry",]
+  
+  apple <- x[x$species=="apple",]
+  group_data_x[[2]] <- subset(apple, tree==20 | tree==19 | tree==14)
+  group_data_x[[3]] <- subset(apple, tree==17 | tree==15 | tree==18)
+  group_data_x[[4]] <- subset(apple, tree==13)
+  group_data_x[[5]] <- subset(apple, tree==10 | tree==1 | tree==4 | tree ==9)
+  group_data_x[[6]] <- subset(apple, tree==5 | tree==11 | tree==6 | tree ==8)
+  group_data_x[[7]] <- subset(apple, tree==2 | tree==7 | tree==12 | tree ==3)
+  
+  group_data_y <- list()
+  group_data_y[[1]] <- y[y$species=="cherry",]
+  
+  apple <- y[y$species=="apple",]
+  group_data_y[[2]] <- subset(apple, tree==20 | tree==19 | tree==14)
+  group_data_y[[3]] <- subset(apple, tree==17 | tree==15 | tree==18)
+  group_data_y[[4]] <- subset(apple, tree==13)
+  group_data_y[[5]] <- subset(apple, tree==10 | tree==1 | tree==4 | tree ==9)
+  group_data_y[[6]] <- subset(apple, tree==5 | tree==11 | tree==6 | tree ==8)
+  group_data_y[[7]] <- subset(apple, tree==2 | tree==7 | tree==12 | tree ==3)
+  
+  plot(group_data_x[[1]][,3], group_data_y[[1]][,3], 
+       xlim = c((min(x[,3], na.rm=T)-0.2),(max(x[,3], na.rm=T)+0.2)), 
+       ylim = c((min(y[,3], na.rm=T)-0.2),(max(y[,3], na.rm=T)+0.2)),
+       xlab = labx, ylab = laby, cex.lab = 1.5, cex = 1.5, pch = 21, col = "red", bg = "red")
+  points(group_data_x[[2]][,3], group_data_y[[2]][,3], cex = 1.5, pch = 21, col = "black", bg = "orange")
+  points(group_data_x[[3]][,3], group_data_y[[3]][,3], cex = 1.5, pch = 21, col = "black", bg = 'yellow')
+  points(group_data_x[[4]][,3], group_data_y[[4]][,3], cex = 1.5, pch = 21, col = "black", bg = 'green')
+  points(group_data_x[[5]][,3], group_data_y[[5]][,3], cex = 1.5, pch = 21, col = "black", bg = 'cyan')
+  points(group_data_x[[6]][,3], group_data_y[[6]][,3], cex = 1.5, pch = 21, col = "black", bg = 'blue')
+  points(group_data_x[[7]][,3], group_data_y[[7]][,3], cex = 1.5, pch = 21, col = "black", bg = 'purple')
+  abline(sma(test)$coef[[1]][1,1], sma(test)$coef[[1]][2,1], lwd = 3, lty = 2)
+  abline(sma(test)$coef[[1]][1,2], sma(test)$coef[[1]][2,2], lwd = 3, lty = 3)
+  abline(sma(test)$coef[[1]][1,3], sma(test)$coef[[1]][2,3], lwd = 3, lty = 3)
+  abline(pred_b, pred_m, lwd = 3, lty = 1)
+  legend(position, legend=R2, bty='n', cex=3)  
+} #branch-level no log-trans
+```
+
+##Frequency Distributions
+
+###Length Histograms
+Histograms for segment length, path length, and subtree length. Sample size is listed next to title. There are 5 cherry and 19 apple individuals represented. The Biggest Apple is the largest rootstock ('PiAu') with 3 individuals represented. The Smallest Apple is the smallest rootstock ('B9') with 4 individuals represented.
+
+####Segment Length
+```{r length_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist(branch_size$length_cm, main = paste("All ( n =",length(branch_size$length_cm),")"), breaks = 40, xlab="segment length")
+hist(cherry$length_cm, main = paste("Cherry ( n =",length(cherry$length_cm),")"), breaks = 40, xlab = "segment length")
+hist(apple$length_cm, main = paste("Apple ( n =",length(apple$length_cm),")"), breaks = 40, xlab = "segment length")
+hist(PiAu$length_cm, main = paste("Biggest Apples ( n =",length(PiAu$length_cm),")"),breaks = 20,xlab = "segment length")
+hist(B9$length_cm, main = paste("Smallest Apples ( n =",length(B9$length_cm),")"), breaks = 20, xlab = "segment length")
+```
+
+####Path Length
+```{r pathlength_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist(branch_size$path_length, main = paste("All ( n =",length(branch_size$length_cm),")"), breaks = 40, xlab="path length")
+hist(cherry$path_length, main = paste("Cherry ( n =",length(cherry$length_cm),")"), breaks = 40, xlab = "path length")
+hist(apple$path_length, main = paste("Apple ( n =",length(apple$length_cm),")"), breaks = 40, xlab = "path length")
+hist(PiAu$path_length, main = paste("Biggest Apples ( n =",length(PiAu$length_cm),")"), breaks = 20, xlab="path length")
+hist(B9$path_length, main = paste("Smallest Apples ( n =",length(B9$length_cm),")"), breaks = 20, xlab = "path length")
+```
+
+####Subtree Length
+
+###Diameter Histograms
+
+
+#Scaling in Raw Data and Subtrees (See Table 1 for preditions)
+
+Length ~ Radius^2 (peripheral / fruiting branches)
+
+Length ~ Radius^2/3 (basal / scaffold branches)
+
+Surface Area (2 * pi * Radius * Length) ~ Volume^3/4 (pi * radius^2 * Length)
+
+Daughter/Parent Branch Area ratio
+
+Length ~ Mass ~ Diameter
+
+Surface Area ~ No of terminal branches (WBE)
+
+*subtree is the diameter of a given branch segment, and the total length, total surface area, and total volume of all branch segments distal to that branch segment*
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+summary(cars)
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

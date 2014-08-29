@@ -7,7 +7,7 @@ species <- list(list("apple",
                      c(1,7,10,13,15)))
 
 
-### Calculates total stem mass above branch node
+### Calculates total stem mass (subtree) above branch node
 
 for (m in 1:2){
   spp <- branch[branch$species==species[[m]][1],]
@@ -65,3 +65,36 @@ for (m in 1:2){
 }
 
 write.csv(paths_out,"Paths.csv")
+
+### Calculates total stem length (subtree) above branch node
+
+for (m in 1:2){
+  spp <- branch[branch$species==species[[m]][1],]
+  for (n in 1:length(species[[m]][[2]])){
+    tree <- spp[spp$tree==species[[m]][[2]][n],]
+    for (j in length(tree[,1]):1){
+      daughters <- tree[tree$parent==tree$branch[j],]
+      if (length(daughters[,1]) > 0){
+        tree$tot_length[j] = tree$length_cm[j] + sum(daughters$tot_length, na.rm = TRUE)
+        }
+      else{
+        twig_spp <- twig[twig$species==species[[m]][1],]
+        twig_tree <- twig_spp[twig_spp$tree==species[[m]][[2]][n],]
+        twig_daughters <- twig_tree[twig_tree$parent==tree$branch[j],]
+        if (length(twig_daughters[,1])>0)
+          tree$tot_length[j] = tree$length_cm[j] + sum(twig_daughters$length_cm)
+        else
+          tree$tot_length[j] = tree$length_cm[j]
+        }
+    }
+    
+    tree_lengths = data.frame(tree = tree$tree, branch = tree$branch, path = tree$tot_length)
+    
+    if (exists('lengths_out'))
+      lengths_out = rbind(lengths_out, tree_lengths)
+    else
+      lengths_out <- tree_lengths
+  }
+}
+
+write.csv(lengths_out,"Sum_lengths.csv")
