@@ -1,6 +1,6 @@
 ---
-title: "Allometry Report for Chuck"
-author: "by Zack Brym"
+title: "Allometry Results"
+author: "Zack Brym"
 output: html_document
 ---
 
@@ -109,7 +109,7 @@ branch_graph2 <- function(x, y, test, pred_b, pred_m, labx, laby, position, R2){
 ##Frequency Distributions
 
 ###Length Histograms
-Histograms for segment length, path length, and subtree length. Sample size is listed next to title. There are 5 cherry and 19 apple individuals represented. The Biggest Apple is the largest rootstock ('PiAu') with 3 individuals represented. The Smallest Apple is the smallest rootstock ('B9') with 4 individuals represented.
+Histograms for segment length, path length, and subtree length levels. Sample size is listed next to title. There are 5 cherry and 19 apple individuals represented. The Biggest Apple is the largest rootstock ('PiAu') with 3 individuals represented. The Smallest Apple is the smallest rootstock ('B9') with 4 individuals represented.  
 
 ####Segment Length
 ```{r length_hist, echo=FALSE}
@@ -121,7 +121,7 @@ hist(PiAu$length_cm, main = paste("Biggest Apples ( n =",length(PiAu$length_cm),
 hist(B9$length_cm, main = paste("Smallest Apples ( n =",length(B9$length_cm),")"), breaks = 20, xlab = "segment length")
 ```
 
-####Path Length
+####Path Length *(includes terminal twigs when possible)*
 ```{r pathlength_hist, echo=FALSE}
 par(mfrow = c(2,3))
 hist(branch_size$path_length, main = paste("All ( n =",length(branch_size$length_cm),")"), breaks = 40, xlab="path length")
@@ -131,12 +131,64 @@ hist(PiAu$path_length, main = paste("Biggest Apples ( n =",length(PiAu$length_cm
 hist(B9$path_length, main = paste("Smallest Apples ( n =",length(B9$length_cm),")"), breaks = 20, xlab = "path length")
 ```
 
-####Subtree Length
+####Subtree Length *(includes terminal twigs when possible)*
+```{r subtreelength_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist(branch_size$tot_length, main = paste("All ( n =",length(branch_size$tot_length),")"), breaks=60, xlab="sum of lengths")
+hist(cherry$tot_length, main = paste("Cherry ( n =",length(cherry$tot_length),")"), breaks = 60, xlab = "sum of lengths")
+hist(apple$tot_length, main = paste("Apple ( n =",length(apple$tot_length),")"), breaks = 60, xlab = "sum of lengths")
+hist(PiAu$tot_length, main = paste("Biggest Apples ( n =",length(PiAu$tot_length),")"), breaks = 60, xlab="sum of lengths")
+hist(B9$tot_length, main = paste("Smallest Apples ( n =",length(B9$tot_length),")"), breaks = 60, xlab = "sum of lengths")
+```
 
 ###Diameter Histograms
+Histograms for diameter at an individual level. Sample size is listed next to title. There are 5 cherry and 19 apple individuals represented. The Biggest Apple is the largest rootstock ('PiAu') with 3 individuals represented. The Smallest Apple is the smallest rootstock ('B9') with 4 individuals represented.  
+```{r diameter_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist(branch_size$diameter_mm, main = paste("All ( n =",length(branch_size[,1]),")"), breaks = 40, xlab="diameter")
+hist(cherry$diameter_mm, main = paste("Cherry ( n =",length(cherry[,1]),")"), breaks = 40, xlab = "diameter")
+hist(apple$diameter_mm, main = paste("Apple ( n =",length(apple[,1]),")"), breaks = 40, xlab = "diameter")
+hist(PiAu$diameter_mm, main = paste("Biggest Apples ( n =",length(PiAu[,1]),")"),breaks = 20,xlab = "diameter")
+hist(B9$diameter_mm, main = paste("Smallest Apples ( n =",length(B9[,1]),")"), breaks = 20, xlab = "diameter")
+```
 
 ###Mass Histograms
+Histograms for segment mass, total segment mass, and total subtree mass. Sample size is listed next to title. There are 5 cherry and 19 apple individuals represented. The Biggest Apple is the largest rootstock ('PiAu') with 3 individuals represented. The Smallest Apple is the smallest rootstock ('B9') with 4 individuals represented.  
 
+####Segment Mass
+```{r mass_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist(branch_size$stem_m, main = paste("All ( n =",length(branch_size[,1]),")"), breaks = 40, xlab="segment mass")
+hist(cherry$stem_m, main = paste("Cherry ( n =",length(cherry[,1]),")"), breaks = 40, xlab = "segment mass")
+hist(apple$stem_m, main = paste("Apple ( n =",length(apple[,1]),")"), breaks = 40, xlab = "segment mass")
+hist(PiAu$stem_m, main = paste("Biggest Apples ( n =",length(PiAu[,1]),")"),breaks = 20,xlab = "segment mass")
+hist(B9$stem_m, main = paste("Smallest Apples ( n =",length(B9[,1]),")"), breaks = 20, xlab = "segment mass")
+```
+
+####Total Segment Mass *(subtree w/o terminal twigs)*
+```{r totmass_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist(branch_size$tot_stem_m, main = paste("All ( n =",length(branch_size[,1]),")"), breaks = 40, xlab="total branch mass")
+hist(cherry$tot_stem_m, main = paste("Cherry ( n =",length(cherry[,1]),")"), breaks = 40, xlab = "total branch mass")
+hist(apple$tot_stem_m, main = paste("Apple ( n =",length(apple[,1]),")"), breaks = 40, xlab = "total branch mass")
+hist(PiAu$tot_stem_m, main = paste("Biggest Apples ( n =",length(PiAu[,1]),")"),breaks = 20,xlab = "total branch mass")
+hist(B9$tot_stem_m, main = paste("Smallest Apples ( n =",length(B9[,1]),")"), breaks = 20, xlab = "total branch mass")
+```
+
+####Subtree Mass *(add twig mass to 'Total Segment Mass')*
+```{r subtreemass_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist((branch_size$tot_stem_m + branch_size$tot_twig_m), 
+     main = paste("All ( n =",length(branch_size[,1]),")"), breaks = 40, xlab="total branch mass")
+hist((cherry$tot_stem_m + cherry$tot_twig_m), 
+     main = paste("Cherry ( n =",length(cherry[,1]),")"), breaks = 40, xlab = "total branch mass")
+hist((apple$tot_stem_m + apple$tot_twig_m), 
+     main = paste("Apple ( n =",length(apple[,1]),")"), breaks = 40, xlab = "total branch mass")
+hist((PiAu$tot_stem_m + PiAu$tot_twig_m), 
+     main = paste("Biggest Apples ( n =",length(PiAu[,1]),")"),breaks = 20,xlab = "total branch mass")
+hist((B9$tot_stem_m + B9$tot_twig_m), 
+     main = paste("Smallest Apples ( n =",length(B9[,1]),")"), breaks = 20, xlab = "total branch mass")
+```
 
 #Scaling in Raw Data and Subtrees (See Table 1 for preditions)
 
@@ -153,20 +205,3 @@ Length ~ Mass ~ Diameter
 Surface Area ~ No of terminal branches (WBE)
 
 *subtree is the diameter of a given branch segment, and the total length, total surface area, and total volume of all branch segments distal to that branch segment*
-
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r}
-summary(cars)
-```
-
-You can also embed plots, for example:
-
-```{r, echo=FALSE}
-plot(cars)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
