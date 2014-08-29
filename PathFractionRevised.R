@@ -32,6 +32,33 @@ for (m in 1:2){
 
 write.csv(masses_out,"Sum_masses.csv")
 
+
+### Calculates total twig mass (subtree) above branch node
+
+for (m in 1:2){
+  spp <- branch[branch$species==species[[m]][1],]
+  for (n in 1:length(species[[m]][[2]])){
+    tree <- spp[spp$tree==species[[m]][[2]][n],]
+    for (j in length(tree[,1]):1){
+      daughters <- tree[tree$parent==tree$branch[j],]
+      if (length(daughters[,1]) > 0)
+        tree$tot_twig_m[j] = tree$twig_m[j] + sum(daughters$tot_twig_m, na.rm = TRUE)
+      else
+        tree$tot_twig_m[j] = tree$twig_m[j]
+    }
+    
+    twig_masses = data.frame(tree = tree$tree, branch = tree$branch, tot_twig_m = tree$tot_twig_m)
+    
+    if (exists('twig_m_out'))
+      twig_m_out = rbind(twig_m_out, twig_masses)
+    else
+      twig_m_out <- twig_masses
+  }
+}
+
+write.csv(twig_m_out,"Twig_masses.csv")
+
+
 ### Calculates path length above branch node
 
 for (m in 1:2){
@@ -66,6 +93,7 @@ for (m in 1:2){
 
 write.csv(paths_out,"Paths.csv")
 
+
 ### Calculates total stem length (subtree) above branch node
 
 for (m in 1:2){
@@ -88,7 +116,7 @@ for (m in 1:2){
         }
     }
     
-    tree_lengths = data.frame(tree = tree$tree, branch = tree$branch, path = tree$tot_length)
+    tree_lengths = data.frame(tree = tree$tree, branch = tree$branch, tot_length = tree$tot_length)
     
     if (exists('lengths_out'))
       lengths_out = rbind(lengths_out, tree_lengths)
