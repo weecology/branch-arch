@@ -29,7 +29,7 @@ for (i in 1:length(branch_size[,1])){
     for (j in 1:length(daughters[,1])){
       daughter_A[j] = pi * (daughters$diameter_mm[j]/2)^2
     }
-    ratios[i,9] = sum(daughter_A)/(pi * (branch_size$diameter_mm[i]/2)^2)
+    ratios[i,9] = round(sum(daughter_A)/(pi * (branch_size$diameter_mm[i]/2)^2),3)
 }
 
-#write.csv(ratios, "ratios.csv")
+write.csv(ratios, "ratios.csv")
