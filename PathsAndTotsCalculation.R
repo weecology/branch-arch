@@ -30,7 +30,29 @@ for (m in 1:2){
   }
 }
 
-write.csv(masses_out,"Sum_masses.csv")
+
+### Calculates total number of terminal twigs above branch node
+
+for (m in 1:2){
+  spp <- branch[branch$species==species[[m]][1],]
+  for (n in 1:length(species[[m]][[2]])){
+    tree <- spp[spp$tree==species[[m]][[2]][n],]
+    for (j in length(tree[,1]):1){
+      daughters <- tree[tree$parent==tree$branch[j],]
+      if (length(daughters[,1]) > 0)
+        tree$tot_no_twigs[j] = tree$no_twigs[j] + sum(daughters$tot_no_twigs, na.rm = TRUE)
+      else
+        tree$tot_no_twigs[j] = tree$no_twigs[j]
+    }
+    
+    no_twig = data.frame(tree = tree$tree, branch = tree$branch, tot_no_twigs = tree$tot_no_twigs)
+    
+    if (exists('no_twig_out'))
+      no_twig_out = rbind(no_twig_out, no_twig)
+    else
+      no_twig_out <- no_twig
+  }
+}
 
 
 ### Calculates total twig mass (subtree) above branch node
@@ -55,8 +77,6 @@ for (m in 1:2){
       twig_m_out <- twig_masses
   }
 }
-
-write.csv(twig_m_out,"Twig_masses.csv")
 
 
 ### Calculates path length above branch node
@@ -91,10 +111,9 @@ for (m in 1:2){
   }
 }
 
-write.csv(paths_out,"Paths.csv")
 
 
-### Calculates total stem length (subtree) above branch node
+### Calculates total stem (subtree) length, surface area, and volume  above branch node.
 
 for (m in 1:2){
   spp <- branch[branch$species==species[[m]][1],]
@@ -102,13 +121,19 @@ for (m in 1:2){
     tree <- spp[spp$tree==species[[m]][[2]][n],]
     for (j in length(tree[,1]):1){
       daughters <- tree[tree$parent==tree$branch[j],]
+      tree$area[j] = round(2 * pi * (tree$diameter_mm[j]/2) * tree$length_cm[j],1)
+      tree$volume[j] = round(pi * (tree$diameter_mm[j]/2)^2 * tree$length_cm[j],1)
       if (length(daughters[,1]) > 0){
         tree$tot_length[j] = tree$length_cm[j] + sum(daughters$tot_length, na.rm = TRUE)
+        tree$tot_area[j] = tree$area[j] + sum(daughters$tot_area, na.rm = TRUE)
+        tree$tot_volume[j] = tree$volume[j] + sum(daughters$tot_volume, na.rm = TRUE)
         }
       else{
         twig_spp <- twig[twig$species==species[[m]][1],]
         twig_tree <- twig_spp[twig_spp$tree==species[[m]][[2]][n],]
         twig_daughters <- twig_tree[twig_tree$parent==tree$branch[j],]
+        tree$tot_area[j] = tree$area[j]
+        tree$tot_volume[j] = tree$volume[j]
         if (length(twig_daughters[,1])>0)
           tree$tot_length[j] = tree$length_cm[j] + sum(twig_daughters$length_cm)
         else
@@ -116,7 +141,9 @@ for (m in 1:2){
         }
     }
     
-    tree_lengths = data.frame(tree = tree$tree, branch = tree$branch, tot_length = tree$tot_length)
+    tree_lengths = data.frame(tree = tree$tree, branch = tree$branch, tot_length = tree$tot_length,
+                              area = tree$area, tot_area = tree$tot_area, volume = tree$volume,
+                              tot_volume = tree$tot_volume)
     
     if (exists('lengths_out'))
       lengths_out = rbind(lengths_out, tree_lengths)
@@ -125,4 +152,9 @@ for (m in 1:2){
   }
 }
 
-write.csv(lengths_out,"Sum_lengths.csv")
+tots_out = data.frame(tree = branch$tree, branch = branch$branch, path = paths_out$path, tot_length = lengths_out$tot_length, 
+                      area = lengths_out$area, tot_area = lengths_out$tot_area, volume = lengths_out$volume,
+                      tot_volume = lengths_out$tot_volume, tot_stem_m = masses_out$mass, 
+                      tot_no_twigs = no_twig_out$tot_no_twigs, tot_twig_m = twig_m_out$tot_twig_m) 
+
+write.csv(tots_out,"PathAndTotals.csv")
