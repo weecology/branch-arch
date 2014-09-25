@@ -1,8 +1,19 @@
-# Extract data from  cherry growers receipts
+# Extract data from cherry growers receipts
+#
+# Usage:
+# bash export_growers_data.sh
+#
+# Run in a directory with Growers Receipt pdfs.
+# It will produce one txt file for each pdf with the OCR'd text from the first page.
 
-# Convert pdf to image
-convert -density 300 CherryReceipt.pdf CherryReceipt.png
+for pdf in *.pdf
+  do
+    filename=$(basename "$pdf")
+    filename="${filename%.*}"
 
-# OCR the png and extract the text
-tesseract CherryReceipt-0.png CherryReceipt
+    # Convert pdf to image
+    convert -density 300 $pdf $filename.png
 
+    # OCR the png and extract the text
+    tesseract $filename-0.png $filename
+  done
