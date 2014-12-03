@@ -60,12 +60,11 @@ for (i in 1:2){
     subout[j,20] = round(mean(ind$length_ratio, na.rm=T),3)
     subout[j,21] = round(mean(ind$diameter_ratio, na.rm=T),3)
     subout[j,22] = round(mean(ind$mass_ratio, na.rm=T),3)
-    
+  }  
   if (i==1)
     trees_temp <- subout
   else
     trees_out = rbind(trees_temp, subout)
-  }
 }
  
 write.csv(trees_out,"TreeSummary.csv")
