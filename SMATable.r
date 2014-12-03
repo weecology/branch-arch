@@ -29,19 +29,23 @@ species <- list(list("apple",
                      c(7,13,15,1,10),
                      c("cherry-1", "cherry-2", "cherry-3", "cherry-4", "cherry-5")))
 
+plus <- list(c(1,1,1,1,1,1,2), c(3,5,6,13,15,19,3), 
+             c("Bud.9-4+", "CG.3041-1+", "CG.6210-3+", "M.26+", "JM.8-2+", "PiAu.5683-3+", "cherry-3+"))
+
 output <- function(sma_data){
   return (paste(round(sma(sma_data)$coef[[1]][2,1],2), " [ ", round(sma(sma_data)$coef[[1]][2,2],2), " , ", 
                round(sma(sma_data)$coef[[1]][2,3],2), " ]; ", round(sma(sma_data)$r2[[1]], 3), sep = ""))
 }     #insert for intercept value <round(coef.sma(sma_data)[1],2), "; ",>
 
-sma_test <- matrix(nrow = 13, ncol = 18)
-colnames(sma_test) = c('group', "L~D (Segment)", "(Path)", "(Subtree)", "SA~V", "D~V", 
-                       "L~V (Segment)", "(Path)", "(Subtree)", "D~SA", "L~SA (Segment)", "(Path)", "(Subtree)", 
-                       "L~M (Segment)", "(Path)", "(Subtree)", "M~D", "M~V")
+sma_test <- matrix(nrow = 13, ncol = 23)
+colnames(sma_test) = c('group', "L~D (Segment)", "(Path)", "(Subtree)", "SA~V (Segment)", "(Subtree)", "D~V(Segment)", "(Subtree)", 
+                       "L~V (Segment)", "(Path)", "(Subtree)", "D~SA (Segment)", "(Subtree)", "L~SA (Segment)", "(Path)", "(Subtree)", 
+                       "L~M (Segment)", "(Path)", "(Subtree)", "M~D (Segment)", "(Subtree)", "M~V(Segment)", "(Subtree)")
 
 sma_test[1,] = c("prediction", "2 - 2/3", "", "", "3/4 - 5/8", "1/4 - 3/8", "1/2 - 1/4", "", "", "1/3 - 3/5", "2/3 - 2/5",
                  "", "", "", "", "", "", "")
 
+# Tree Level Output
 for (i in 1:3){
   sma_test[(i+1),1] = groups[i]
   
@@ -54,51 +58,66 @@ for (i in 1:3){
   test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$trunk_diam))
   sma_test[(i+1),4] = output(test)
   
-  test <- sma(log10(group_data[[i]]$tot_area)~log10(group_data[[i]]$tot_volume))
+  test <- sma(log10(group_data[[i]]$area)~log10(group_data[[i]]$volume))
   sma_test[(i+1),5] = output(test)
   
-  test <- sma(log10(group_data[[i]]$trunk_diam)~log10(group_data[[i]]$tot_volume))
+  test <- sma(log10(group_data[[i]]$tot_area)~log10(group_data[[i]]$tot_volume))
   sma_test[(i+1),6] = output(test)
   
-  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$tot_volume))
+  test <- sma(log10(group_data[[i]]$trunk_diam)~log10(group_data[[i]]$volume))
   sma_test[(i+1),7] = output(test)
   
-  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_volume))
+  test <- sma(log10(group_data[[i]]$trunk_diam)~log10(group_data[[i]]$tot_volume))
   sma_test[(i+1),8] = output(test)
   
-  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_volume))
+  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$volume))
   sma_test[(i+1),9] = output(test)
   
-  test <- sma(log10(group_data[[i]]$trunk_diam)~log10(group_data[[i]]$tot_area))
+  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_volume))
   sma_test[(i+1),10] = output(test)
   
-  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$tot_area))
+  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_volume))
   sma_test[(i+1),11] = output(test)
   
-  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_area))
+  test <- sma(log10(group_data[[i]]$trunk_diam)~log10(group_data[[i]]$area))
   sma_test[(i+1),12] = output(test)
   
-  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_area))
+  test <- sma(log10(group_data[[i]]$trunk_diam)~log10(group_data[[i]]$tot_area))
   sma_test[(i+1),13] = output(test)
   
-  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$tot_stem_m))
+  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$area))
   sma_test[(i+1),14] = output(test)
   
-  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_stem_m))
+  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_area))
   sma_test[(i+1),15] = output(test)
   
-  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_stem_m))
+  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_area))
   sma_test[(i+1),16] = output(test)
   
-  test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$trunk_diam))
+  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$stem_m))
   sma_test[(i+1),17] = output(test)
   
-  test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$tot_volume))
+  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_stem_m))
   sma_test[(i+1),18] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_stem_m))
+  sma_test[(i+1),19] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$stem_m)~log10(group_data[[i]]$trunk_diam))
+  sma_test[(i+1),20] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$trunk_diam))
+  sma_test[(i+1),21] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$stem_m)~log10(group_data[[i]]$volume))
+  sma_test[(i+1),22] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$tot_volume))
+  sma_test[(i+1),23] = output(test)
 
 }
 
-
+# Branch Level Output
 for (i in 4:12){
   
   sma_test[(i+1),1] = groups[i]
@@ -156,6 +175,7 @@ for (i in 4:12){
   sma_test[(i+1),18] = output(test)
 }
 
+# Individual Level Output
 for (i in 1:2){
   spp <- branch_size[branch_size$species==species[[i]][1],]
   subout <- matrix(ncol = 18, nrow = length(species[[i]][[2]]))
@@ -179,7 +199,7 @@ for (i in 1:2){
     test <- sma(log10(ind$diameter_mm)~log10(ind$tot_volume))
     subout[j,6] = output(test)
     
-    test <- sma(log10(ind$length_cm)~log10(ind$tot_volume))
+    test <- sma(log10(ind$length_cm)~log10(ind$volume))
     subout[j,7] = output(test)
     
     test <- sma(log10(ind$path_length)~log10(ind$tot_volume))
@@ -191,7 +211,7 @@ for (i in 1:2){
     test <- sma(log10(ind$diameter_mm)~log10(ind$tot_area))
     subout[j,10] = output(test)
     
-    test <- sma(log10(ind$length_cm)~log10(ind$tot_area))
+    test <- sma(log10(ind$length_cm)~log10(ind$area))
     subout[j,11] = output(test)
     
     test <- sma(log10(ind$path_length)~log10(ind$tot_area))
@@ -219,6 +239,67 @@ for (i in 1:2){
   sma_test = rbind(sma_test, subout)
 }
 
+# Individual Plus Output (WITH extra twig data) 
+for (i in 1:7){
+  subout <- matrix(ncol = 18, nrow = 1)
+  
+  spp <- branch_size[branch_size$species==species[[(plus[[1]][i])]][1],]
+  ind <- spp[spp$tree==plus[[2]][i],]
+  
+  subout[j,1] = plus[[3]][i]
+  
+  
+  test <- sma(log10(ind$path_length_plus)~log10(ind$diameter_mm))
+  subout[j,3] = output(test)
+  
+  test <- sma(log10(ind$tot_length_plus)~log10(ind$diameter_mm))
+  subout[j,4] = output(test)
+  
+  test <- sma(log10(ind$tot_area_plus)~log10(ind$tot_volume))
+  subout[j,5] = output(test)
+  
+  test <- sma(log10(ind$diameter_mm)~log10(ind$tot_volume))
+  subout[j,6] = output(test)
+  
+  test <- sma(log10(ind$length_cm)~log10(ind$tot_volume))
+  subout[j,7] = output(test)
+  
+  test <- sma(log10(ind$path_length)~log10(ind$tot_volume))
+  subout[j,8] = output(test)
+  
+  test <- sma(log10(ind$tot_length)~log10(ind$tot_volume))
+  subout[j,9] = output(test)
+  
+  test <- sma(log10(ind$diameter_mm)~log10(ind$tot_area))
+  subout[j,10] = output(test)
+  
+  test <- sma(log10(ind$length_cm)~log10(ind$tot_area))
+  subout[j,11] = output(test)
+  
+  test <- sma(log10(ind$path_length)~log10(ind$tot_area))
+  subout[j,12] = output(test)
+  
+  test <- sma(log10(ind$tot_length)~log10(ind$tot_area))
+  subout[j,13] = output(test)
+  
+  rm_zero <- ind[ind$length_cm>0,]
+  test <- sma(log10(rm_zero$length_cm)~log10(rm_zero$tot_stem_m))
+  subout[j,14] = output(test)
+  
+  test <- sma(log10(ind$path_length)~log10(ind$tot_stem_m))
+  subout[j,15] = output(test)
+  
+  test <- sma(log10(ind$tot_length)~log10(ind$tot_stem_m))
+  subout[j,16] = output(test)
+  
+  test <- sma(log10(ind$tot_stem_m)~log10(ind$diameter_mm))
+  subout[j,17] = output(test)
+  
+  test <- sma(log10(ind$tot_stem_m)~log10(ind$tot_volume))
+  subout[j,18] = output(test)
+
+  sma_test = rbind(sma_test, subout)
+}
 write.csv(sma_test, "SMAResults.csv")
 
 #For output figures as.numeric(strsplit(sma_test[2,3], " ")[[1]][1])
