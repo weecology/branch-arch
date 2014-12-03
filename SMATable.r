@@ -19,31 +19,86 @@ group_data[[10]] <- subset(group_data[[6]], tree==13)
 group_data[[11]] <- subset(group_data[[6]], tree==17 | tree==15 | tree==18)
 group_data[[12]] <- subset(group_data[[6]], tree==20 | tree==19 | tree==14)
 
+species <- list(list("apple",
+                     c(2,7,12,3,5,11,6,8,10,1,4,9,13,17,15,18,20,19,14),
+                     c("Bud.9", "Bud.9", "Bud.9", "Bud.9", "CG.3041", "CG.3041",  
+                       "CG.3041", "CG.3041", "CG.6210", "CG.6210", "CG.6210", 
+                       "CG.6210", "M.26", "JM.8", "JM.8", "JM.8",
+                       "PiAu.5683", "PiAu.5683", "PiAu.5683")),
+                list("cherry", 
+                     c(7,13,15,1,10),
+                     "P. mahaleb"))
+
 output <- function(sma_data){
-  return (paste(round(coef.sma(sma_data)[2],2), " [", round(sma(sma_data)$coef[[1]][2,2],2), ", ", 
-               round(sma(sma_data)$coef[[1]][2,3],2), "], ", round(coef.sma(sma_data)[1],2), "; ", 
-               round(sma(sma_data)$r2[[1]], 3), sep = ""))
-}
+  return (paste(round(sma(sma_data)$coef[[1]][2,1],2), " [", round(sma(sma_data)$coef[[1]][2,2],2), ", ", 
+               round(sma(sma_data)$coef[[1]][2,3],2), "]; ", round(sma(sma_data)$r2[[1]], 3), sep = ""))
+}     #insert for intercept value <round(coef.sma(sma_data)[1],2), "; ",>
 
-sma_test <- matrix(nrow = 13, ncol = 5)
-colnames(sma_test) = c('group', "M~D", "L~D", "L~M", "D(k+1)/D(k)")
+sma_test <- matrix(nrow = 12, ncol = 18)
+colnames(sma_test) = c('group', "L~D (Segment)", "(Path)", "(Subtree)", "SA~V", "D~V", 
+                       "L~V (Segment)", "(Path)", "(Subtree)", "D~SA", "L~SA (Segment)", "(Path)", "(Subtree)", 
+                       "L~M (Segment)", "(Path)", "(Subtree)", "M~D", "M~V")
 
-sma_test[1,] = c("prediction", 2.67, 0.67, 0.25, 0.5)
+sma_test[1,] = c("prediction", "2 - 2/3", "", "", "3/4 - 5/8", "1/4 - 3/8", "1/2 - 1/4", "", "", "1/3 - 3/5", "2/3 - 2/5",
+                 "", "", "", "", "", "", "")
 
 for (i in 1:3){
   sma_test[(i+1),1] = groups[i]
   
-  test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$trunk_diam))
+  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$trunk_diam))
   sma_test[(i+1),2] = output(test)
   
-  test <- sma(log10(group_data[[i]]$height)~log10((group_data[[i]]$trunk_diam/2)))
+  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$trunk_diam))
   sma_test[(i+1),3] = output(test)
   
-  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$tot_stem_m))
+  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$trunk_diam))
   sma_test[(i+1),4] = output(test)
   
-  sma_test[(i+1),5] = '-'
+  test <- sma(log10(group_data[[i]]$tot_area)~log10(group_data[[i]]$tot_volume))
+  sma_test[(i+1),5] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$trunk_diam)~log10(group_data[[i]]$tot_volume))
+  sma_test[(i+1),6] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$tot_volume))
+  sma_test[(i+1),7] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_volume))
+  sma_test[(i+1),8] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_volume))
+  sma_test[(i+1),9] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$trunk_diam)~log10(group_data[[i]]$tot_area))
+  sma_test[(i+1),10] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$tot_area))
+  sma_test[(i+1),11] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_area))
+  sma_test[(i+1),12] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_area))
+  sma_test[(i+1),13] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$tot_stem_m))
+  sma_test[(i+1),14] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_stem_m))
+  sma_test[(i+1),15] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_stem_m))
+  sma_test[(i+1),16] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$trunk_diam))
+  sma_test[(i+1),17] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$tot_volume))
+  sma_test[(i+1),18] = output(test)
+
 }
+
+
 
 for (i in 4:12){
   
