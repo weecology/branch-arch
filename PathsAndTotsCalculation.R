@@ -79,7 +79,7 @@ for (m in 1:2){
 }
 
 
-### Calculates path length above branch node
+### Calculates path length above branch node (includes extra twig data when available).
 
 for (m in 1:2){
   spp <- branch[branch$species==species[[m]][1],]
@@ -113,7 +113,7 @@ for (m in 1:2){
 
 
 
-### Calculates total stem (subtree) length, surface area, and volume  above branch node.
+### Calculates total stem (subtree) length, surface area, and volume above branch node (includes extra twig data when available).
 
 for (m in 1:2){
   spp <- branch[branch$species==species[[m]][1],]
