@@ -344,7 +344,13 @@ for (i in 1:7){
   sma_test = rbind(sma_test, subout)
 }
 
-write.csv(sma_test, "SMAResults.csv")
+sma_test_out <- rbind(sma_test[1:6,], sma_test[33:35,], sma_test[44,],sma_test[36:37,], sma_test[7:8,],
+                      sma_test[14:17,], sma_test[38,], sma_test[9,], sma_test[18,], sma_test[39,], 
+                      sma_test[19:21,], sma_test[10,], sma_test[22:24,], sma_test[40,], sma_test[25:26,], 
+                      sma_test[41,], sma_test[12,], sma_test[27:28,], sma_test[42,], sma_test[29,], 
+                      sma_test[13,], sma_test[30:32,], sma_test[43,])
+
+write.csv(sma_test_out, "SMAResults.csv")
 
 
 
