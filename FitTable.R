@@ -2,9 +2,15 @@
 
 treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
 branch_size <- read.csv("BranchSegments.csv", sep = ',', header = T)
-library('smatr')
 
-output <- function(sma_data){
+fit <- function(y, x){
+  lm <- lm(y~x)
+  poly <- lm(y~poly(x, 2, raw = T))
+  return list( c( summary(lm)$coefficients[2,1], summary(lm)$r.squared, AIC(lm)),
+               c( summary(poly)$coefficients[2,1], summary(poly)$coefficients[3,1], summary(poly)$r.squared, AIC(poly)))
+}
+
+output <- function(fit_data){
   return (paste(round(sma(sma_data)$coef[[1]][2,1],2), " [ ", round(sma(sma_data)$coef[[1]][2,2],2), " , ", 
                 round(sma(sma_data)$coef[[1]][2,3],2), " ]; ", round(sma(sma_data)$r2[[1]], 3), sep = ""))
 } 
@@ -51,9 +57,7 @@ sma_test[1,] = c("prediction", "2 - 2/3", "", "", "3/4 - 5/8", "", "1/4 - 3/8", 
 for (i in 1:3){
   sma_test[(i+1),1] = groups[i]
   
-  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$trunk_diam))
-  test_lm <- lm(log10(group_data[[i]]$height)~log10(group_data[[i]]$trunk_diam))
-  test_poly <- lm(log10(group_data[[i]]$height)~poly(log10(group_data[[i]]$trunk_diam), 2, raw = T))
+  test <- fit(log10(group_data[[i]]$height), log10(group_data[[i]]$trunk_diam))
   sma_test[(i+1),2] = output(test)
   
   test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$trunk_diam))
