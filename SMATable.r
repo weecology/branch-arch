@@ -1,4 +1,4 @@
-#This script builds a table of SMA predictions for all, species, and rootstock level.
+#This script builds a table of SMA predictions for tree and branch level for all, species, rootstocks, individuals, and branch order groups.
 
 treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
 branch_size <- read.csv("BranchSegments.csv", sep = ',', header = T)
@@ -52,8 +52,6 @@ for (i in 1:3){
   sma_test[(i+1),1] = groups[i]
   
   test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$trunk_diam))
-  test_lm <- lm(log10(group_data[[i]]$height)~log10(group_data[[i]]$trunk_diam))
-  test_poly <- lm(log10(group_data[[i]]$height)~poly(log10(group_data[[i]]$trunk_diam), 2, raw = T))
   sma_test[(i+1),2] = output(test)
   
   test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$trunk_diam))
