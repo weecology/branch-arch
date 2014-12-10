@@ -11,8 +11,10 @@ fit <- function(y, x){
 }
 
 output <- function(fit_data){
-  return (paste(round(sma(sma_data)$coef[[1]][2,1],2), " [ ", round(sma(sma_data)$coef[[1]][2,2],2), " , ", 
-                round(sma(sma_data)$coef[[1]][2,3],2), " ]; ", round(sma(sma_data)$r2[[1]], 3), sep = ""))
+  subout <- matrix (nrow = 2, ncol = 1)
+  subout[1,1] = paste(round(fit_data[[1]][1],2), " ,         , ", round(fit_data[[1]][2],3), " , ", round(fit_data[[1]][3],2))
+  subout[2,1] = paste(round(fit_data[[2]][1],2), " , ", round(fit_data[[2]][2],2)," , ", round(fit_data[[2]][3],3), " , ", round(fit_data[[2]][4],2))
+  return (subout)
 } 
 
 groups <- c("all-tree", "cherry", "apple", "all-branch", "cherry", "apple", "Bud.9", "CG.3041", "CG.6210", "M.26", "JM.8", "PiAu.5683")
