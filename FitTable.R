@@ -199,4 +199,4 @@ fits_test_out <- rbind(fits_test[1:11,], fits_test[64:69,], fits_test[86:87,], f
                       fits_test[80:81,], fits_test[22:23,], fits_test[52:55,], fits_test[82:83,], fits_test[56:57,], 
                       fits_test[24:25,], fits_test[58:63,], fits_test[84:85,])
 
-write.csv(fits_test_out, "FitsResults.csv")
+write.csv(fits_test_out, "FitResults.csv")

@@ -7,6 +7,7 @@ library('smatr')
 output <- function(sma_data){
   return (paste(round(sma(sma_data)$coef[[1]][2,1],2), " [ ", round(sma(sma_data)$coef[[1]][2,2],2), " , ", 
                 round(sma(sma_data)$coef[[1]][2,3],2), " ]; ", round(sma(sma_data)$r2[[1]], 3), sep = ""))
+  #insert for intercept value <round(coef.sma(sma_data)[1],2), "; ",>
 } 
 
 groups <- c("all-tree", "cherry", "apple", "all-branch", "cherry", "apple", "Bud.9", "CG.3041", "CG.6210", "M.26", "JM.8", "PiAu.5683")
@@ -37,7 +38,7 @@ species <- list(list("apple",
 plus <- list(c(1,1,1,1,1,1,2), c(3,5,6,13,15,19,15), 
              c("Bud.9-4+", "CG.3041-1+", "CG.6210-3+", "M.26+", "JM.8-2+", "PiAu.5683-3+", "cherry-3+"))
 
-    #insert for intercept value <round(coef.sma(sma_data)[1],2), "; ",>
+
 
 sma_test <- matrix(nrow = 13, ncol = 23)
 colnames(sma_test) = c('group', "L~D (Segment)", "(Path)", "(Subtree)", "SA~V (Segment)", "(Subtree)", "D~V(Segment)", "(Subtree)", 
@@ -443,10 +444,10 @@ for (j in 4:12){
     
     else
       sma_test_order <- subout
-    colnames(sma_test_order) = c('group', "L~D (Segment)", "(Path)", "(Subtree)", "SA~V (Segment)", "(Subtree)", "D~V(Segment)", "(Subtree)", 
+      colnames(sma_test_order) = c('group', "L~D (Segment)", "(Path)", "(Subtree)", "SA~V (Segment)", "(Subtree)", "D~V(Segment)", "(Subtree)", 
                                  "L~V (Segment)", "(Path)", "(Subtree)", "D~SA (Segment)", "(Subtree)", "L~SA (Segment)", "(Path)", "(Subtree)", 
                                  "L~M (Segment)", "(Path)", "(Subtree)", "M~D (Segment)", "(Subtree)", "M~V(Segment)", "(Subtree)")
-    
+
   }
 }
 
