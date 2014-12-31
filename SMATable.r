@@ -40,13 +40,13 @@ plus <- list(c(1,1,1,1,1,1,2), c(3,5,6,13,15,19,15),
 
 
 
-sma_test <- matrix(nrow = 13, ncol = 23)
+sma_test <- matrix(nrow = 13, ncol = 24)
 colnames(sma_test) = c('group', "L~D (Segment)", "(Path)", "(Subtree)", "SA~V (Segment)", "(Subtree)", "D~V(Segment)", "(Subtree)", 
                        "L~V (Segment)", "(Path)", "(Subtree)", "D~SA (Segment)", "(Subtree)", "L~SA (Segment)", "(Path)", "(Subtree)", 
-                       "L~M (Segment)", "(Path)", "(Subtree)", "M~D (Segment)", "(Subtree)", "M~V(Segment)", "(Subtree)")
+                       "L~M (Segment)", "(Path)", "(Subtree)", "M~D (Segment)", "(Subtree)", "M~V(Segment)", "(Subtree)", "D/P Ratio ~ P Diam")
 
 sma_test[1,] = c("prediction", "2 - 2/3", "", "", "3/4 - 5/8", "", "1/4 - 3/8", "", "1/2 - 1/4", "", "", "1/3 - 3/5", "", "2/3 - 2/5",
-                 "", "", "", "", "", "", "", "", "")
+                 "", "", "", "", "", "", "", "", "", "")
 
 # Tree Level Output
 for (i in 1:3){
@@ -112,6 +112,8 @@ for (i in 1:3){
   
   test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$tot_volume))
   sma_test[(i+1),23] = output(test)
+  
+  sma_test[(i+1),24] = "-"
 }
 
 # Group Branch Level Output
@@ -185,12 +187,15 @@ for (i in 4:12){
   
   test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$tot_volume))
   sma_test[(i+1),23] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$diameter_ratio)~log10(group_data[[i]]$diameter_mm/group_data[[i]]$diameter_ratio))
+  sma_test[(i+1),24] = output(test)
 }  
 
 # Individual Branch Level Output
 for (i in 1:2){
   spp <- branch_size[branch_size$species==species[[i]][1],]
-  subout <- matrix(ncol = 23, nrow = length(species[[i]][[2]]))
+  subout <- matrix(ncol = 24, nrow = length(species[[i]][[2]]))
   for (j in 1:length(species[[i]][[2]])){
     ind <- spp[spp$tree==species[[i]][[2]][j],]
     
@@ -262,6 +267,9 @@ for (i in 1:2){
     
     test <- sma(log10(ind$tot_stem_m)~log10(ind$tot_volume))
     subout[j,23] = output(test)
+    
+    test <- sma(log10(ind$diameter_ratio)~log10(ind$diameter_mm/ind$diameter_ratio))
+    subout[j,24] = output(test)
   }
   sma_test = rbind(sma_test, subout)
 }
@@ -341,6 +349,9 @@ for (i in 1:7){
   
   test <- sma(log10(ind$tot_stem_m)~log10(ind$tot_volume))
   subout[23] = output(test)
+  
+  test <- sma(log10(ind$diameter_ratio)~log10(ind$diameter_mm/ind$diameter_ratio))
+  subout[24] = output(test)
 
   sma_test = rbind(sma_test, subout)
 }
@@ -365,7 +376,7 @@ for (j in 4:12){
   
   for (i in 2:3){
     
-    subout <- matrix(ncol = 23, nrow = 1)
+    subout <- matrix(ncol = 24, nrow = 1)
     
     subout[1] = paste(groups[j], orders[[1]][(i-1)], " (", length(orders[[i]][,1]), ")")
     
@@ -437,6 +448,9 @@ for (j in 4:12){
       
       test <- sma(log10(orders[[i]]$tot_stem_m)~log10(orders[[i]]$tot_volume))
       subout[23] = output(test)
+      
+      test <- sma(log10(orders[[i]]$diameter_ratio)~log10(orders[[i]]$diameter_mm/orders[[i]]$diameter_ratio))
+      subout[24] = output(test)
     }
     
     if (exists('sma_test_order'))
@@ -446,7 +460,7 @@ for (j in 4:12){
       sma_test_order <- subout
       colnames(sma_test_order) = c('group', "L~D (Segment)", "(Path)", "(Subtree)", "SA~V (Segment)", "(Subtree)", "D~V(Segment)", "(Subtree)", 
                                  "L~V (Segment)", "(Path)", "(Subtree)", "D~SA (Segment)", "(Subtree)", "L~SA (Segment)", "(Path)", "(Subtree)", 
-                                 "L~M (Segment)", "(Path)", "(Subtree)", "M~D (Segment)", "(Subtree)", "M~V(Segment)", "(Subtree)")
+                                 "L~M (Segment)", "(Path)", "(Subtree)", "M~D (Segment)", "(Subtree)", "M~V(Segment)", "(Subtree)", "D/P Ratio ~ P Diam")
 
   }
 }
@@ -459,7 +473,7 @@ for (j in 1:5){
   
   for (i in 2:3){
     
-    subout <- matrix(ncol = 23, nrow = 1)
+    subout <- matrix(ncol = 24, nrow = 1)
     
     subout[1] = paste(species[[2]][[3]][j], orders[[1]][(i-1)], " (", length(orders[[i]][,1]), ")")
     
@@ -531,6 +545,9 @@ for (j in 1:5){
       
       test <- sma(log10(orders[[i]]$tot_stem_m)~log10(orders[[i]]$tot_volume))
       subout[23] = output(test)
+      
+      test <- sma(log10(orders[[i]]$diameter_ratio)~log10(orders[[i]]$diameter_mm/orders[[i]]$diameter_ratio))
+      subout[24] = output(test)
     }
     
     sma_test_order = rbind(sma_test_order, subout)
