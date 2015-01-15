@@ -19,9 +19,9 @@ output <- function(fit_data){
 }
 
 report <- function(fit_data){
-  if(fit_data[[1]][3] < fit_data[[2]][4]) {value = 0}
+  if(fit_data[[1]][3] < fit_data[[2]][4]) {value = 3}
   else{ 
-    if( (abs(fit_data[[2]][2]) - 2*fit_data[[2]][5]) > 0) {value = 3}
+    if( (abs(fit_data[[2]][2]) - 2*fit_data[[2]][5]) > 0) {value = 0}
     else{value = 1}
   }
   return (value)
@@ -73,50 +73,54 @@ fits_to_row <- function(subout, ind){
   subout <- cbind(subout, output(fit(log10(ind$tot_stem_m), log10(ind$tot_volume))))
 }
 
-reports_to_row <- function(subout, ind){
-  subout[,1] <- report(fit(log10(ind$length_cm), log10(ind$diameter_mm)))
+reports_to_col <- function(ind){
+  subout <- matrix(nrow = 22, ncol = 1)
   
-  subout[,2] <- report(fit(log10(ind$path_length), log10(ind$diameter_mm)))
+  subout[1,] <- report(fit(log10(ind$length_cm), log10(ind$diameter_mm)))
   
-  subout[,3] <- report(fit(log10(ind$tot_length), log10(ind$diameter_mm)))
+  subout[2,] <- report(fit(log10(ind$path_length), log10(ind$diameter_mm)))
   
-  subout[,4] <- report(fit(log10(ind$area), log10(ind$volume)))
+  subout[3,] <- report(fit(log10(ind$tot_length), log10(ind$diameter_mm)))
   
-  subout[,5] <- report(fit(log10(ind$tot_area), log10(ind$tot_volume)))
+  subout[4,] <- report(fit(log10(ind$area), log10(ind$volume)))
+
+  subout[5,] <- report(fit(log10(ind$tot_area), log10(ind$tot_volume)))
   
-  subout[,6] <- report(fit(log10(ind$diameter_mm), log10(ind$volume)))
+  subout[6,] <- report(fit(log10(ind$diameter_mm), log10(ind$volume)))
   
-  subout[,7] <- report(fit(log10(ind$diameter_mm), log10(ind$tot_volume)))
+  subout[7,] <- report(fit(log10(ind$diameter_mm), log10(ind$tot_volume)))
   
-  subout[,8] <- report(fit(log10(ind$length_cm), log10(ind$volume)))
+  subout[8,] <- report(fit(log10(ind$length_cm), log10(ind$volume)))
   
-  subout[,9] <- report(fit(log10(ind$path_length), log10(ind$tot_volume)))
+  subout[9,] <- report(fit(log10(ind$path_length), log10(ind$tot_volume)))
   
-  subout[,10] <- report(fit(log10(ind$tot_length), log10(ind$tot_volume)))
+  subout[10,] <- report(fit(log10(ind$tot_length), log10(ind$tot_volume)))
   
-  subout[,11] <- report(fit(log10(ind$diameter_mm), log10(ind$area)))
+  subout[11,] <- report(fit(log10(ind$diameter_mm), log10(ind$area)))
   
-  subout[,12] <- report(fit(log10(ind$diameter_mm), log10(ind$tot_area)))
+  subout[12,] <- report(fit(log10(ind$diameter_mm), log10(ind$tot_area)))
   
-  subout[,13] <- report(fit(log10(ind$length_cm), log10(ind$area)))
+  subout[13,] <- report(fit(log10(ind$length_cm), log10(ind$area)))
   
-  subout[,14] <- report(fit(log10(ind$path_length), log10(ind$tot_area)))
+  subout[14,] <- report(fit(log10(ind$path_length), log10(ind$tot_area)))
+
+  subout[15,] <- report(fit(log10(ind$tot_length), log10(ind$tot_area)))
   
-  subout[,15] <- report(fit(log10(ind$tot_length), log10(ind$tot_area)))
+  subout[16,] <- report(fit(log10(ind$length_cm), log10(ind$stem_m)))
   
-  subout[,16] <- report(fit(log10(ind$length_cm), log10(ind$stem_m)))
+  subout[17,] <- report(fit(log10(ind$path_length), log10(ind$tot_stem_m)))
   
-  subout[,17] <- report(fit(log10(ind$path_length), log10(ind$tot_stem_m)))
+  subout[18,] <- report(fit(log10(ind$tot_length), log10(ind$tot_stem_m)))
   
-  subout[,18] <- report(fit(log10(ind$tot_length), log10(ind$tot_stem_m)))
+  subout[19,] <- report(fit(log10(ind$stem_m), log10(ind$diameter_mm)))
   
-  subout[,19] <- report(fit(log10(ind$stem_m), log10(ind$diameter_mm)))
+  subout[20,] <- report(fit(log10(ind$tot_stem_m), log10(ind$diameter_mm)))
   
-  subout[,20] <- report(fit(log10(ind$tot_stem_m), log10(ind$diameter_mm)))
+  subout[21,] <- report(fit(log10(ind$stem_m), log10(ind$volume)))
   
-  subout[,21] <- report(fit(log10(ind$stem_m), log10(ind$volume)))
+  subout[22,] <- report(fit(log10(ind$tot_stem_m), log10(ind$tot_volume)))
   
-  subout[,22] <- report(fit(log10(ind$tot_stem_m), log10(ind$tot_volume)))
+  return(subout)
 }
 
 groups <- c("all-tree", "cherry", "apple", "all-branch", "cherry", "apple", "Bud.9", "CG.3041", "CG.6210", "M.26", "JM.8", "PiAu.5683")
@@ -157,10 +161,6 @@ colnames(fits_test) = c('group', "L~D (Segment)", "(Path)", "(Subtree)", "SA~V (
 fits_test[1,] = c("prediction", "2 - 2/3", "", "", "3/4 - 5/8", "", "1/4 - 3/8", "", "1/2 - 1/4", "", "", "1/3 - 3/5", "", "2/3 - 2/5",
                   "", "", "", "", "", "", "", "", "")
 
-
-colnames(fits_report) = c('group', "L~D (Segment)", "(Path)", "(Subtree)", "SA~V (Segment)", "(Subtree)", "D~V(Segment)", "(Subtree)", 
-                          "L~V (Segment)", "(Path)", "(Subtree)", "D~SA (Segment)", "(Subtree)", "L~SA (Segment)", "(Path)", "(Subtree)", 
-                          "L~M (Segment)", "(Path)", "(Subtree)", "M~D (Segment)", "(Subtree)", "M~V(Segment)", "(Subtree)")
 
 # Tree Level Output
 for (i in 1:3){
@@ -268,81 +268,91 @@ write.csv(fits_test_out, "FitResults.csv")
 ### REPORTS
 
 # Tree Level Reports
-fits_report <- matrix(nrow = 3, ncol = 22)
-colnames(fits_report) = c('group', "L~D (Segment)", "(Path)", "(Subtree)", "SA~V (Segment)", "(Subtree)", "D~V(Segment)", "(Subtree)", 
-                          "L~V (Segment)", "(Path)", "(Subtree)", "D~SA (Segment)", "(Subtree)", "L~SA (Segment)", "(Path)", "(Subtree)", 
-                          "L~M (Segment)", "(Path)", "(Subtree)", "M~D (Segment)", "(Subtree)", "M~V(Segment)", "(Subtree)")
+fits_report <- matrix(nrow = 22, ncol = 3)
 
 for (i in 1:3){
-  fits_report[i,1] <- report(fit(log10(group_data[[i]]$height), log10(group_data[[i]]$trunk_diam)))
-                             
-  fits_report[i,2] <- report(fit(log10(group_data[[i]]$max_path), log10(group_data[[i]]$trunk_diam)))
+  
+  fits_report[1,(4-i)] <- report(fit(log10(group_data[[i]]$height), log10(group_data[[i]]$trunk_diam)))
+                            
+  fits_report[2,(4-i)] <- report(fit(log10(group_data[[i]]$max_path), log10(group_data[[i]]$trunk_diam)))
    
-  fits_report[i,3] <- report(fit(log10(group_data[[i]]$tot_length), log10(group_data[[i]]$trunk_diam)))
+  fits_report[3,(4-i)] <- report(fit(log10(group_data[[i]]$tot_length), log10(group_data[[i]]$trunk_diam)))
    
-  fits_report[i,4] <- 4
+  fits_report[4,(4-i)] <- 4
    
-  fits_report[i,5] <- report(fit(log10(group_data[[i]]$tot_area), log10(group_data[[i]]$tot_volume)))
+  fits_report[5,(4-i)] <- report(fit(log10(group_data[[i]]$tot_area), log10(group_data[[i]]$tot_volume)))
    
-  fits_report[i,6] <- 4
+  fits_report[6,(4-i)] <- 4
    
-  fits_report[i,7] <- report(fit(log10(group_data[[i]]$trunk_diam), log10(group_data[[i]]$tot_volume)))
+  fits_report[7,(4-i)] <- report(fit(log10(group_data[[i]]$trunk_diam), log10(group_data[[i]]$tot_volume)))
    
-  fits_report[i,8] <- report(fit(log10(group_data[[i]]$height), log10(group_data[[i]]$tot_volume)))
+  fits_report[8,(4-i)] <- report(fit(log10(group_data[[i]]$height), log10(group_data[[i]]$tot_volume)))
    
-  fits_report[i,9] <- report(fit(log10(group_data[[i]]$max_path), log10(group_data[[i]]$tot_volume)))
+  fits_report[9,(4-i)] <- report(fit(log10(group_data[[i]]$max_path), log10(group_data[[i]]$tot_volume)))
    
-  fits_report[i,10] <- report(fit(log10(group_data[[i]]$tot_length), log10(group_data[[i]]$tot_volume)))
+  fits_report[10,(4-i)] <- report(fit(log10(group_data[[i]]$tot_length), log10(group_data[[i]]$tot_volume)))
    
-  fits_report[i,11] <- 4
+  fits_report[11,(4-i)] <- 4
    
-  fits_report[i,12] <- report(fit(log10(group_data[[i]]$trunk_diam), log10(group_data[[i]]$tot_area)))
+  fits_report[12,(4-i)] <- report(fit(log10(group_data[[i]]$trunk_diam), log10(group_data[[i]]$tot_area)))
    
-  fits_report[i,13] <- report(fit(log10(group_data[[i]]$height), log10(group_data[[i]]$tot_area)))
+  fits_report[13,(4-i)] <- report(fit(log10(group_data[[i]]$height), log10(group_data[[i]]$tot_area)))
    
-  fits_report[i,14] <- report(fit(log10(group_data[[i]]$max_path), log10(group_data[[i]]$tot_area)))
+  fits_report[14,(4-i)] <- report(fit(log10(group_data[[i]]$max_path), log10(group_data[[i]]$tot_area)))
    
-  fits_report[i,15] <- report(fit(log10(group_data[[i]]$tot_length), log10(group_data[[i]]$tot_area)))
+  fits_report[15,(4-i)] <- report(fit(log10(group_data[[i]]$tot_length), log10(group_data[[i]]$tot_area)))
+  
+  fits_report[16,(4-i)] <- report(fit(log10(group_data[[i]]$height), log10(group_data[[i]]$tot_stem_m)))
    
-  fits_report[i,16] <- report(fit(log10(group_data[[i]]$height), log10(group_data[[i]]$tot_stem_m)))
+  fits_report[17,(4-i)] <- report(fit(log10(group_data[[i]]$max_path), log10(group_data[[i]]$tot_stem_m)))
    
-  fits_report[i,17] <- report(fit(log10(group_data[[i]]$max_path), log10(group_data[[i]]$tot_stem_m)))
+  fits_report[18,(4-i)] <- report(fit(log10(group_data[[i]]$tot_length), log10(group_data[[i]]$tot_stem_m)))
    
-  fits_report[i,18] <- report(fit(log10(group_data[[i]]$tot_length), log10(group_data[[i]]$tot_stem_m)))
+  fits_report[19,(4-i)] <- 4
    
-  fits_report[i,19] <- 4
+  fits_report[20,(4-i)] <- report(fit(log10(group_data[[i]]$tot_stem_m), log10(group_data[[i]]$trunk_diam)))
    
-  fits_report[i,20] <- report(fit(log10(group_data[[i]]$tot_stem_m), log10(group_data[[i]]$trunk_diam)))
+  fits_report[21,(4-i)] <- 4
    
-  fits_report[i,21] <- 4
-   
-  fits_report[i,22] <- report(fit(log10(group_data[[i]]$tot_stem_m), log10(group_data[[i]]$tot_volume)))
+  fits_report[22,(4-i)] <- report(fit(log10(group_data[[i]]$tot_stem_m), log10(group_data[[i]]$tot_volume)))
 }
 
 # Group Branch Level Reports
 for (i in 4:12){
-  subout <- matrix( nrow = 2, ncol = 1)
-  
-  subout[1,1] = paste( groups[i], "- X")
-  subout[2,1] = "       - X + X^2"
-  
   group <- subset(group_data[[i]], length_cm>0 & stem_m>0)
   
-  fits_test <- rbind(fits_test, fits_to_row(subout, group))
+  fits_report <- cbind(reports_to_col(group), fits_report)
 }
 
 
 # Individual Branch Level Reports
-for (i in 1:2){
-  spp <- branch_size[branch_size$species==species[[i]][1],]
-  for (j in 1:length(species[[i]][[2]])){
-    subout <- matrix( nrow = 2, ncol = 1)
+for (j in 1:2){
+  spp <- branch_size[branch_size$species==species[[j]][1],]
+  for (i in 1:length(species[[j]][[2]])){
     
-    subout[1,1] = paste( species[[i]][[3]][j], "- X")
-    subout[2,1] = "       - X + X^2"
+    ind <- spp[spp$tree==species[[j]][[2]][i] & spp$length_cm>0 & spp$stem_m>0,]
     
-    ind <- spp[spp$tree==species[[i]][[2]][j] & spp$length_cm>0 & spp$stem_m>0,]
-    
-    fits_test <- rbind(fits_test, fits_to_row(subout, ind))
+    fits_report <- cbind(reports_to_col(ind), fits_report)
   }
 }
+
+###FIT REPORT TABLE
+
+fits_report_out <- cbind(fits_report[,6:8], fits_report[,25], fits_report[,9:11], fits_report[,26:27],
+                         fits_report[,13:16], fits_report[,28], fits_report[,17:20], fits_report[,29],
+                         fits_report[,21:24], fits_report[,30:31], fits_report[,1:5], fits_report[,32:36])
+
+xlabels <- c("L~D (Segment)", "L~D (Path)", "L~D (Subtree)", "SA~V (Segment)", "SA~V (Subtree)", "D~V (Segment)", "D~V (Subtree)", 
+             "L~V (Segment)", "L~V (Path)", "L~V (Subtree)", "D~SA (Segment)", "D~SA (Subtree)", "L~SA (Segment)", "L~SA (Path)", "L~SA (Subtree)", 
+             "L~M (Segment)", "L~M (Path)", "L~M (Subtree)", "M~D (Segment)", "M~D (Subtree)", "M~V (Segment)", "M~V (Subtree)")
+
+ylabels <- c("all-tree", "cherry", "apple", "all-branch", "cherry", "cherry-1", "cherry-2", "cherry-3", "cherry-4", "cherry-5", 
+             "apple", "Bud.9", "Bud.9-1", "Bud.9-2", "Bud.9-3", "Bud.9-4", "CG.3041", "CG.3041-1", "CG.3041-2", "CG.3041-3", "CG.3041-4", 
+             "CG.6210", "CG.6210-1", "CG.6210-2", "CG.6210-3", "CG.6210-4", "M.26", "JM.8", "JM.8-1", "JM.8-2", "JM.8-3", 
+             "PiAu.5683", "PiAu.5683-1", "PiAu.5683-2", "PiAu.5683-3")
+
+
+par(oma = c(0,3,4,0), cex.lab = 0.5)
+image(1:22, 1:35, fits_report_out, col = topo.colors(6), xlab="", ylab="", xaxt = 'n', yaxt = 'n', bty = 'n')
+axis(2, at=35:1, ylabels, las = 2)
+axis(3, at=1:22, xlabels, las = 2)
