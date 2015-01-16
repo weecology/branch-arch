@@ -351,8 +351,11 @@ ylabels <- c("all-tree", "cherry", "apple", "all-branch", "cherry", "cherry-1", 
              "CG.6210", "CG.6210-1", "CG.6210-2", "CG.6210-3", "CG.6210-4", "M.26", "JM.8", "JM.8-1", "JM.8-2", "JM.8-3", 
              "PiAu.5683", "PiAu.5683-1", "PiAu.5683-2", "PiAu.5683-3")
 
-
-par(oma = c(0,3,4,0), cex.lab = 0.5)
+pdf(file="FitFigure.pdf", width=11, height=8,family="Helvetica", pointsize=12)
+par(mar = c(2,8,8,2), cex.lab = 0.5, xpd=TRUE)
 image(1:22, 1:35, fits_report_out, col = topo.colors(6), xlab="", ylab="", xaxt = 'n', yaxt = 'n', bty = 'n')
 axis(2, at=35:1, ylabels, las = 2)
 axis(3, at=1:22, xlabels, las = 2)
+legend(-3,43, legend=c("Linear","Polynomial", "Marginal Poly", "No Data"), pch=c(15,15,15,15), bty = 'n',
+       col = c("#E6FF00FF", "#4C00FFFF", "#00E5FFFF", "#FFE0B3FF"), pt.cex = 2.5)
+dev.off()
