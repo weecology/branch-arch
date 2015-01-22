@@ -3,30 +3,23 @@
 ###initiate exponent results
 sma <- read.csv('SMAResults.csv', sep=',', head=T)
 
+levels <- c(1,2,3,4,5,12)
 results <- list()
 for (i in 1:23){ #relationship columns
   results[[i]] <- list()
   for (j in 1:4){
-    results[[i]][[j]] <- vector(length = 42)
+    results[[i]][[j]] <- vector(length = 6)
     # 1: exponent, 2: CI-, 3: CI+, 4: R2 
-    for (k in 1:42) { # group/ind rows
-      results[[i]][[j]][k] = as.numeric(strsplit(as.character(sma[(k+1),(i+2)]), " ")[[1]][(2*j-1)])
+    for (k in 1:6) { # group/ind rows
+      results[[i]][[j]][k] = as.numeric(strsplit(as.character(sma[(levels[k]+1),(i+2)]), " ")[[1]][(2*j-1)])
     }
   }
 }
 
 ###Subtree improves R2
 
-range_values(col_list{
-  mins <- vector(length = length(col_list))
-  maxs <- vector(length = length(col_list))
-  for (i in col_list){
-    mins[i] = results[[i]][[2]][4:41]
-}
-
 gen_exponent <- function(col_list, n){
-  plot(range(0,1), range(min(results[[col_list[1]:col_list[length(col_list)]]][[2]][4:41], na.rm=T), 
-                         max(results[[col_list[1]:col_list[length(col_list)]]][[3]][4:41], na.rm=T)), 
+  plot(range(0,1), range(min(results[[n]][[2]], na.rm=T), max(results[[n]][[3]], na.rm=T)), 
        ylab = ylabels[n], xlab="R2", xaxt = 'n', type = 'n',
        ylim = c(min(results[[n]][[2]][4:41], na.rm=T), max(results[[n]][[3]][4:41], na.rm=T)))
   for (j in group_list){
