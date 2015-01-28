@@ -271,3 +271,81 @@ dev.off()
 
 ## Linear vs. Poly
 
+fits <- read.csv('Fits_for_fig.csv', sep=',', head=T)
+
+labels <- c("L~D (Segment)", "L~D (Path)", "L~D (Subtree)", "SA~V (Segment)", "SA~V (Subtree)", "D~V (Segment)", "D~V (Subtree)", 
+             "L~V (Segment)", "L~V (Path)", "L~V (Subtree)", "D~SA (Segment)", "D~SA (Subtree)", "L~SA (Segment)", "L~SA (Path)", "L~SA (Subtree)", 
+             "L~M (Segment)", "L~M (Path)", "L~M (Subtree)", "M~D (Segment)", "M~D (Subtree)", "M~V (Segment)", "M~V (Subtree)")
+
+fit_vals <- matrix(ncol=22, nrow=32)
+r_vals <- matrix(ncol=22, nrow=32)
+n_vals <- matrix(ncol=22, nrow=32)
+
+for (i in 1:22){
+  for (j in 1:32){
+    fit_vals[j,i] = as.numeric(strsplit(as.character(fits[i,(j+1)]), ",")[[1]][1])
+    r_vals[j,i] = as.numeric(strsplit(as.character(fits[i,(j+1)]), ",")[[1]][2])
+    n_vals[j,i] = as.numeric(strsplit(as.character(fits[i,(j+1)]), ",")[[1]][3])
+  }
+}
+
+multi_plot_r <- function(col_list){
+  if (length(col_list) == 2){
+    plot(r_vals[,col_list[1]], fit_vals[,col_list[1]], main = labels[col_list[1]], pch=19, cex = 1.5, 
+         ylim=c(0,3), xlim=c(0,1), ylab = 'Fit Value', xlab = 'R2')
+    plot(range(0,1), range(0,1), bty='n', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
+    plot(r_vals[,col_list[2]], fit_vals[,col_list[2]], main = labels[col_list[2]], pch=19, cex = 1.5, 
+         ylim=c(0,3), xlim=c(0,1), ylab = 'Fit Value', xlab = 'R2')
+  }
+  else{
+    for (i in col_list){
+      plot(r_vals[,i], fit_vals[,i], main = labels[i], pch=19, cex = 1.5, 
+           ylim=c(0,3), xlim=c(0,1), ylab = 'Fit Value', xlab = 'R2')
+    }
+  }
+}
+
+multi_plot_n <- function(col_list){
+  if (length(col_list) == 2){
+    plot(n_vals[,col_list[1]], fit_vals[,col_list[1]], main = labels[col_list[1]], pch=19, cex = 1.5, 
+         ylim=c(0,3), xlim=c(0,820), ylab = 'Fit Value', xlab = 'n')
+    plot(range(0,1), range(0,1), bty='n', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
+    plot(n_vals[,col_list[2]], fit_vals[,col_list[2]], main = labels[col_list[2]], pch=19, cex = 1.5, 
+         ylim=c(0,3), xlim=c(0,820), ylab = 'Fit Value', xlab = 'n')
+  }
+  else{
+    for (i in col_list){
+      plot(n_vals[,i], fit_vals[,i], main = labels[i], pch=19, cex = 1.5, 
+           ylim=c(0,3), xlim=c(0,820), ylab = 'Fit Value', xlab = 'n')
+    }
+  }
+}
+
+pdf(file="FitsRelations.pdf", width=12, height=24, family="Helvetica", pointsize=12)
+
+###Fit vs R2
+par(mfrow= c(9,3))
+multi_plot_r(c(1:3))
+multi_plot_r(c(4:5))
+multi_plot_r(c(6:7))
+multi_plot_r(c(8:10))
+multi_plot_r(c(11:12))
+multi_plot_r(c(13:15))
+multi_plot_r(c(16:18))
+multi_plot_r(c(19:20))
+multi_plot_r(c(21:22))
+
+###Fit vs n
+par(mfrow= c(9,3))
+multi_plot_n(c(1:3))
+multi_plot_n(c(4:5))
+multi_plot_n(c(6:7))
+multi_plot_n(c(8:10))
+multi_plot_n(c(11:12))
+multi_plot_n(c(13:15))
+multi_plot_n(c(16:18))
+multi_plot_n(c(19:20))
+multi_plot_n(c(21:22))
+
+dev.off()
+
