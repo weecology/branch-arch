@@ -6,7 +6,7 @@ branch_size <- read.csv("BranchSegments.csv", sep = ',', header = T)
 fit <- function(y, x){
   lm <- lm(y~x)
   poly <- lm(y~poly(x, 2, raw = T))
-  return (list( c( summary(lm)$coefficients[2,1], summary(lm)$r.squared, AIC(lm)),
+  return (list( c( summary(lm)$coefficients[2,1], summary(lm)$r.squared, AIC(lm), length(y)),
                c( summary(poly)$coefficients[2,1], summary(poly)$coefficients[3,1], summary(poly)$r.squared, 
                   AIC(poly), summary(poly)$coefficients[3,2])))
 }
@@ -19,12 +19,12 @@ output <- function(fit_data){
 }
 
 report <- function(fit_data){
-  if(fit_data[[1]][3] < fit_data[[2]][4]) {value = 3}
+  if(fit_data[[1]][3] < fit_data[[2]][4]){value = 3}
   else{ 
-    if( (abs(fit_data[[2]][2]) - 2*fit_data[[2]][5]) > 0) {value = 0}
+    if( (abs(fit_data[[2]][2]) - 2*fit_data[[2]][5]) > 0){value = 0}
     else{value = 1}
   }
-  return (value)
+  return (paste(value, ",", round(fit_data[[1]][2],3), ",", fit_data[[1]][4])) #return(value) for image()
 }
 
 fits_to_row <- function(subout, ind){
@@ -341,6 +341,8 @@ for (j in 1:2){
 fits_report_out <- cbind(fits_report[,6:8], fits_report[,25], fits_report[,9:11], fits_report[,26:27],
                          fits_report[,13:16], fits_report[,28], fits_report[,17:20], fits_report[,29],
                          fits_report[,21:24], fits_report[,30:31], fits_report[,1:5], fits_report[,32:36])
+
+write.csv(fits_report_out, 'Fits_for_fig.csv')
 
 xlabels <- c("L~D (Segment)", "L~D (Path)", "L~D (Subtree)", "SA~V (Segment)", "SA~V (Subtree)", "D~V (Segment)", "D~V (Subtree)", 
              "L~V (Segment)", "L~V (Path)", "L~V (Subtree)", "D~SA (Segment)", "D~SA (Subtree)", "L~SA (Segment)", "L~SA (Path)", "L~SA (Subtree)", 
