@@ -35,7 +35,7 @@ species <- list(list("apple",
                      c(7,13,15,1,10),
                      c("cherry-1", "cherry-2", "cherry-3", "cherry-4", "cherry-5")))
 
-plus <- list(c(1,1,1,1,1,1,2), c(3,5,6,13,15,19,15), 
+plus <- list(c(1,1,1,1,1,1,2), c(3,5,4,13,15,14,15), 
              c("Bud.9-4+", "CG.3041-1+", "CG.6210-3+", "M.26+", "JM.8-2+", "PiAu.5683-3+", "cherry-3+"))
 
 
