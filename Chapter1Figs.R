@@ -150,7 +150,6 @@ branch_graph <- function(x, y, labx, laby, cherry_point, apple_point){
   #abline(sma(test_apple)$coef[[1]][1,1], sma(test_apple)$coef[[1]][2,1], lwd = 3, lty = 3)
 }
 
-##Scaling Relationships
 
 pdf(file="ScalingData.pdf", width=12, height=24, family="Helvetica", pointsize=12)
 par(mfrow = c(9,3))
@@ -174,7 +173,9 @@ branch_graph(subset(branch_size, select = c(species, tree, volume)),
              subset(branch_size, select = c(species, tree, area)),
              "log ( Segment Volume  )","log ( Segment Surface Area )", 24, 2)
 
-plot(range(0,1), range(0,1), bty='n', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
+branch_graph(subset(branch_size, select = c(species, tree, path_volume)),
+             subset(branch_size, select = c(species, tree, path_area)),
+             "log ( Path Volume  )","log ( Path Surface Area )", 23, 5)
 
 branch_graph(subset(branch_size, select = c(species, tree, tot_volume)),
              subset(branch_size, select = c(species, tree, tot_area)),
@@ -185,7 +186,9 @@ branch_graph(subset(branch_size, select = c(species, tree, volume)),
              subset(branch_size, select = c(species, tree, diameter_mm)),
              "log ( Segment Volume  )","log ( Diameter )", 24, 2)
 
-plot(range(0,1), range(0,1), bty='n', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
+branch_graph(subset(branch_size, select = c(species, tree, path_volume)),
+             subset(branch_size, select = c(species, tree, diameter_mm)),
+             "log ( Path Volume  )","log ( Diameter )", 23, 5)
 
 branch_graph(subset(branch_size, select = c(species, tree, tot_volume)),
              subset(branch_size, select = c(species, tree, diameter_mm)),
@@ -197,9 +200,9 @@ branch_graph(subset(length_zeros, select = c(species, tree, volume)),
              subset(length_zeros, select = c(species, tree, length_cm)),
              "log ( Segment Volume  )", "log ( Segment Length )", 24, 2)
 
-branch_graph(subset(length_zeros, select = c(species, tree, tot_volume)),
+branch_graph(subset(length_zeros, select = c(species, tree, path_volume)),
              subset(length_zeros, select = c(species, tree, path_length)),
-             "log ( Subtree Volume  )", "log ( Path Length )", 23, 5)
+             "log ( Path Volume  )", "log ( Path Length )", 23, 5)
 
 branch_graph(subset(branch_size, select = c(species, tree, tot_volume)),
              subset(branch_size, select = c(species, tree, tot_length)),
@@ -210,7 +213,9 @@ branch_graph(subset(branch_size, select = c(species, tree, area)),
              subset(branch_size, select = c(species, tree, diameter_mm)),
              "log ( Segment Surface Area  )","log ( Diameter )", 24, 2)
 
-plot(range(0,1), range(0,1), bty='n', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
+branch_graph(subset(branch_size, select = c(species, tree, path_area)),
+             subset(branch_size, select = c(species, tree, diameter_mm)),
+             "log ( Path Surface Area  )","log ( Diameter )", 23, 5)
 
 branch_graph(subset(branch_size, select = c(species, tree, tot_area)),
              subset(branch_size, select = c(species, tree, diameter_mm)),
@@ -221,9 +226,9 @@ branch_graph(subset(length_zeros, select = c(species, tree, area)),
              subset(length_zeros, select = c(species, tree, length_cm)),
              "log ( Segment Surface Area  )", "log ( Segment Length )", 24, 2)
 
-branch_graph(subset(branch_size, select = c(species, tree, tot_area)),
+branch_graph(subset(branch_size, select = c(species, tree, path_area)),
              subset(branch_size, select = c(species, tree, path_length)),
-             "log ( Subtree Surface Area  )","log ( Path Length )", 23, 5)
+             "log ( Path Surface Area  )","log ( Path Length )", 23, 5)
 
 branch_graph(subset(branch_size, select = c(species, tree, tot_area)),
              subset(branch_size, select = c(species, tree, tot_length)),
@@ -253,7 +258,7 @@ plot(range(0,1), range(0,1), bty='n', xaxt='n', yaxt='n', xlab='', ylab='', type
 
 branch_graph(subset(branch_size, select = c(species, tree, diameter_mm)),
              subset(branch_size, select = c(species, tree, tot_stem_m)),
-             "log ( Diameter  )", "log ( Total Stem Mass )", 22, 0)
+             "log ( Diameter  )", "log ( Subtree Stem Mass )", 22, 0)
 
 ### Mass ~ Volume (Wood Density) 
 mass_zero <- branch_size[branch_size$stem_m > 0,]
@@ -261,9 +266,10 @@ branch_graph(subset(mass_zero, select = c(species, tree, volume)),
              subset(mass_zero, select = c(species, tree, stem_m)),
              "log ( Segment Volume  )","log ( Segment Stem Mass )", 24, 2)
 
-plot(range(0,1), range(0,1), bty='n', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
+branch_graph(subset(branch_size, select = c(species, tree, path_volume)),
+             subset(branch_size, select = c(species, tree, tot_stem_m)),
+             "log ( Path Volume  )","log ( Subtree Mass )", 23, 5)
 
-totmass_totvolume <- sma(log10(branch_size$tot_stem_m)~log10(branch_size$tot_volume))
 branch_graph(subset(branch_size, select = c(species, tree, tot_volume)),
              subset(branch_size, select = c(species, tree, tot_stem_m)),
              "log ( Subtree Volume  )","log ( Subtree Mass )", 22, 0)
