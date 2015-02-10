@@ -5,7 +5,7 @@ sma <- read.csv('SMAResults.csv', sep=',', head=T)
 
 levels <- c(1,2,3,4,5,12)
 results <- list()
-for (i in 1:23){ #relationship columns
+for (i in 1:26){ #relationship columns
   results[[i]] <- list()
   for (j in 1:4){
     results[[i]][[j]] <- vector(length = 6)
@@ -69,39 +69,39 @@ pdf(file="ExponentR2.pdf", width= 16, height=12,family="Helvetica", pointsize=14
 
 par(mfrow= c(3,4), mar = c(4,5,1,1), cex.lab=1.5)
 exponent_R2(c(1:3), 1, 1, 3, '')
-exponent_R2(c(4:5), 2, 1, 3, '')
-exponent_R2(c(6:7), 3, 1, 3, '')
+exponent_R2(c(4:6), 2, 1, 3, '')
+exponent_R2(c(7:9), 3, 1, 3, '')
 plot(range(0,1), range(0,1), main = 'Tree Level', bty='n', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
-exponent_R2(c(8:10), 4, 1, 3, '')
-exponent_R2(c(11:12), 5, 1, 3, '')
-exponent_R2(c(13:15), 6, 1, 3, '')
+exponent_R2(c(10:12), 4, 1, 3, '')
+exponent_R2(c(13:15), 5, 1, 3, '')
+exponent_R2(c(16:18), 6, 1, 3, '')
 plot(range(0,1), range(0,1), bty='n', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
 par(xpd=T)
 legend('left', legend=c("", "", "", "", "", "", "All", "Cherry", "Apple"), 
        pch= c(17, 24, 2, 18, 23, 5, 15, 22, 0), pt.bg = 'grey', cex = 1.2, 
        bty = 'n', title = "Segment      Path      Subtree", title.adj = -.35, ncol = 3)
 par(xpd=F)
-exponent_R2(c(16:18), 7, 1, 3, '')
-exponent_R2(c(19:20), 8, 1, 3, 'R2')
-exponent_R2(c(21:22), 9, 1, 3, '')
+exponent_R2(c(19:21), 7, 1, 3, '')
+exponent_R2(c(22:23), 8, 1, 3, 'R2')
+exponent_R2(c(24:26), 9, 1, 3, '')
 
 par(mfrow= c(3,4), mar = c(4,5,1,1), cex.lab=1.5)
 exponent_R2(c(1:3), 1, 4, 6, '')
-exponent_R2(c(4:5), 2, 4, 6, '')
-exponent_R2(c(6:7), 3, 4, 6, '')
-plot(range(0,1), range(0,1), bty='n', main = 'Branch Level', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
-exponent_R2(c(8:10), 4, 4, 6, '')
-exponent_R2(c(11:12), 5, 4, 6, '')
-exponent_R2(c(13:15), 6, 4, 6, '')
+exponent_R2(c(4:6), 2, 4, 6, '')
+exponent_R2(c(7:9), 3, 4, 6, '')
+plot(range(0,1), range(0,1), bty='n', main = '', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
+exponent_R2(c(10:12), 4, 4, 6, '')
+exponent_R2(c(13:15), 5, 4, 6, '')
+exponent_R2(c(16:18), 6, 4, 6, '')
 plot(range(0,1), range(0,1), bty='n', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
 par(xpd=T)
 legend('left', legend=c("", "", "", "", "", "", "All", "Cherry", "Apple"), 
        pch= c(17, 24, 2, 18, 23, 5, 15, 22, 0), pt.bg = 'grey', cex = 1.2, 
        bty = 'n', title = "Segment     Path      Subtree", title.adj = -.35, ncol = 3)
 par(xpd=F)
-exponent_R2(c(16:18), 7, 4, 6, '')
-exponent_R2(c(19:20), 8, 4, 6, 'R2')
-exponent_R2(c(21:22), 9, 4, 6, '')
+exponent_R2(c(19:21), 7, 4, 6, '')
+exponent_R2(c(22:23), 8, 4, 6, 'R2')
+exponent_R2(c(24:26), 9, 4, 6, '')
 
 dev.off()
 
