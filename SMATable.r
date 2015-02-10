@@ -40,10 +40,10 @@ plus <- list(c(1,1,1,1,1,1,2), c(3,5,4,13,15,14,15),
 
 
 
-sma_test <- matrix(nrow = 13, ncol = 24)
-colnames(sma_test) = c('group', "L~D (Segment)", "(Path)", "(Subtree)", "SA~V (Segment)", "(Subtree)", "D~V(Segment)", "(Subtree)", 
-                       "L~V (Segment)", "(Path)", "(Subtree)", "D~SA (Segment)", "(Subtree)", "L~SA (Segment)", "(Path)", "(Subtree)", 
-                       "L~M (Segment)", "(Path)", "(Subtree)", "M~D (Segment)", "(Subtree)", "M~V(Segment)", "(Subtree)", "D/P Ratio ~ P Diam")
+sma_test <- matrix(nrow = 13, ncol = 28)
+colnames(sma_test) = c('group', "L~D (Segment)", "(Path)", "(Subtree)", "SA~V (Segment)", "(Path)", "(Subtree)", "D~V(Segment)", "(Path)", "(Subtree)", 
+                       "L~V (Segment)", "(Path)", "(Subtree)", "D~SA (Segment)", "(Path)", "(Subtree)", "L~SA (Segment)", "(Path)", "(Subtree)", 
+                       "L~M (Segment)", "(Path)", "(Subtree)", "M~D (Segment)", "(Subtree)", "M~V(Segment)", "(Path)", "(Subtree)", "D/P Ratio ~ P Diam")
 
 sma_test[1,] = c("prediction", "2 - 2/3", "", "", "3/4 - 5/8", "", "1/4 - 3/8", "", "1/2 - 1/4", "", "", "1/3 - 3/5", "", "2/3 - 2/5",
                  "", "", "", "", "", "", "", "", "", "")
@@ -63,57 +63,65 @@ for (i in 1:3){
   
   sma_test[(i+1),5] = "-"
   
-  test <- sma(log10(group_data[[i]]$tot_area)~log10(group_data[[i]]$tot_volume))
-  sma_test[(i+1),6] = output(test)
+  sma_test[(i+1),6] = "-"
   
-  sma_test[(i+1),7] = "-"
+  test <- sma(log10(group_data[[i]]$tot_area)~log10(group_data[[i]]$tot_volume))
+  sma_test[(i+1),7] = output(test)
+  
+  sma_test[(i+1),8] = "-"
+  
+  sma_test[(i+1),9] = "-"
   
   test <- sma(log10(group_data[[i]]$trunk_diam)~log10(group_data[[i]]$tot_volume))
-  sma_test[(i+1),8] = output(test)
-  
-  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$tot_volume))
-  sma_test[(i+1),9] = output(test)
-  
-  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_volume))
   sma_test[(i+1),10] = output(test)
   
-  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_volume))
+  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$tot_volume))
   sma_test[(i+1),11] = output(test)
   
-  sma_test[(i+1),12] = "-"
+  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_volume))
+  sma_test[(i+1),12] = output(test)
   
-  test <- sma(log10(group_data[[i]]$trunk_diam)~log10(group_data[[i]]$tot_area))
+  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_volume))
   sma_test[(i+1),13] = output(test)
   
-  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$tot_area))
-  sma_test[(i+1),14] = output(test)
+  sma_test[(i+1),14] = "-"
   
-  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_area))
-  sma_test[(i+1),15] = output(test)
+  sma_test[(i+1),15] = "-"
   
-  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_area))
+  test <- sma(log10(group_data[[i]]$trunk_diam)~log10(group_data[[i]]$tot_area))
   sma_test[(i+1),16] = output(test)
   
-  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$tot_stem_m))
+  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$tot_area))
   sma_test[(i+1),17] = output(test)
   
-  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_stem_m))
+  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_area))
   sma_test[(i+1),18] = output(test)
   
-  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_stem_m))
+  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_area))
   sma_test[(i+1),19] = output(test)
   
-  sma_test[(i+1),20] = "-"
+  test <- sma(log10(group_data[[i]]$height)~log10(group_data[[i]]$tot_stem_m))
+  sma_test[(i+1),20] = output(test)
   
-  test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$trunk_diam))
+  test <- sma(log10(group_data[[i]]$max_path)~log10(group_data[[i]]$tot_stem_m))
   sma_test[(i+1),21] = output(test)
   
-  sma_test[(i+1),22] = "-"
+  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_stem_m))
+  sma_test[(i+1),22] = output(test)
+  
+  sma_test[(i+1),23] = "-"
+  
+  test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$trunk_diam))
+  sma_test[(i+1),24] = output(test)
+  
+  sma_test[(i+1),25] = "-"
+  
+  sma_test[(i+1),26] = "-"
   
   test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$tot_volume))
-  sma_test[(i+1),23] = output(test)
+  sma_test[(i+1),27] = output(test)
   
-  sma_test[(i+1),24] = "-"
+  sma_test[(i+1),28] = "-"
 }
 
 # Group Branch Level Output
@@ -133,69 +141,81 @@ for (i in 4:12){
   test <- sma(log10(group_data[[i]]$area)~log10(group_data[[i]]$volume))
   sma_test[(i+1),5] = output(test)
   
-  test <- sma(log10(group_data[[i]]$tot_area)~log10(group_data[[i]]$tot_volume))
+  test <- sma(log10(group_data[[i]]$path_area)~log10(group_data[[i]]$path_volume))
   sma_test[(i+1),6] = output(test)
   
-  test <- sma(log10(group_data[[i]]$diameter_mm)~log10(group_data[[i]]$volume))
+  test <- sma(log10(group_data[[i]]$tot_area)~log10(group_data[[i]]$tot_volume))
   sma_test[(i+1),7] = output(test)
   
-  test <- sma(log10(group_data[[i]]$diameter_mm)~log10(group_data[[i]]$tot_volume))
+  test <- sma(log10(group_data[[i]]$diameter_mm)~log10(group_data[[i]]$volume))
   sma_test[(i+1),8] = output(test)
   
-  test <- sma(log10(group_data[[i]]$length_cm)~log10(group_data[[i]]$volume))
+  test <- sma(log10(group_data[[i]]$diameter_mm)~log10(group_data[[i]]$path_volume))
   sma_test[(i+1),9] = output(test)
   
-  test <- sma(log10(group_data[[i]]$path_length)~log10(group_data[[i]]$tot_volume))
+  test <- sma(log10(group_data[[i]]$diameter_mm)~log10(group_data[[i]]$tot_volume))
   sma_test[(i+1),10] = output(test)
   
-  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_volume))
+  test <- sma(log10(group_data[[i]]$length_cm)~log10(group_data[[i]]$volume))
   sma_test[(i+1),11] = output(test)
   
-  test <- sma(log10(group_data[[i]]$diameter_mm)~log10(group_data[[i]]$area))
+  test <- sma(log10(group_data[[i]]$path_length)~log10(group_data[[i]]$path_volume))
   sma_test[(i+1),12] = output(test)
   
-  test <- sma(log10(group_data[[i]]$diameter_mm)~log10(group_data[[i]]$tot_area))
+  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_volume))
   sma_test[(i+1),13] = output(test)
   
-  test <- sma(log10(group_data[[i]]$length_cm)~log10(group_data[[i]]$area))
+  test <- sma(log10(group_data[[i]]$diameter_mm)~log10(group_data[[i]]$area))
   sma_test[(i+1),14] = output(test)
   
-  test <- sma(log10(group_data[[i]]$path_length)~log10(group_data[[i]]$tot_area))
+  test <- sma(log10(group_data[[i]]$diameter_mm)~log10(group_data[[i]]$path_area))
   sma_test[(i+1),15] = output(test)
   
-  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_area))
+  test <- sma(log10(group_data[[i]]$diameter_mm)~log10(group_data[[i]]$tot_area))
   sma_test[(i+1),16] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$length_cm)~log10(group_data[[i]]$area))
+  sma_test[(i+1),17] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$path_length)~log10(group_data[[i]]$path_area))
+  sma_test[(i+1),18] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_area))
+  sma_test[(i+1),19] = output(test)
   
   rm_zero <- subset(group_data[[i]],length_cm>0 & stem_m>0)
   test <- sma(log10(rm_zero$length_cm)~log10(rm_zero$stem_m))
-  sma_test[(i+1),17] = output(test)
-  
-  test <- sma(log10(group_data[[i]]$path_length)~log10(group_data[[i]]$tot_stem_m))
-  sma_test[(i+1),18] = output(test)
-  
-  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_stem_m))
-  sma_test[(i+1),19] = output(test)
-  
-  test <- sma(log10(rm_zero$stem_m)~log10(rm_zero$diameter_mm))
   sma_test[(i+1),20] = output(test)
   
-  test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$diameter_mm))
+  test <- sma(log10(group_data[[i]]$path_length)~log10(group_data[[i]]$tot_stem_m))
   sma_test[(i+1),21] = output(test)
   
-  test <- sma(log10(rm_zero$stem_m)~log10(rm_zero$volume))
+  test <- sma(log10(group_data[[i]]$tot_length)~log10(group_data[[i]]$tot_stem_m))
   sma_test[(i+1),22] = output(test)
   
-  test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$tot_volume))
+  test <- sma(log10(rm_zero$stem_m)~log10(rm_zero$diameter_mm))
   sma_test[(i+1),23] = output(test)
   
-  test <- sma(log10(group_data[[i]]$diameter_ratio)~log10(group_data[[i]]$diameter_mm/group_data[[i]]$diameter_ratio))
+  test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$diameter_mm))
   sma_test[(i+1),24] = output(test)
+  
+  test <- sma(log10(rm_zero$stem_m)~log10(rm_zero$volume))
+  sma_test[(i+1),25] = output(test)
+  
+  test <- sma(log10(rm_zero$stem_m)~log10(rm_zero$path_volume))
+  sma_test[(i+1),26] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$tot_stem_m)~log10(group_data[[i]]$tot_volume))
+  sma_test[(i+1),27] = output(test)
+  
+  test <- sma(log10(group_data[[i]]$diameter_ratio)~log10(group_data[[i]]$diameter_mm/group_data[[i]]$diameter_ratio))
+  sma_test[(i+1),28] = output(test)
 }  
 
 # Individual Branch Level Output
 for (i in 1:2){
   spp <- branch_size[branch_size$species==species[[i]][1],]
-  subout <- matrix(ncol = 24, nrow = length(species[[i]][[2]]))
+  subout <- matrix(ncol = 28, nrow = length(species[[i]][[2]]))
   for (j in 1:length(species[[i]][[2]])){
     ind <- spp[spp$tree==species[[i]][[2]][j],]
     
@@ -213,70 +233,82 @@ for (i in 1:2){
     test <- sma(log10(ind$area)~log10(ind$volume))
     subout[j,5] = output(test)
     
-    test <- sma(log10(ind$tot_area)~log10(ind$tot_volume))
+    test <- sma(log10(ind$path_area)~log10(ind$path_volume))
     subout[j,6] = output(test)
     
-    test <- sma(log10(ind$diameter_mm)~log10(ind$volume))
+    test <- sma(log10(ind$tot_area)~log10(ind$tot_volume))
     subout[j,7] = output(test)
     
-    test <- sma(log10(ind$diameter_mm)~log10(ind$tot_volume))
+    test <- sma(log10(ind$diameter_mm)~log10(ind$volume))
     subout[j,8] = output(test)
     
-    test <- sma(log10(ind$length_cm)~log10(ind$volume))
+    test <- sma(log10(ind$diameter_mm)~log10(ind$path_volume))
     subout[j,9] = output(test)
     
-    test <- sma(log10(ind$path_length)~log10(ind$tot_volume))
+    test <- sma(log10(ind$diameter_mm)~log10(ind$tot_volume))
     subout[j,10] = output(test)
     
-    test <- sma(log10(ind$tot_length)~log10(ind$tot_volume))
+    test <- sma(log10(ind$length_cm)~log10(ind$volume))
     subout[j,11] = output(test)
     
-    test <- sma(log10(ind$diameter_mm)~log10(ind$area))
+    test <- sma(log10(ind$path_length)~log10(ind$path_volume))
     subout[j,12] = output(test)
     
-    test <- sma(log10(ind$diameter_mm)~log10(ind$tot_area))
+    test <- sma(log10(ind$tot_length)~log10(ind$tot_volume))
     subout[j,13] = output(test)
     
-    test <- sma(log10(ind$length_cm)~log10(ind$area))
+    test <- sma(log10(ind$diameter_mm)~log10(ind$area))
     subout[j,14] = output(test)
     
-    test <- sma(log10(ind$path_length)~log10(ind$tot_area))
+    test <- sma(log10(ind$diameter_mm)~log10(ind$path_area))
     subout[j,15] = output(test)
     
-    test <- sma(log10(ind$tot_length)~log10(ind$tot_area))
+    test <- sma(log10(ind$diameter_mm)~log10(ind$tot_area))
     subout[j,16] = output(test)
+    
+    test <- sma(log10(ind$length_cm)~log10(ind$area))
+    subout[j,17] = output(test)
+    
+    test <- sma(log10(ind$path_length)~log10(ind$path_area))
+    subout[j,18] = output(test)
+    
+    test <- sma(log10(ind$tot_length)~log10(ind$tot_area))
+    subout[j,19] = output(test)
     
     rm_zero <- subset(ind,length_cm>0 & stem_m>0)
     test <- sma(log10(rm_zero$length_cm)~log10(rm_zero$stem_m))
-    subout[j,17] = output(test)
-    
-    test <- sma(log10(ind$path_length)~log10(ind$tot_stem_m))
-    subout[j,18] = output(test)
-    
-    test <- sma(log10(ind$tot_length)~log10(ind$tot_stem_m))
-    subout[j,19] = output(test)
-    
-    test <- sma(log10(rm_zero$stem_m)~log10(rm_zero$diameter_mm))
     subout[j,20] = output(test)
     
-    test <- sma(log10(ind$tot_stem_m)~log10(ind$diameter_mm))
+    test <- sma(log10(ind$path_length)~log10(ind$tot_stem_m))
     subout[j,21] = output(test)
     
-    test <- sma(log10(rm_zero$stem_m)~log10(rm_zero$volume))
+    test <- sma(log10(ind$tot_length)~log10(ind$tot_stem_m))
     subout[j,22] = output(test)
     
-    test <- sma(log10(ind$tot_stem_m)~log10(ind$tot_volume))
+    test <- sma(log10(rm_zero$stem_m)~log10(rm_zero$diameter_mm))
     subout[j,23] = output(test)
     
-    test <- sma(log10(ind$diameter_ratio)~log10(ind$diameter_mm/ind$diameter_ratio))
+    test <- sma(log10(ind$tot_stem_m)~log10(ind$diameter_mm))
     subout[j,24] = output(test)
+    
+    test <- sma(log10(rm_zero$stem_m)~log10(rm_zero$volume))
+    subout[j,25] = output(test)
+    
+    test <- sma(log10(rm_zero$stem_m)~log10(rm_zero$path_volume))
+    subout[j,26] = output(test)
+    
+    test <- sma(log10(ind$tot_stem_m)~log10(ind$tot_volume))
+    subout[j,27] = output(test)
+    
+    test <- sma(log10(ind$diameter_ratio)~log10(ind$diameter_mm/ind$diameter_ratio))
+    subout[j,28] = output(test)
   }
   sma_test = rbind(sma_test, subout)
 }
 
 # Individual Plus Output (WITH extra twig data) 
 for (i in 1:7){
-  subout <- matrix(ncol = 23, nrow = 1)
+  subout <- matrix(ncol = 28, nrow = 1)
   
   spp <- branch_size[branch_size$species==species[[(plus[[1]][i])]][1],]
   ind <- spp[spp$tree==plus[[2]][i],]
@@ -295,63 +327,71 @@ for (i in 1:7){
   test <- sma(log10(ind$area_plus)~log10(ind$volume_plus))
   subout[5] = output(test)
   
-  test <- sma(log10(ind$tot_area_plus)~log10(ind$tot_volume_plus))
-  subout[6] = output(test)
+  subout[6] = "-"
   
-  test <- sma(log10(ind$diameter_mm)~log10(ind$volume_plus))
+  test <- sma(log10(ind$tot_area_plus)~log10(ind$tot_volume_plus))
   subout[7] = output(test)
   
-  test <- sma(log10(ind$diameter_mm)~log10(ind$tot_volume_plus))
+  test <- sma(log10(ind$diameter_mm)~log10(ind$volume_plus))
   subout[8] = output(test)
   
-  test <- sma(log10(ind$length_cm)~log10(ind$volume_plus))
-  subout[9] = output(test)
+  subout[9] = "-"
   
-  test <- sma(log10(ind$path_length_plus)~log10(ind$tot_volume_plus))
+  test <- sma(log10(ind$diameter_mm)~log10(ind$tot_volume_plus))
   subout[10] = output(test)
   
-  test <- sma(log10(ind$tot_length_plus)~log10(ind$tot_volume_plus))
+  test <- sma(log10(ind$length_cm)~log10(ind$volume_plus))
   subout[11] = output(test)
   
-  test <- sma(log10(ind$diameter_mm)~log10(ind$area_plus))
+  test <- sma(log10(ind$path_length_plus)~log10(ind$tot_volume_plus))
   subout[12] = output(test)
   
-  test <- sma(log10(ind$diameter_mm)~log10(ind$tot_area_plus))
+  test <- sma(log10(ind$tot_length_plus)~log10(ind$tot_volume_plus))
   subout[13] = output(test)
   
-  test <- sma(log10(ind$length_cm)~log10(ind$area_plus))
+  test <- sma(log10(ind$diameter_mm)~log10(ind$area_plus))
   subout[14] = output(test)
   
+  subout[15] = "-"
+  
+  test <- sma(log10(ind$diameter_mm)~log10(ind$tot_area_plus))
+  subout[16] = output(test)
+  
+  test <- sma(log10(ind$length_cm)~log10(ind$area_plus))
+  subout[17] = output(test)
+  
   test <- sma(log10(ind$path_length_plus)~log10(ind$tot_area_plus))
-  subout[15] = output(test)
+  subout[18] = output(test)
   
   test <- sma(log10(ind$tot_length_plus)~log10(ind$tot_area_plus))
-  subout[16] = output(test)
+  subout[19] = output(test)
   
   rm_zero <- subset(ind,length_cm>0 & stem_m>0)
   test <- sma(log10(rm_zero$length_cm)~log10(rm_zero$stem_m + rm_zero$twig_m))
-  subout[17] = output(test)
-  
-  test <- sma(log10(ind$path_length_plus)~log10(ind$tot_stem_m + ind$tot_twig_m))
-  subout[18] = output(test)
-  
-  test <- sma(log10(ind$tot_length_plus)~log10(ind$tot_stem_m + ind$tot_twig_m))
-  subout[19] = output(test)
-  
-  test <- sma(log10(rm_zero$stem_m + rm_zero$twig_m)~log10(rm_zero$diameter_mm))
   subout[20] = output(test)
   
-  test <- sma(log10(ind$tot_stem_m + ind$tot_twig_m)~log10(ind$diameter_mm))
+  test <- sma(log10(ind$path_length_plus)~log10(ind$tot_stem_m + ind$tot_twig_m))
   subout[21] = output(test)
   
-  test <- sma(log10(rm_zero$stem_m + rm_zero$twig_m)~log10(rm_zero$volume_plus))
+  test <- sma(log10(ind$tot_length_plus)~log10(ind$tot_stem_m + ind$tot_twig_m))
   subout[22] = output(test)
   
-  test <- sma(log10(ind$tot_stem_m + ind$tot_twig_m)~log10(ind$tot_volume_plus))
+  test <- sma(log10(rm_zero$stem_m + rm_zero$twig_m)~log10(rm_zero$diameter_mm))
   subout[23] = output(test)
   
-  test <- sma(log10(ind$diameter_ratio)~log10(ind$diameter_mm/ind$diameter_ratio))
+  test <- sma(log10(ind$tot_stem_m + ind$tot_twig_m)~log10(ind$diameter_mm))
   subout[24] = output(test)
+  
+  test <- sma(log10(rm_zero$stem_m + rm_zero$twig_m)~log10(rm_zero$volume_plus))
+  subout[25] = output(test)
+  
+  subout[26] = "-"
+  
+  test <- sma(log10(ind$tot_stem_m + ind$tot_twig_m)~log10(ind$tot_volume_plus))
+  subout[27] = output(test)
+  
+  test <- sma(log10(ind$diameter_ratio)~log10(ind$diameter_mm/ind$diameter_ratio))
+  subout[28] = output(test)
 
   sma_test = rbind(sma_test, subout)
 }
