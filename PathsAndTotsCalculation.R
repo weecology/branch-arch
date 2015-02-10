@@ -78,7 +78,7 @@ for (m in 1:2){
   }
 }
 
-### Calculates path length above branch node.
+### Calculates path length, area, and volume above branch node.
 
 for (m in 1:2){
   spp <- branch[branch$species==species[[m]][1],]
@@ -86,13 +86,21 @@ for (m in 1:2){
     tree <- spp[spp$tree==species[[m]][[2]][n],]
     for (j in length(tree[,1]):1){
       daughters <- tree[tree$parent==tree$branch[j],]
-      if (length(daughters[,1]) > 0)
-        tree$path_length[j] = tree$length_cm[j] + max(daughters$path_length, na.rm = TRUE)
-      else
-        tree$path_length[j] = tree$length_cm[j]     
+      if (length(daughters[,1]) > 0){
+        max_daughter <- daughters[daughters$path_length==max(daughters$path_length, na.rm = TRUE),]
+        tree$path_length[j] = tree$length_cm[j] + max_daughter$path_length[1]
+        tree$path_area[j] = round(2 * pi * (tree$diameter_mm[j]/2) * tree$length_cm[j],1) + max_daughter$path_area[1]
+        tree$path_volume[j] = round(pi * (tree$diameter_mm[j]/2)^2 * tree$length_cm[j],1) + max_daughter$path_volume[1]
+      }
+      else{
+        tree$path_length[j] = tree$length_cm[j]
+        tree$path_area[j] = round(2 * pi * (tree$diameter_mm[j]/2) * tree$length_cm[j],1)
+        tree$path_volume[j] = round(pi * (tree$diameter_mm[j]/2)^2 * tree$length_cm[j],1)
+      }
     }
     
-    tree_path = data.frame(tree = tree$tree, branch = tree$branch, path = tree$path_length)
+    tree_path = data.frame(tree = tree$tree, branch = tree$branch, path_length = tree$path_length, 
+                           path_area = tree$path_area, path_volume = tree$path_volume)
     
     if (exists('paths_out'))
       paths_out = rbind(paths_out, tree_path)
@@ -181,18 +189,23 @@ for (m in 1:2){
         tree$tot_length_plus[j] = tree$length_cm[j] + sum(daughters$tot_length, na.rm = TRUE)
         tree$tot_area_plus[j] = tree$area[j] + sum(daughters$tot_area, na.rm = TRUE)
         tree$tot_volume_plus[j] = tree$volume[j] + sum(daughters$tot_volume, na.rm = TRUE)
-        }
+      }
       else{
         twig_spp <- twig[twig$species==species[[m]][1],]
         twig_tree <- twig_spp[twig_spp$tree==species[[m]][[2]][n],]
         twig_daughters <- twig_tree[twig_tree$parent==tree$branch[j],]
-        tree$tot_area_plus[j] = tree$area[j]
-        tree$tot_volume_plus[j] = tree$volume[j]
-        if (length(twig_daughters[,1])>0)
+
+        if (length(twig_daughters[,1])>0){
           tree$tot_length_plus[j] = tree$length_cm[j] + sum(twig_daughters$length_cm)
-        else
-          tree$tot_length_plus[j] = tree$length_cm[j]
+          tree$tot_area_plus[j] = tree$area[j] + round(2 * pi * sum(twig_daughters$length_cm),1) #assuming twig diameter = 2mm
+          tree$tot_volume_plus[j] = tree$volume[j] + round(pi * sum(twig_daughters$length_cm),1)
         }
+        else{
+          tree$tot_length_plus[j] = tree$length_cm[j]
+          tree$tot_area_plus[j] = tree$area[j]
+          tree$tot_volume_plus[j] = tree$volume[j]
+        }
+      }
     }
     
     tree_lengths_plus = data.frame(tree = tree$tree, branch = tree$branch, 
@@ -207,8 +220,9 @@ for (m in 1:2){
   }
 }
 
-tots_out = data.frame(tree = branch$tree, branch = branch$branch, path = paths_out$path, tot_length = lengths_out$tot_length, 
-                      area = lengths_out$area, tot_area = lengths_out$tot_area, volume = lengths_out$volume,
+tots_out = data.frame(tree = branch$tree, branch = branch$branch, path_length = paths_out$path_length, tot_length = lengths_out$tot_length, 
+                      area = lengths_out$area, path_area = paths_out$path_area, tot_area = lengths_out$tot_area, 
+                      volume = lengths_out$volume, path_volume = paths_out$path_volume,
                       tot_volume = lengths_out$tot_volume, tot_stem_m = masses_out$mass, 
                       tot_no_twigs = no_twig_out$tot_no_twigs, tot_twig_m = twig_m_out$tot_twig_m,
                       path_plus = paths_out_plus$path_plus, tot_length_plus = lengths_out_plus$tot_length_plus, 
