@@ -38,7 +38,7 @@ multi_plot <- function(col_list, location){
 
 #Compiles data for computation from the visually oriented SMAResults file
 results <- list()
-for (i in 1:23){
+for (i in 1:27){
   results[[i]] <- list()
   for (j in 1:4){
     results[[i]][[j]] <- vector(length = 42)
@@ -49,26 +49,28 @@ for (i in 1:23){
   }
 }
 
-ylabels <- c("L~D (Segment)", "L~D (Path)", "L~D (Subtree)", "SA~V (Segment)", "SA~V (Subtree)", "D~V (Segment)", "D~V (Subtree)", 
-             "L~V (Segment)", "L~V (Path)", "L~V (Subtree)", "D~SA (Segment)", "D~SA (Subtree)", "L~SA (Segment)", "L~SA (Path)", "L~SA (Subtree)", 
-             "L~M (Segment)", "L~M (Path)", "L~M (Subtree)", "M~D (Segment)", "M~D (Subtree)", "M~V (Segment)", "M~V (Subtree)", "D/P Ratio ~ P Diam")
+ylabels <- c("L~D (Segment)", "L~D (Path)", "L~D (Subtree)", "SA~V (Segment)", "SA~V (Path)", "SA~V (Subtree)", 
+             "D~V (Segment)", "D~V (Path)", "D~V (Subtree)", "L~V (Segment)", "L~V (Path)", "L~V (Subtree)", 
+             "D~SA (Segment)", "D~SA (Path)", "D~SA (Subtree)", "L~SA (Segment)", "L~SA (Path)", "L~SA (Subtree)", 
+             "L~M (Segment)", "L~M (Path)", "L~M (Subtree)", "M~D (Segment)", "M~D (Subtree)", 
+             "M~V (Segment)", "M~V (Path)", "M~V (Subtree)", "D/P Ratio ~ P Diam")
 
-flow <- c(2, 2, 2, .75, .75, .25, .25, .5, .5, .5, .33, .33, .67, .67, .67, 10, 10, 10, 10, 10, 10, 10, 10)
+flow <- c(2, 2, 2, .75, .75, .75, .25, .25, .25, .5, .5, .5, .33, .33, .33, .67, .67, .67, 10, 10, 10, 10, 10, 10, 10, 10, 10)
 
-elastic <- c(.67, .67, .67, .625, .625, .375, .375, .25, .25, .25, .6, .6, .4, .4, .4, .25, .25, .25, 2.67, 2.67, 10, 10, 10)
+elastic <- c(.67, .67, .67, .625, .625, .625, .375, .375, .375, .25, .25, .25, .6, .6, .6, .4, .4, .4, .25, .25, .25, 2.67, 2.67, 10, 10, 10, 10)
 
 pdf(file="ExponentFigures.pdf", width= 10, height=10,family="Helvetica", pointsize=12)
 
 multi_plot(c(1:3), 'bottomright')
-multi_plot(c(4:5), 'topright')
-multi_plot(c(6:7), 'topright')
-multi_plot(c(8:10), 'bottomright')
-multi_plot(c(11:12), 'bottomright')
-multi_plot(c(13:15), 'topright')
+multi_plot(c(4:6), 'topright')
+multi_plot(c(7:9), 'topright')
+multi_plot(c(10:12), 'bottomright')
+multi_plot(c(13:15), 'bottomright')
 multi_plot(c(16:18), 'topright')
-multi_plot(c(19:20), 'topright')
-multi_plot(c(21:22), 'bottomright')
-multi_plot(c(23), 'topright')
+multi_plot(c(19:21), 'topright')
+multi_plot(c(22:23), 'topright')
+multi_plot(c(24:26), 'bottomright')
+multi_plot(c(27), 'topright')
 
 dev.off()
 
