@@ -1,0 +1,474 @@
+---
+title: "Allometry Results"
+author: "Zack Brym"
+output: html_document
+---
+##Data
+Presented are two blocks of allometry data from my orchard scaling project (2012-2013) conducted at Kaysville Research Farm, USU. I sampled five 24 year old tart cherry (*Prunus cerasus* Montmorency, *P. mahaleb*) from one block and 
+19 8 year-old apples (*Malus domestica* "Golden Delicious") from one block with various rootstocks.
+BranchSegments.csv (*branch_size*) contains the size and orientation data for all trees sampled at a branch-level.
+TreeSummary.csv (*tree_sum*) contains the size and orientation data for all trees sampled at a tree-level. Listing of fields represented in the data are located at the end of this dococument for both data files.
+Data is analysed using Standardized Major Axis (SMA; aka reduced major axis) with R-package 'smatr'.  
+
+```{r data_setup, include=FALSE}
+branch_size <- read.csv("BranchSegments.csv", sep = ',', header = T)
+treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
+apple <- branch_size[branch_size$species == "apple",]
+cherry <- branch_size[branch_size$species == "cherry",]
+PiAu <- subset(apple, tree==20 | tree==19 | tree==14)
+B9 <- subset(apple, tree==2 | tree==7 | tree==12 | tree ==3)
+library('smatr')
+```
+
+```{r graph_generation_functions, include=FALSE}
+tree_graph <- function(x, y, test, pred_b, pred_m, labx, laby, position, R2){
+  plot(log10(x[1:19]), log10(y[1:19]), 
+       xlim = c((log10(min(x))-0.2),(log10(max(x))+0.2)), ylim = c((log10(min(y))-0.2),(log10(max(y))+0.2)),
+       xlab = labx, ylab = laby, cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
+  points(log10(x[20:24]), log10(y[20:24]), cex = 2.5, pch = 19, col = "red", bg = "red")
+  abline(sma(test)$coef[[1]][1,1], sma(test)$coef[[1]][2,1], lwd = 3, lty = 2)
+  abline(sma(test)$coef[[1]][1,2], sma(test)$coef[[1]][2,2], lwd = 3, lty = 3)
+  abline(sma(test)$coef[[1]][1,3], sma(test)$coef[[1]][2,3], lwd = 3, lty = 3)
+  abline(pred_b, pred_m, lwd = 3, lty = 1)
+  legend(position, legend=R2, bty='n', cex=3)  
+} #tree-level figures
+branch_graph <- function(x, y, test, pred_b, pred_m, labx, laby, position, R2){
+  group_data_x <- list()
+  group_data_x[[1]] <- x[x$species=="cherry",]
+
+  apple <- x[x$species=="apple",]
+  group_data_x[[2]] <- subset(apple, tree==20 | tree==19 | tree==14)
+  group_data_x[[3]] <- subset(apple, tree==17 | tree==15 | tree==18)
+  group_data_x[[4]] <- subset(apple, tree==13)
+  group_data_x[[5]] <- subset(apple, tree==10 | tree==1 | tree==4 | tree ==9)
+  group_data_x[[6]] <- subset(apple, tree==5 | tree==11 | tree==6 | tree ==8)
+  group_data_x[[7]] <- subset(apple, tree==2 | tree==7 | tree==12 | tree ==3)
+  
+  group_data_y <- list()
+  group_data_y[[1]] <- y[y$species=="cherry",]
+  
+  apple <- y[y$species=="apple",]
+  group_data_y[[2]] <- subset(apple, tree==20 | tree==19 | tree==14)
+  group_data_y[[3]] <- subset(apple, tree==17 | tree==15 | tree==18)
+  group_data_y[[4]] <- subset(apple, tree==13)
+  group_data_y[[5]] <- subset(apple, tree==10 | tree==1 | tree==4 | tree ==9)
+  group_data_y[[6]] <- subset(apple, tree==5 | tree==11 | tree==6 | tree ==8)
+  group_data_y[[7]] <- subset(apple, tree==2 | tree==7 | tree==12 | tree ==3)
+  
+  plot(log10(group_data_x[[1]][,3]), log10(group_data_y[[1]][,3]), 
+       xlim = c((log10(min(x[,3], na.rm=T))-0.2),(log10(max(x[,3], na.rm=T))+0.2)), 
+       ylim = c((log10(min(y[,3], na.rm=T))-0.2),(log10(max(y[,3], na.rm=T))+0.2)),
+       xlab = labx, ylab = laby, cex.lab = 1.5, cex = 1.5, pch = 21, col = "red", bg = "red")
+  points(log10(group_data_x[[2]][,3]), log10(group_data_y[[2]][,3]), cex = 1.5, pch = 21, col = "black", bg = "orange")
+  points(log10(group_data_x[[3]][,3]), log10(group_data_y[[3]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'yellow')
+  points(log10(group_data_x[[4]][,3]), log10(group_data_y[[4]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'green')
+  points(log10(group_data_x[[5]][,3]), log10(group_data_y[[5]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'cyan')
+  points(log10(group_data_x[[6]][,3]), log10(group_data_y[[6]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'blue')
+  points(log10(group_data_x[[7]][,3]), log10(group_data_y[[7]][,3]), cex = 1.5, pch = 21, col = "black", bg = 'purple')
+  abline(sma(test)$coef[[1]][1,1], sma(test)$coef[[1]][2,1], lwd = 3, lty = 2)
+  abline(sma(test)$coef[[1]][1,2], sma(test)$coef[[1]][2,2], lwd = 3, lty = 3)
+  abline(sma(test)$coef[[1]][1,3], sma(test)$coef[[1]][2,3], lwd = 3, lty = 3)
+  abline(pred_b, pred_m, lwd = 3, lty = 1)
+  legend(position, legend=R2, bty='n', cex=3)  
+} #branch-level log10-trans
+branch_graph2 <- function(x, y, test, pred_b, pred_m, labx, laby, position, R2){
+  group_data_x <- list()
+  group_data_x[[1]] <- x[x$species=="cherry",]
+  
+  apple <- x[x$species=="apple",]
+  group_data_x[[2]] <- subset(apple, tree==20 | tree==19 | tree==14)
+  group_data_x[[3]] <- subset(apple, tree==17 | tree==15 | tree==18)
+  group_data_x[[4]] <- subset(apple, tree==13)
+  group_data_x[[5]] <- subset(apple, tree==10 | tree==1 | tree==4 | tree ==9)
+  group_data_x[[6]] <- subset(apple, tree==5 | tree==11 | tree==6 | tree ==8)
+  group_data_x[[7]] <- subset(apple, tree==2 | tree==7 | tree==12 | tree ==3)
+  
+  group_data_y <- list()
+  group_data_y[[1]] <- y[y$species=="cherry",]
+  
+  apple <- y[y$species=="apple",]
+  group_data_y[[2]] <- subset(apple, tree==20 | tree==19 | tree==14)
+  group_data_y[[3]] <- subset(apple, tree==17 | tree==15 | tree==18)
+  group_data_y[[4]] <- subset(apple, tree==13)
+  group_data_y[[5]] <- subset(apple, tree==10 | tree==1 | tree==4 | tree ==9)
+  group_data_y[[6]] <- subset(apple, tree==5 | tree==11 | tree==6 | tree ==8)
+  group_data_y[[7]] <- subset(apple, tree==2 | tree==7 | tree==12 | tree ==3)
+  
+  plot(group_data_x[[1]][,3], group_data_y[[1]][,3], 
+       xlim = c((min(x[,3], na.rm=T)-0.2),(max(x[,3], na.rm=T)+0.2)), 
+       ylim = c((min(y[,3], na.rm=T)-0.2),(max(y[,3], na.rm=T)+0.2)),
+       xlab = labx, ylab = laby, cex.lab = 1.5, cex = 1.5, pch = 21, col = "red", bg = "red")
+  points(group_data_x[[2]][,3], group_data_y[[2]][,3], cex = 1.5, pch = 21, col = "black", bg = "orange")
+  points(group_data_x[[3]][,3], group_data_y[[3]][,3], cex = 1.5, pch = 21, col = "black", bg = 'yellow')
+  points(group_data_x[[4]][,3], group_data_y[[4]][,3], cex = 1.5, pch = 21, col = "black", bg = 'green')
+  points(group_data_x[[5]][,3], group_data_y[[5]][,3], cex = 1.5, pch = 21, col = "black", bg = 'cyan')
+  points(group_data_x[[6]][,3], group_data_y[[6]][,3], cex = 1.5, pch = 21, col = "black", bg = 'blue')
+  points(group_data_x[[7]][,3], group_data_y[[7]][,3], cex = 1.5, pch = 21, col = "black", bg = 'purple')
+  abline(sma(test)$coef[[1]][1,1], sma(test)$coef[[1]][2,1], lwd = 3, lty = 2)
+  abline(sma(test)$coef[[1]][1,2], sma(test)$coef[[1]][2,2], lwd = 3, lty = 3)
+  abline(sma(test)$coef[[1]][1,3], sma(test)$coef[[1]][2,3], lwd = 3, lty = 3)
+  abline(pred_b, pred_m, lwd = 3, lty = 1)
+  legend(position, legend=R2, bty='n', cex=3)  
+} #branch-level no log-trans
+```
+
+##Frequency Distributions
+
+###Length Histograms
+Histograms for segment length [cm], path length, and subtree length levels. Sample size is listed next to title. There are 5 cherry and 19 apple individuals represented. The Biggest Apple is the largest rootstock ('PiAu') with 3 individuals represented. The Smallest Apple is the smallest rootstock ('B9') with 4 individuals represented.  
+  
+* *I'd like to use this data to determine if the tree is fractal (Log-Log or Log-Linear), but my notes are unclear how exactly to do that. Please, help.* *
+
+####Segment Length
+Segment length is the distance of a branch unit bounded by two major branching events.
+```{r length_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist(branch_size$length_cm, main = paste("All ( n =",length(branch_size$length_cm),")"), breaks = 40, xlab="Segment Length")
+hist(cherry$length_cm, main = paste("Cherry ( n =",length(cherry$length_cm),")"), breaks = 40, xlab = "Segment Length")
+hist(apple$length_cm, main = paste("Apple ( n =",length(apple$length_cm),")"), breaks = 40, xlab = "Segment Length")
+hist(PiAu$length_cm, main = paste("Biggest Apples ( n =",length(PiAu$length_cm),")"),breaks = 20,xlab = "Segment Length")
+hist(B9$length_cm, main = paste("Smallest Apples ( n =",length(B9$length_cm),")"), breaks = 20, xlab = "Segment Length")
+```
+
+####Path Length
+Path length is the total length of a target branch and the longest continuous length of succeding branches. The calculation includes terminal twigs when the data is available.
+```{r pathlength_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist(branch_size$path_length, main = paste("All ( n =",length(branch_size$length_cm),")"), breaks = 40, xlab="Path Length")
+hist(cherry$path_length, main = paste("Cherry ( n =",length(cherry$length_cm),")"), breaks = 40, xlab = "Path Length")
+hist(apple$path_length, main = paste("Apple ( n =",length(apple$length_cm),")"), breaks = 40, xlab = "Path Length")
+hist(PiAu$path_length, main = paste("Biggest Apples ( n =",length(PiAu$length_cm),")"), breaks = 20, xlab="Path Length")
+hist(B9$path_length, main = paste("Smallest Apples ( n =",length(B9$length_cm),")"), breaks = 20, xlab = "Path Length")
+```
+
+####Subtree Length *(includes terminal twigs when possible)*
+Subtree is the diameter of a given branch segment, and the total length, total surface area, and total volume of all branch segments distal to that branch segment.
+
+```{r subtreelength_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist(branch_size$tot_length, main = paste("All ( n =",length(branch_size$tot_length),")"), breaks=60, xlab="Sum of Lengths")
+hist(cherry$tot_length, main = paste("Cherry ( n =",length(cherry$tot_length),")"), breaks = 60, xlab = "Sum of Lengths")
+hist(apple$tot_length, main = paste("Apple ( n =",length(apple$tot_length),")"), breaks = 60, xlab = "Sum of Lengths")
+hist(PiAu$tot_length, main = paste("Biggest Apples ( n =",length(PiAu$tot_length),")"), breaks = 60, xlab="Sum of Lengths")
+hist(B9$tot_length, main = paste("Smallest Apples ( n =",length(B9$tot_length),")"), breaks = 60, xlab = "Sum of Lengths")
+```
+
+###Diameter Histograms
+Histograms for diameter [mm] at an individual level. Sample size is listed next to title. There are 5 cherry and 19 apple individuals represented. The Biggest Apple is the largest rootstock ('PiAu') with 3 individuals represented. The Smallest Apple is the smallest rootstock ('B9') with 4 individuals represented.   
+```{r diameter_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist(branch_size$diameter_mm, main = paste("All ( n =",length(branch_size[,1]),")"), breaks = 40, xlab="Diameter")
+hist(cherry$diameter_mm, main = paste("Cherry ( n =",length(cherry[,1]),")"), breaks = 40, xlab = "Diameter")
+hist(apple$diameter_mm, main = paste("Apple ( n =",length(apple[,1]),")"), breaks = 40, xlab = "Diameter")
+hist(PiAu$diameter_mm, main = paste("Biggest Apples ( n =",length(PiAu[,1]),")"),breaks = 20,xlab = "Diameter")
+hist(B9$diameter_mm, main = paste("Smallest Apples ( n =",length(B9[,1]),")"), breaks = 20, xlab = "Diameter")
+```
+
+###Mass Histograms
+Histograms for segment mass, total segment mass, and total subtree mass. Sample size is listed next to title. There are 5 cherry and 19 apple individuals represented. The Biggest Apple is the largest rootstock ('PiAu') with 3 individuals represented. The Smallest Apple is the smallest rootstock ('B9') with 4 individuals represented.  
+
+####Segment Mass
+```{r mass_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist(branch_size$stem_m, main = paste("All ( n =",length(branch_size[,1]),")"), breaks = 40, xlab="Segment Mass")
+hist(cherry$stem_m, main = paste("Cherry ( n =",length(cherry[,1]),")"), breaks = 40, xlab = "Segment Mass")
+hist(apple$stem_m, main = paste("Apple ( n =",length(apple[,1]),")"), breaks = 40, xlab = "Segment Mass")
+hist(PiAu$stem_m, main = paste("Biggest Apples ( n =",length(PiAu[,1]),")"),breaks = 20,xlab = "Segment Mass")
+hist(B9$stem_m, main = paste("Smallest Apples ( n =",length(B9[,1]),")"), breaks = 20, xlab = "Segment Mass")
+```
+
+####Total Segment Mass 
+Total Segment Mass is the the sum of all major branch segments. Terminal twigs are not included.
+```{r totmass_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist(branch_size$tot_stem_m, main = paste("All ( n =",length(branch_size[,1]),")"), breaks = 40, xlab="Total Segment Mass")
+hist(cherry$tot_stem_m, main = paste("Cherry ( n =",length(cherry[,1]),")"), breaks = 40, xlab = "Total Segment Mass")
+hist(apple$tot_stem_m, main = paste("Apple ( n =",length(apple[,1]),")"), breaks = 40, xlab = "Total Segment Mass")
+hist(PiAu$tot_stem_m, main = paste("Biggest Apples ( n =",length(PiAu[,1]),")"),breaks = 20,xlab = "Total Segment Mass")
+hist(B9$tot_stem_m, main = paste("Smallest Apples ( n =",length(B9[,1]),")"), breaks = 20, xlab = "Total Segment Mass")
+```
+
+####Subtree Mass 
+Subtree mass is the total sum of all major branch and twig segments. Twig mass is added to Total Segment Mass.
+```{r subtreemass_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist((branch_size$tot_stem_m + branch_size$tot_twig_m), 
+     main = paste("All ( n =",length(branch_size[,1]),")"), breaks = 40, xlab="Total Subtree Mass")
+hist((cherry$tot_stem_m + cherry$tot_twig_m), 
+     main = paste("Cherry ( n =",length(cherry[,1]),")"), breaks = 40, xlab = "Total Subtree Mass")
+hist((apple$tot_stem_m + apple$tot_twig_m), 
+     main = paste("Apple ( n =",length(apple[,1]),")"), breaks = 40, xlab = "Total Subtree Mass")
+hist((PiAu$tot_stem_m + PiAu$tot_twig_m), 
+     main = paste("Biggest Apples ( n =",length(PiAu[,1]),")"),breaks = 20,xlab = "Total Subtree Mass")
+hist((B9$tot_stem_m + B9$tot_twig_m), 
+     main = paste("Smallest Apples ( n =",length(B9[,1]),")"), breaks = 20, xlab = "Total Subtree Mass")
+```
+
+###Daughter/Parent Branch Area Ratio Histograms
+The Branch Area Ratio is sum of daughter branch surface areas divided by the surface area of their parent branch.
+```{r arearatio_hist, echo=FALSE}
+par(mfrow = c(2,3))
+hist(branch_size$area_ratio, main = paste("All ( Mean =", round(mean(branch_size$area_ratio, na.rm = TRUE),3),")"), 
+     breaks = 40, xlab="Branch Area Ratio")
+abline(v=mean(branch_size$area_ratio, na.rm = TRUE), lwd = 3, lty = 1)
+hist(cherry$area_ratio, main = paste("Cherry ( Mean =", round(mean(cherry$area_ratio, na.rm = TRUE),3),")"), breaks = 40, 
+     xlab = "Branch Area Ratio")
+abline(v=mean(cherry$area_ratio, na.rm = TRUE), lwd = 3, lty = 1)
+hist(apple$area_ratio, main = paste("Apple ( Mean =", round(mean(apple$area_ratio, na.rm = TRUE),3),")"), breaks = 40, 
+     xlab = "Branch Area Ratio")
+abline(v=mean(apple$area_ratio, na.rm = TRUE), lwd = 3, lty = 1)
+hist(PiAu$area_ratio, main = paste("Biggest Apples ( Mean =", round(mean(PiAu$area_ratio, na.rm = TRUE),3),")"),breaks = 20,
+     xlab = "Branch Area Ratio")
+abline(v=mean(PiAu$area_ratio, na.rm = TRUE), lwd = 3, lty = 1)
+hist(B9$area_ratio, main = paste("Smallest Apples ( Mean =", round(mean(B9$area_ratio, na.rm = TRUE),3),")"), breaks = 20, 
+     xlab = "Branch Area Ratio")
+abline(v=mean(B9$area_ratio, na.rm = TRUE), lwd = 3, lty = 1)
+```
+
+##Scaling Relationships 
+
+###Length  ~ Diameter
+Expected Exponent: Flow Similarity = 2 (peripheral / fruiting branches); Biomechanical = 2/3 (basal / scaffold branches)
+
+#### Tree Height [Estimated: 0.74 +/- 0.12, R2 = 0.849] 
+```{r Diameter_Height_output, echo=FALSE}
+par(mfrow = c(1,1))
+Diameter_Height <- sma(log10(treesum$height)~log10(treesum$trunk_diam))
+tree_graph(treesum$trunk_diam, treesum$height, Diameter_Height, 0, 0,
+           "log ( Trunk Diameter  )", "log ( Height )", 'bottomright', expression(R^2 == 0.849))
+```
+
+####Segment Length [Estimated: 0.90 +/- 0.06, R2 = 0.005]
+```{r diameter_length_output, echo=FALSE}
+length_zeros = branch_size[branch_size$length_cm > 0,]
+diameter_length <- sma(log10(length_zeros$length_cm)~log10(length_zeros$diameter_mm))
+branch_graph(subset(length_zeros, select = c(species, tree, diameter_mm)),
+             subset(length_zeros, select = c(species, tree, length_cm)),
+             diameter_length, 0, 0, "log ( Diameter  )", "log ( Segment Length )",
+             'bottomright', expression(R^2 == 0.005))
+```
+
+####Path Length [Estimated: 0.86 +/- 0.04, R2 = 0.448]
+```{r diameter_path_output, echo=FALSE}
+diameter_path <- sma(log10(branch_size$path_length)~log10(branch_size$diameter_mm))
+branch_graph(subset(branch_size, select = c(species, tree, diameter_mm)),
+             subset(branch_size, select = c(species, tree, path_length)),
+             diameter_path, 0, 0, "log ( Diameter  )", "log ( Path Length )",
+             'bottomright', expression(R^2 == 0.442))
+```
+
+####Total Subtree Length [Estimated: 1.72 +/- 0.10, R2 = 0.230]
+```{r diameter_totlength_output, echo=FALSE}
+diameter_totlength <- sma(log10(branch_size$tot_length)~log10(branch_size$diameter_mm))
+branch_graph(subset(branch_size, select = c(species, tree, diameter_mm)),
+             subset(branch_size, select = c(species, tree, tot_length)),
+             diameter_totlength, 0, 0,"log ( Diameter  )","log ( Subtree Length )" ,
+             'bottomright', expression(R^2 == 0.230))
+```
+
+###Surface Area ~ Volume 
+Expected Exponent: Flow Similarity = 3/4 ; Biomechanical = 5/8
+
+####Segment Level [Estimated: 0.62 +/- 0.01, R2 = 0.918]
+```{r area_volume_output, echo=FALSE}
+area_volume <- sma(log10(branch_size$area)~log10(branch_size$volume))
+branch_graph(subset(branch_size, select = c(species, tree, volume)),
+             subset(branch_size, select = c(species, tree, area)),
+             area_volume, 0, 0,"log ( Segment Volume  )","log ( Segment Surface Area )" ,
+             'bottomright', expression(R^2 == 0.918))
+```
+
+####Subtree Level [Estimated: 0.72 +/- 0.01, R2 = 0.969]
+```{r totarea_totvolume_output, echo=FALSE}
+totarea_totvolume <- sma(log10(branch_size$tot_area)~log10(branch_size$tot_volume))
+branch_graph(subset(branch_size, select = c(species, tree, tot_volume)),
+             subset(branch_size, select = c(species, tree, tot_area)),
+             totarea_totvolume, 0, 0,"log ( Subtree Volume  )","log ( Subtree Surface Area )" ,
+             'bottomright', expression(R^2 == 0.969))
+```
+
+### Diameter ~ Volume
+Expected Exponent: Flow Similarity = 1/4 ; Biomechanical = 3/8
+
+####Segment Level [Estimated: 0.44 +/- 0.01, R2 = 0.841]
+```{r diameter_volume_output, echo=FALSE}
+diameter_volume <- sma(log10(branch_size$diameter_mm)~log10(branch_size$volume))
+branch_graph(subset(branch_size, select = c(species, tree, volume)),
+             subset(branch_size, select = c(species, tree, diameter_mm)),
+             diameter_volume, -1, 0,"log ( Segment Volume  )","log ( Diameter )" ,
+             'bottomright', expression(R^2 == 0.841))
+```
+
+####Subtree Level [Estimated: 0.38 +/- 0.01, R2 = 0.938]
+```{r diameter_totvolume_output, echo=FALSE}
+diameter_totvolume <- sma(log10(branch_size$diameter_mm)~log10(branch_size$tot_volume))
+branch_graph(subset(branch_size, select = c(species, tree, tot_volume)),
+             subset(branch_size, select = c(species, tree, diameter_mm)),
+             diameter_totvolume, -1, 0,"log ( Subtree Volume  )","log ( Diameter )" ,
+             'bottomright', expression(R^2 == 0.938))
+```
+
+### Length ~ Volume
+Expected Exponent: Flow Similarity = 1/2 ; Biomechanical = 1/4
+
+####Segment Level [Estimated: 0.39 +/- 0.03, R2 = 0.219]
+```{r volume_length_output, echo=FALSE}
+length_zeros = branch_size[branch_size$length_cm > 0,]
+volume_length <- sma(log10(length_zeros$length_cm)~log10(length_zeros$volume))
+branch_graph(subset(length_zeros, select = c(species, tree, volume)),
+             subset(length_zeros, select = c(species, tree, length_cm)),
+             volume_length, 0, 0, "log ( Segment Volume  )", "log ( Segment Length )",
+             'bottomright', expression(R^2 == 0.219))
+```
+
+####Subtree Level [Estimated: 0.67 +/- 0.04, R2 = 0.294]
+```{r totvolume_totlength_output, echo=FALSE}
+totvolume_totlength <- sma(log10(branch_size$tot_length)~log10(branch_size$tot_volume))
+branch_graph(subset(branch_size, select = c(species, tree, tot_volume)),
+             subset(branch_size, select = c(species, tree, tot_length)),
+             totvolume_totlength, 0, 0,"log ( Subtree Volume  )","log ( Subtree Length )" ,
+             'bottomright', expression(R^2 == 0.294))
+```
+
+### Diameter ~ Surface Area
+Expected Exponent: Flow Similarity = 1/3 ; Biomechanical = 3/5
+
+####Segment Level [Estimated: 0.71 +/- 0.03, R2 = 0.586]
+```{r diameter_area_output, echo=FALSE}
+diameter_area <- sma(log10(branch_size$diameter_mm)~log10(branch_size$area))
+branch_graph(subset(branch_size, select = c(species, tree, area)),
+             subset(branch_size, select = c(species, tree, diameter_mm)),
+             diameter_area, -1, 0,"log ( Segment Surface Area  )","log ( Diameter )" ,
+             'bottomright', expression(R^2 == 0.586))
+```
+
+####Subtree Level [Estimated: 0.53 +/- 0.01, R2 = 0.859]
+```{r diameter_totarea_output, echo=FALSE}
+diameter_totarea <- sma(log10(branch_size$diameter_mm)~log10(branch_size$tot_area))
+branch_graph(subset(branch_size, select = c(species, tree, tot_area)),
+             subset(branch_size, select = c(species, tree, diameter_mm)),
+             diameter_totarea, -1, 0,"log ( Subtree Surface Area  )","log ( Diameter )" ,
+             'bottomright', expression(R^2 == 0.859))
+```
+
+### Length ~ Surface Area
+Expected Exponent: Flow Similarity = 2/3 ; Biomechanical = 2/5
+
+####Segment Level [Estimated: 0.64 +/- 0.03, R2 = 0.491]
+```{r area_length_output, echo=FALSE}
+area_length <- sma(log10(length_zeros$length_cm)~log10(length_zeros$area))
+branch_graph(subset(length_zeros, select = c(species, tree, area)),
+             subset(length_zeros, select = c(species, tree, length_cm)),
+             area_length, 0, 0, "log ( Segment Surface Area  )", "log ( Segment Length )",
+             'bottomright', expression(R^2 == 0.491))
+```
+
+####Subtree Level [Estimated: 0.93 +/- 0.05, R2 = 0.391]
+```{r totarea_totlength_output, echo=FALSE}
+totarea_totlength <- sma(log10(branch_size$tot_length)~log10(branch_size$tot_area))
+branch_graph(subset(branch_size, select = c(species, tree, tot_area)),
+             subset(branch_size, select = c(species, tree, tot_length)),
+             totarea_totlength, 0, 0,"log ( Subtree Surface Area  )","log ( Subtree Length )" ,
+             'bottomright', expression(R^2 == 0.391))
+```
+
+### Length ~ Mass
+
+#### Tree Level [Estimated: 0.30 +/- 0.05, R2 = 0.849]
+```{r Height_Mass_output, echo=FALSE}
+Height_Mass <- sma(log10(treesum$height)~log10(treesum$tot_stem_m))
+tree_graph(treesum$tot_stem_m, treesum$height, Height_Mass, sma(Height_Mass)$coef[[1]][2,1], 0.25,
+           "log ( Total Stem Mass  )", "log ( Height )", 'bottomright', expression(R^2 == 0.849))
+```
+  
+
+#### Branch Level [Estimated: 0.35 +/- 0.1, R2 = 0.632]
+```{r length_mass_output, echo=FALSE}
+length_mass <- sma(log10(branch_size$path_length)~log10(branch_size$tot_stem_m))
+branch_graph(subset(branch_size, select = c(species, tree, tot_stem_m)),
+             subset(branch_size, select = c(species, tree, path_length)),
+             length_mass, 0, 0, "log ( Total Stem Mass  )", "log ( Path Length )",
+             'bottomright', expression(R^2 == 0.632))
+```
+  
+
+### Mass ~ Diameter
+  
+#### Tree Level [Estimated: 2.49 +/- 0.18, R2 = 0.974]
+```{r Diameter_Mass_output, echo=FALSE}
+Diameter_Mass <- sma(log10(treesum$tot_stem_m)~log10(treesum$trunk_diam), slope.test = 2.67)
+tree_graph(treesum$trunk_diam, treesum$tot_stem_m, Diameter_Mass, 0, 2.67,
+           "log ( Trunk Diameter  )", "log ( Total Stem Mass )", 'bottomright', expression(R^2 == 0.974))
+```  
+  
+  
+#### Branch Level [Estimated 2.48 +/- 0.05, R2 = 0.905]
+```{r diameter_mass_output, echo=FALSE}
+diameter_mass <- sma(log10(branch_size$tot_stem_m)~log10(branch_size$diameter_mm))
+branch_graph(subset(branch_size, select = c(species, tree, diameter_mm)),
+             subset(branch_size, select = c(species, tree, tot_stem_m)),
+             diameter_mass, 0, 2.67, "log ( Diameter  )", "log ( Total Stem Mass )",
+             'bottomright', expression(R^2 == 0.905))
+```
+ 
+### Mass ~ Volume (Wood Density) 
+
+#### Segment Level [Estimated: 0.95 +/- 0.01, R2 = 0.962]
+```{r mass_volume_output, echo=FALSE}
+mass_zero <- branch_size[branch_size$stem_m > 0,]
+mass_volume <- sma(log10(mass_zero$stem_m)~log10(mass_zero$volume))
+branch_graph(subset(mass_zero, select = c(species, tree, volume)),
+             subset(mass_zero, select = c(species, tree, stem_m)),
+             mass_volume, -1, 0,"log ( Segment Volume  )","log ( Segment Mass )" ,
+             'bottomright', expression(R^2 == 0.962))
+```
+
+####Subtree Level [Estimated: 0.95 +/- 0.01, R2 = 0.977]
+```{r totmass_totvolume_output, echo=FALSE}
+totmass_totvolume <- sma(log10(branch_size$tot_stem_m)~log10(branch_size$tot_volume))
+branch_graph(subset(branch_size, select = c(species, tree, tot_volume)),
+             subset(branch_size, select = c(species, tree, tot_stem_m)),
+             totmass_totvolume, -1, 0,"log ( Subtree Volume  )","log ( Subtree Mass )" ,
+             'bottomright', expression(R^2 == 0.977))
+```
+
+   
+### Diameter ~ No of terminal branches
+
+####[Estimated: 0.69 +/- 0.03, R2 = 0.429
+```{r diameter_tottwigs_output, echo=FALSE}
+twigs_zero <- branch_size[branch_size$tot_no_twigs > 0,]
+diameter_tottwigs <- sma(log10(twigs_zero$diameter_mm)~log10(twigs_zero$tot_no_twigs))
+branch_graph(subset(twigs_zero, select = c(species, tree, tot_no_twigs)),
+             subset(twigs_zero, select = c(species, tree, diameter_mm)),
+             diameter_tottwigs, -1, 0,"log ( No. of Terminal Points )", "log ( Diameter )",
+             'bottomright', expression(R^2 == 0.429))
+```
+
+### Surface Area ~ No of terminal branches
+
+####[Estimated: 1.29 +/- 0.05, R2 = 0.669]
+```{r totarea_tottwigs_output, echo=FALSE}
+twigs_zero <- branch_size[branch_size$tot_no_twigs > 0,]
+totarea_tottwigs <- sma(log10(twigs_zero$tot_area)~log10(twigs_zero$tot_no_twigs))
+branch_graph(subset(twigs_zero, select = c(species, tree, tot_no_twigs)),
+             subset(twigs_zero, select = c(species, tree, tot_area)),
+             totarea_tottwigs, 0, 0,"log ( No. of Terminal Points )", "log ( Subtree Area  )",
+             'bottomright', expression(R^2 == 0.669))
+```
+
+
+### Diameter Ratio
+The Diameter Ratio is a pairwise relationship of a daughter segment to its parent.
+
+####[Estimate: 0.68 +/- 0.03, R2 = 0.569]
+```{r diameterratio_output, echo=FALSE}
+dratio_temp_na <- subset(branch_size, select = c(species, tree, diameter_mm, diameter_ratio))
+dratio_temp <- na.omit(dratio_temp_na)
+parent_diam <- data.frame(species = dratio_temp$species, tree = dratio_temp$tree,
+                          ratio = dratio_temp$diameter_mm/dratio_temp$diameter_ratio)
+
+diameter_ratio <- sma(dratio_temp$diameter_mm~parent_diam$ratio)
+branch_graph2(parent_diam, dratio_temp, diameter_ratio, -10, 0, "Parent Diameter", "Daughter Diameter",
+             'topleft', expression(R^2 == 0.632))
+```
