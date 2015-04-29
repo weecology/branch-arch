@@ -45,8 +45,8 @@ colnames(sma_test) = c('group', "L~D (Segment)", "(Path)", "(Subtree)", "SA~V (S
                        "L~V (Segment)", "(Path)", "(Subtree)", "D~SA (Segment)", "(Path)", "(Subtree)", "L~SA (Segment)", "(Path)", "(Subtree)", 
                        "L~M (Segment)", "(Path)", "(Subtree)", "M~D (Segment)", "(Subtree)", "M~V(Segment)", "(Path)", "(Subtree)", "D/P Ratio ~ P Diam")
 
-sma_test[1,] = c("prediction", "2 - 2/3", "", "", "3/4 - 5/8", "", "1/4 - 3/8", "", "1/2 - 1/4", "", "", "1/3 - 3/5", "", "2/3 - 2/5",
-                 "", "", "", "", "", "", "", "", "", "") #WRONG LENGTH -> FIRST ROW NAs
+sma_test[1,] = c("prediction", "2 - 2/3", "", "", "3/4 - 5/8", "", "", "1/4 - 3/8", "","", "1/2 - 1/4", "", "", "1/3 - 3/5", "", "", "2/3 - 2/5",
+                "", "", "", "", "", "", "", "", "", "", "")
 
 # Tree Level Output
 for (i in 1:3){
