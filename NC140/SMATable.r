@@ -230,7 +230,7 @@ for (i in 1:length(tree_ids)){
 ## by individual PLUS (WITH extra twig data) 
 for (i in 1:6){
   ind <- branch_data[[1]][branch_data[[1]]$tree==plus_ids[i],]
-  sma_test = rbind(sma_test, get_sma_row(plus_names[i], ind))
+  sma_test = rbind(sma_test, get_sma_row(plus_names[i], ind, plus = TRUE))
 }
 
 # Sort and Write Results ----
