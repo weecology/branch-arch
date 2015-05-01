@@ -40,34 +40,33 @@ get_sma_row <- function(name, data, plus = FALSE){
     sma_row[28] = output(sma(log10(data$diameter_ratio)~log10(data$diameter_mm/data$diameter_ratio)))
   } else {
     sma_row[2]  = output(sma(log10(ind$length_cm)~log10(ind$diameter_mm)))
-    sma_row[2]  = output(sma(log10(ind$path_length_plus)~log10(ind$diameter_mm)))
-    sma_row[2]  = output(sma(log10(ind$tot_length_plus)~log10(ind$diameter_mm)))
-    sma_row[2]  = output(sma(log10(ind$area_plus)~log10(ind$volume_plus)))
-    sma_row[2]  = "-"
-    sma_row[2]  = output(sma(log10(ind$tot_area_plus)~log10(ind$tot_volume_plus)))
-    sma_row[2]  = output(sma(log10(ind$diameter_mm)~log10(ind$volume_plus)))
-    sma_row[2]  = "-"
-    sma_row[2]  = output(sma(log10(ind$diameter_mm)~log10(ind$tot_volume_plus)))
-    sma_row[2]  = output(sma(log10(ind$length_cm)~log10(ind$volume_plus)))
-    sma_row[2]  = output(sma(log10(ind$path_length_plus)~log10(ind$tot_volume_plus)))
-    sma_row[2]  = output(sma(log10(ind$tot_length_plus)~log10(ind$tot_volume_plus)))
-    sma_row[2]  = output(sma(log10(ind$diameter_mm)~log10(ind$area_plus)))
-    sma_row[2]  = "-"
-    sma_row[2]  = output(sma(log10(ind$diameter_mm)~log10(ind$tot_area_plus)))
-    sma_row[2]  = output(sma(log10(ind$length_cm)~log10(ind$area_plus)))
-    sma_row[2]  = output(sma(log10(ind$path_length_plus)~log10(ind$tot_area_plus)))
-    sma_row[2]  = output(sma(log10(ind$tot_length_plus)~log10(ind$tot_area_plus)))
-    sma_row[2]  = output(sma(log10(rm_zero$length_cm)~log10(rm_zero$stem_m + rm_zero$twig_m)))
-    sma_row[2]  = output(sma(log10(ind$path_length_plus)~log10(ind$tot_stem_m + ind$tot_twig_m)))
-    sma_row[2]  = output(sma(log10(ind$tot_length_plus)~log10(ind$tot_stem_m + ind$tot_twig_m)))
-    sma_row[2]  = output(sma(log10(rm_zero$stem_m + rm_zero$twig_m)~log10(rm_zero$diameter_mm)))
-    sma_row[2]  = output(sma(log10(ind$tot_stem_m + ind$tot_twig_m)~log10(ind$diameter_mm)))
-    sma_row[2]  = output(sma(log10(rm_zero$stem_m + rm_zero$twig_m)~log10(rm_zero$volume_plus)))
-    sma_row[2]  = "-"
-    sma_row[2]  = output(sma(log10(ind$tot_stem_m + ind$tot_twig_m)~log10(ind$tot_volume_plus)))
-    sma_row[2]  = output(sma(log10(ind$diameter_ratio)~log10(ind$diameter_mm/ind$diameter_ratio)))
+    sma_row[3]  = output(sma(log10(ind$path_length_plus)~log10(ind$diameter_mm)))
+    sma_row[4]  = output(sma(log10(ind$tot_length_plus)~log10(ind$diameter_mm)))
+    sma_row[5]  = output(sma(log10(ind$area_plus)~log10(ind$volume_plus)))
+    sma_row[6]  = "-"
+    sma_row[7]  = output(sma(log10(ind$tot_area_plus)~log10(ind$tot_volume_plus)))
+    sma_row[8]  = output(sma(log10(ind$diameter_mm)~log10(ind$volume_plus)))
+    sma_row[9]  = "-"
+    sma_row[10] = output(sma(log10(ind$diameter_mm)~log10(ind$tot_volume_plus)))
+    sma_row[11] = output(sma(log10(ind$length_cm)~log10(ind$volume_plus)))
+    sma_row[12] = output(sma(log10(ind$path_length_plus)~log10(ind$tot_volume_plus)))
+    sma_row[13] = output(sma(log10(ind$tot_length_plus)~log10(ind$tot_volume_plus)))
+    sma_row[14] = output(sma(log10(ind$diameter_mm)~log10(ind$area_plus)))
+    sma_row[15] = "-"
+    sma_row[16] = output(sma(log10(ind$diameter_mm)~log10(ind$tot_area_plus)))
+    sma_row[17] = output(sma(log10(ind$length_cm)~log10(ind$area_plus)))
+    sma_row[18] = output(sma(log10(ind$path_length_plus)~log10(ind$tot_area_plus)))
+    sma_row[19] = output(sma(log10(ind$tot_length_plus)~log10(ind$tot_area_plus)))
+    sma_row[20] = output(sma(log10(rm_zero$length_cm)~log10(rm_zero$stem_m + rm_zero$twig_m)))
+    sma_row[21] = output(sma(log10(ind$path_length_plus)~log10(ind$tot_stem_m + ind$tot_twig_m)))
+    sma_row[22] = output(sma(log10(ind$tot_length_plus)~log10(ind$tot_stem_m + ind$tot_twig_m)))
+    sma_row[23] = output(sma(log10(rm_zero$stem_m + rm_zero$twig_m)~log10(rm_zero$diameter_mm)))
+    sma_row[24] = output(sma(log10(ind$tot_stem_m + ind$tot_twig_m)~log10(ind$diameter_mm)))
+    sma_row[25] = output(sma(log10(rm_zero$stem_m + rm_zero$twig_m)~log10(rm_zero$volume_plus)))
+    sma_row[26] = "-"
+    sma_row[27] = output(sma(log10(ind$tot_stem_m + ind$tot_twig_m)~log10(ind$tot_volume_plus)))
+    sma_row[28] = output(sma(log10(ind$diameter_ratio)~log10(ind$diameter_mm/ind$diameter_ratio)))
   }
-
   return(sma_row)
 }
 
@@ -90,26 +89,26 @@ branch_size <- read.csv("BranchSegments.csv", sep = ',', header = T)
 groups <- c("all-branch", "Bud.9", "CG.3041", "CG.6210", "M.26", "JM.8", "PiAu.5683")
 branch_data <- list()
 branch_data[[1]] <- branch_size[branch_size$species=="apple",]
-branch_data[[2]] <- subset(branch_data[[2]], tree==2 | tree==7 | tree==12 | tree ==3)
-branch_data[[3]] <- subset(branch_data[[2]], tree==5 | tree==11 | tree==6 | tree ==8)
-branch_data[[4]] <- subset(branch_data[[2]], tree==10 | tree==1 | tree==4 | tree ==9)
-branch_data[[5]] <- subset(branch_data[[2]], tree==13)
-branch_data[[6]] <- subset(branch_data[[2]], tree==17 | tree==15 | tree==18)
-branch_data[[7]] <- subset(branch_data[[2]], tree==20 | tree==19 | tree==14)
+branch_data[[2]] <- subset(branch_data[[1]], tree==2 | tree==7 | tree==12 | tree ==3)
+branch_data[[3]] <- subset(branch_data[[1]], tree==5 | tree==11 | tree==6 | tree ==8)
+branch_data[[4]] <- subset(branch_data[[1]], tree==10 | tree==1 | tree==4 | tree ==9)
+branch_data[[5]] <- subset(branch_data[[1]], tree==13)
+branch_data[[6]] <- subset(branch_data[[1]], tree==17 | tree==15 | tree==18)
+branch_data[[7]] <- subset(branch_data[[1]], tree==20 | tree==19 | tree==14)
 
 tree_ids   <- c(2,7,12,3,
                 5,11,6,8,
                 10,1,4,9,
                 13,
                 17,15,18,
-                20,19,14),
+                20,19,14)
 
 tree_names <- c("Bud.9-1", "Bud.9-2", "Bud.9-3", "Bud.9-4", 
                 "CG.3041-1", "CG.3041-2", "CG.3041-3", "CG.3041-4", 
                 "CG.6210-1", "CG.6210-2", "CG.6210-3", "CG.6210-4", 
                 "M.26", 
                 "JM.8-1", "JM.8-2", "JM.8-3",
-                "PiAu.5683-1", "PiAu.5683-2", "PiAu.5683-3"))
+                "PiAu.5683-1", "PiAu.5683-2", "PiAu.5683-3")
 
 plus_ids   <- c(3,5,4,13,15,14)
 
@@ -133,10 +132,10 @@ sma_test[1, ] = c("prediction", "2 - 2/3", "", "",
                   "1/2 - 1/4", "", "", 
                   "1/3 - 3/5", "", "", 
                   "2/3 - 2/5", "", "", 
-                  "", "", "", 
-                  "", "", 
-                  "", "", "", 
-                  "")
+                  "1/4", "", "", 
+                  "8/3", "", 
+                  "1", "", "", 
+                  "0 - 1")
 
 
 # Tree Level Output ----
@@ -144,73 +143,73 @@ tree_data <- treesum[treesum$species=="apple",]
 
 sma_test[2, 1] = 'all-tree'
 
-test <- sma(log10($height)~log10(tree_data[[i]]$trunk_diam))
+test <- sma(log10(tree_data$height)~log10(tree_data$trunk_diam))
 sma_test[2, 2] = output(test)
 
-test <- sma(log10(tree_data[[i]]$max_path)~log10(tree_data[[i]]$trunk_diam))
+test <- sma(log10(tree_data$max_path)~log10(tree_data$trunk_diam))
 sma_test[2, 3] = output(test)
 
-test <- sma(log10(tree_data[[i]]$tot_length)~log10(tree_data[[i]]$trunk_diam))
+test <- sma(log10(tree_data$tot_length)~log10(tree_data$trunk_diam))
 sma_test[2, 4] = output(test)
 
 sma_test[2, 5] = "-"
 
 sma_test[2, 6] = "-"
 
-test <- sma(log10(tree_data[[i]]$tot_area)~log10(tree_data[[i]]$tot_volume))
+test <- sma(log10(tree_data$tot_area)~log10(tree_data$tot_volume))
 sma_test[2, 7] = output(test)
 
 sma_test[2, 8] = "-"
 
 sma_test[2, 9] = "-"
 
-test <- sma(log10(tree_data[[i]]$trunk_diam)~log10(tree_data[[i]]$tot_volume))
+test <- sma(log10(tree_data$trunk_diam)~log10(tree_data$tot_volume))
 sma_test[2, 10] = output(test)
 
-test <- sma(log10(tree_data[[i]]$height)~log10(tree_data[[i]]$tot_volume))
+test <- sma(log10(tree_data$height)~log10(tree_data$tot_volume))
 sma_test[2, 11] = output(test)
 
-test <- sma(log10(tree_data[[i]]$max_path)~log10(tree_data[[i]]$tot_volume))
+test <- sma(log10(tree_data$max_path)~log10(tree_data$tot_volume))
 sma_test[2, 12] = output(test)
 
-test <- sma(log10(tree_data[[i]]$tot_length)~log10(tree_data[[i]]$tot_volume))
+test <- sma(log10(tree_data$tot_length)~log10(tree_data$tot_volume))
 sma_test[2, 13] = output(test)
 
 sma_test[2, 14] = "-"
 
 sma_test[2, 15] = "-"
 
-test <- sma(log10(tree_data[[i]]$trunk_diam)~log10(tree_data[[i]]$tot_area))
+test <- sma(log10(tree_data$trunk_diam)~log10(tree_data$tot_area))
 sma_test[2, 16] = output(test)
 
-test <- sma(log10(tree_data[[i]]$height)~log10(tree_data[[i]]$tot_area))
+test <- sma(log10(tree_data$height)~log10(tree_data$tot_area))
 sma_test[2, 17] = output(test)
 
-test <- sma(log10(tree_data[[i]]$max_path)~log10(tree_data[[i]]$tot_area))
+test <- sma(log10(tree_data$max_path)~log10(tree_data$tot_area))
 sma_test[2, 18] = output(test)
 
-test <- sma(log10(tree_data[[i]]$tot_length)~log10(tree_data[[i]]$tot_area))
+test <- sma(log10(tree_data$tot_length)~log10(tree_data$tot_area))
 sma_test[2, 19] = output(test)
 
-test <- sma(log10(tree_data[[i]]$height)~log10(tree_data[[i]]$tot_stem_m))
+test <- sma(log10(tree_data$height)~log10(tree_data$tot_stem_m))
 sma_test[2, 20] = output(test)
 
-test <- sma(log10(tree_data[[i]]$max_path)~log10(tree_data[[i]]$tot_stem_m))
+test <- sma(log10(tree_data$max_path)~log10(tree_data$tot_stem_m))
 sma_test[2, 21] = output(test)
 
-test <- sma(log10(tree_data[[i]]$tot_length)~log10(tree_data[[i]]$tot_stem_m))
+test <- sma(log10(tree_data$tot_length)~log10(tree_data$tot_stem_m))
 sma_test[2, 22] = output(test)
 
 sma_test[2, 23] = "-"
 
-test <- sma(log10(tree_data[[i]]$tot_stem_m)~log10(tree_data[[i]]$trunk_diam))
+test <- sma(log10(tree_data$tot_stem_m)~log10(tree_data$trunk_diam))
 sma_test[2, 24] = output(test)
 
 sma_test[2, 25] = "-"
 
 sma_test[2, 26] = "-"
 
-test <- sma(log10(tree_data[[i]]$tot_stem_m)~log10(tree_data[[i]]$tot_volume))
+test <- sma(log10(tree_data$tot_stem_m)~log10(tree_data$tot_volume))
 sma_test[2, 27] = output(test)
 
 sma_test[2, 28] = "-"
@@ -224,37 +223,27 @@ for (i in 1:7){
 
 ## by individual
 for (i in 1:length(tree_ids)){
-  ind <- branch_data[[1]][branch_data[[1]]$tree==tree_id[i],]
+  ind <- branch_data[[1]][branch_data[[1]]$tree==tree_ids[i],]
   sma_test = rbind(sma_test, get_sma_row(tree_names[i], ind))
-}
-  
 }
 
 ## by individual PLUS (WITH extra twig data) 
 for (i in 1:6){
-  subout <- matrix(ncol = 28, nrow = 1)
-  
-  spp <- branch_size[branch_size$species==species[[(plus[[1]][i])]][1],]
-  ind <- spp[spp$tree==plus[[2]][i],]
-  subout[1] = plus[[3]][i]
-  
-  
-  
-  
-  sma_test = rbind(sma_test, subout)
+  ind <- branch_data[[1]][branch_data[[1]]$tree==plus_ids[i],]
+  sma_test = rbind(sma_test, get_sma_row(plus_names[i], ind))
 }
 
-sma_test_out <- rbind(sma_test[1:6,], sma_test[33:35,], sma_test[44,],sma_test[36:37,], sma_test[7:8,],
-                      sma_test[14:17,], sma_test[38,], sma_test[9,], sma_test[18,], sma_test[39,], 
-                      sma_test[19:21,], sma_test[10,], sma_test[22:24,], sma_test[40,], sma_test[25:26,], 
-                      sma_test[41,], sma_test[12,], sma_test[27:28,], sma_test[42,], sma_test[29,], 
-                      sma_test[13,], sma_test[30:32,], sma_test[43,])
+# Sort and Write Results ----
+sma_test_out <- rbind(sma_test[1:4, ], sma_test[10:13, ], sma_test[29, ], sma_test[5, ], sma_test[14, ],
+                      sma_test[30, ], sma_test[15:17, ], sma_test[6, ], sma_test[18:20, ], sma_test[31, ], 
+                      sma_test[21, ], sma_test[7, ], sma_test[32, ], sma_test[8, ], sma_test[23:24, ], 
+                      sma_test[33, ], sma_test[25, ], sma_test[9, ], sma_test[26:28, ], sma_test[34, ])
 
 write.csv(sma_test_out, "SMAResults.csv")
 
 
 
-### Group by Order Branch Level Output
+# Group by Order Branch Level Output ----
 orders <- list(c(" - structure", " - fruiting"))
 
 for (j in 4:12){
