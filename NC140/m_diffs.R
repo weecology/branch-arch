@@ -41,7 +41,7 @@ get_data <- function(){
                     "CG.6210", "CG.6210-1", "CG.6210-2", "CG.6210-3", "CG.6210-3+", "CG.6210-4", 
                     "M.26", "M.26+",
                     "JM.8", "JM.8-1", "JM.8-2", "JM.8-2+", "JM.8-3",
-                    "PiAu.5683-1", "PiAu.5683-1", "PiAu.5683-2", "PiAu.5683-3", "PiAu.5683-3+")  
+                    "PiAu.5683", "PiAu.5683-1", "PiAu.5683-2", "PiAu.5683-3", "PiAu.5683-3+")  
   
   flow    <<- c(2, 2, 2, 
                 .75, .75, .75, 
@@ -80,7 +80,8 @@ calc_m_diffs_std <- function(relationship, focal_group, i){
   m_diff_relationship = -1 * (sma_res[[relationship]][[1]][i] -
                               sma_res[[relationship]][[1]][focal_group]) / 
     (sma_res[[relationship]][[3]][i] - sma_res[[relationship]][[2]][i])
-  return(c(m_diff_flow, m_diff_elastic, m_diff_relationship))
+  return(c(m_diff_flow, m_diff_elastic, m_diff_relationship,
+         sma_res[[relationship]][[4]][i]))
 }
 
 get_m_diffs <- function(relationship, focal_group = 2, standardized = F){
@@ -133,7 +134,7 @@ multi_plot <- function(results, col_list, location = "topright"){
   par(mfrow = c(length(col_list),1), oma = c(9,0,0,0), mar = c(1,6,1,2), cex.lab = 2, bty = 'o')
   gen_plot(results, col_list[1])
   par(xpd=T)
-  legend(location, bty = 'n', horiz = T, cex = 2, pt.cex = 2, bg = 'black',
+  legend(location, bty = 'n', horiz = T, cex = 2, pt.cex = 2, pt.bg = 'black',
          legend = c("Flow",  "Elastic", "All-apples"),  
          pch    = c(24, 25, 16))  
   par(xpd=F)
@@ -189,78 +190,65 @@ multi_plot(m_diffs_std, c(27))
 dev.off()
 
 #########
-exponent_R2 <- function(results, col_list, n, k, m, xlabel){
+exponent_R2 <- function(results, n, relationship, rootstocks = roots_list, xlabel = ''){
   
-  if (length(col_list) == 2){
-    min_range <- c(results[[col_list[1]]], results[[col_list[2]]])
-    max_range <- c(results[[col_list[1]]], results[[col_list[2]]])
-  } else {
-    min_range <- c(results[[col_list[1]]], results[[col_list[2]]], 
-                   results[[col_list[3]]])
-    max_range <- c(results[[col_list[1]]], results[[col_list[2]]], 
-                   results[[col_list[3]]])
-  }
-  
-  plot(range(0,1), range(min(min_range, na.rm=T), max(max_range, na.rm=T)), 
-       ylab = ylabels[n], xlab=xlabel, type = 'n',
-       ylim = c(min(min_range, na.rm=T), max(max_range, na.rm=T)))
-  
-  if (length(col_list) == 3){
-    for (i in 1:length(col_list)){
-      for(j in k:m){
-        points(results[[col_list[i]]][[4]][j], results[[col_list[i]]][[1]][j], 
-               pch = as.numeric(tri_points[[i]][j]), 
-               bg = 'grey', cex = 2, lwd = 2.5)
-        arrows(x0=results[[col_list[i]]][[4]][j], 
-               y0=results[[col_list[i]]][[2]][j], 
-               y1=results[[col_list[i]]][[3]][j], 
-               code=3, angle=90, lwd=1.7, length=.08)
-      }
+  plot(range(0.4,1), range(min(results[[relationship]][, 3], na.rm=T), 
+                         max(results[[relationship]][, 3], na.rm=T)), 
+       ylab = relationships_abv[n], xlab=xlabel, type = 'n',
+       ylim = c(min(results[[relationship]][, 3], na.rm=T), 
+                max(results[[relationship]][, 3], na.rm=T)))
+  for(root in rootstocks){
+    if (is.character(root[1])){
+      points(results[[relationship]][, 4][as.numeric(root[1])], 
+             results[[relationship]][, 3][as.numeric(root[1])], 
+             cex = 5, pch = 23, bg = root[2],  lwd = 4)
+    } else {
+      points(results[[relationship]][, 4][root[1]], 
+             results[[relationship]][, 3][root[1]], 
+             cex = root[2], pch = 21, bg = 'grey',  lwd = 4)
     }
   }
-  else{  
-    for (i in 1:length(col_list)){
-      for(j in k:m){  # HERE I SHOULD BREAK IT DOWN SUBTREE, PATH, SEGMENT BY ROOTSTOCK
-        points(results[[col_list[i]]][[4]][j], results[[col_list[i]]][[1]][j], pch = as.numeric(di_points[[i]][j]), 
-               bg = 'grey', cex = 2, lwd = 2.5)
-        arrows(x0=results[[col_list[i]]][[4]][j], y0=results[[col_list[i]]][[2]][j], y1=results[[col_list[i]]][[3]][j], 
-               code=3, angle=90, lwd=1.7, length=.08)
-      }
-    }
-  }  
-  abline(h = flow[n], lwd = 2, lty = 6)
-  abline(h = elastic[n], lwd = 2, lty = 2)
 }
 
-ylabels <- c("L~D", "SA~V", "D~V", "L~V", "D~SA", "L~SA", "L~M", "M~D", "M~V")
-flow <- c(2, .75, .25, .5, .33, .67, NA, NA, NA)
-elastic <- c(.67, .625, .375, .25, .6, .4, .25, 2.67, NA)
-tri_points <- list(list(17, 24, 2, 17, 24, 2),
-                   list(18, 23, 5, 18, 23, 5),
-                   list(15, 22, 0, 15, 22, 0))
-di_points <- list(list(17, 24, 2, 17, 24, 2),
-                  list(15, 22, 0, 15, 22, 0))
+multi_exp_R2 <- function(results){
+  par(mfrow= c(3,3), mar = c(4,5,1,1), cex.lab = 2.7, cex.axis = 2)
+  exponent_R2(results, 1, 3) 
+  exponent_R2(results, 2, 6)
+  exponent_R2(results, 3, 9)
+  exponent_R2(results, 4, 12)
+  exponent_R2(results, 5, 15)
+  exponent_R2(results, 6, 18)
+  exponent_R2(results, 7, 21)
+  par(xpd=T)
+  legend('bottomleft', bty = 'n', cex = 2.2, pt.lwd = 4,
+         legend=c("All-tree", "All-branch", "Bud.9", "CG.3041","CG.6210","M.26", "JM.8", "PiAu.5683"), 
+         pch= c(23, 23, 21, 21, 21, 21, 21, 21), 
+         pt.bg = c('black', 'grey', 'grey', 'grey', 'grey', 'grey', 'grey', 'grey'),
+         pt.cex = c(4, 4, 2, 2.5, 3, 3.5, 4, 4.5)
+  )
+  par(xpd=F)
+  exponent_R2(results, 8, 23, xlabel = 'R2')
+  exponent_R2(results, 9, 26)
+}
 
+relationships_abv <- c("L~D", "SA~V", "D~V", "L~V", "D~SA", "L~SA", "L~M", "M~D", "M~V")
+roots_list <- list(c(2, 'black'),
+                   c(3, 'grey'),
+                   c(29, 4.5),
+                   c(24, 4),
+                   c(22, 3.5),
+                   c(16, 3),
+                   c(10, 2.5),
+                   c(4, 2))
 
-pdf(file="ExponentR2.pdf", width= 16, height=12,family="Helvetica", pointsize=14)
+pdf(file="m_diffsExpR2.pdf", width= 16, height=12,family="Helvetica", pointsize=14)
 
+multi_exp_R2(m_diffs)
 
-par(mfrow= c(3,4), mar = c(4,5,1,1), cex.lab=1.5)
-exponent_R2(c(1:3), 1, 4, 6, '')
-exponent_R2(c(4:6), 2, 4, 6, '')
-exponent_R2(c(7:9), 3, 4, 6, '')
-plot(range(0,1), range(0,1), bty='n', main = '', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
-exponent_R2(c(10:12), 4, 4, 6, '')
-exponent_R2(c(13:15), 5, 4, 6, '')
-exponent_R2(c(16:18), 6, 4, 6, '')
-plot(range(0,1), range(0,1), bty='n', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
-par(xpd=T)
-legend('left', legend=c("", "", "", "", "", "", "All", "Cherry", "Apple"), 
-       pch= c(17, 24, 2, 18, 23, 5, 15, 22, 0), pt.bg = 'grey', cex = 1.2, 
-       bty = 'n', title = "Segment     Path      Subtree", title.adj = -.35, ncol = 3)
-par(xpd=F)
-exponent_R2(c(19:21), 7, 4, 6, '')
-exponent_R2(c(22:23), 8, 4, 6, 'R2')
-exponent_R2(c(24:26), 9, 4, 6, '')
+dev.off()
+
+pdf(file="m_diffs_stdExpR2.pdf", width= 16, height=12,family="Helvetica", pointsize=14)
+
+multi_exp_R2(m_diffs_std)
 
 dev.off()
