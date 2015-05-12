@@ -127,23 +127,23 @@ multi_plot <- function(results, col_list, location = "topright"){
 gen_plot_roots <- function(results, n, relationship, rootstocks = roots_list, 
                            axis = FALSE){
   # general plot for scaling results by rootstock and individual
-  plot(range(0,9), range(min(results[[relationship]][, 1:3], na.rm=T), 
-                          max(results[[relationship]][, 1:3], na.rm=T)), 
+  plot(range(0,9), range(min(results[[relationship]][, 3][roots_no]), 
+                          max(results[[relationship]][, 2][roots_no])), 
        ylab = relationships_abv[n], xlab="", xaxt = 'n', type = 'n',
-       ylim = c(min(results[[relationship]][, 1:3], na.rm=T), 
-                max(results[[relationship]][, 1:3], na.rm=T))
+       ylim = c(min(results[[relationship]][, 3][roots_no]), 
+                max(results[[relationship]][, 2][roots_no]))
        )
   for(s in 1:8){
     points(s, results[[relationship]][, 1][as.numeric(rootstocks[[s]][1])], 
-           pch = 19, cex = 2, bg = "black")
+           pch = 19, cex = 4, bg = "black")
     arrows(y0=results[[relationship]][, 2][as.numeric(rootstocks[[s]][1])], 
            y1=results[[relationship]][, 3][as.numeric(rootstocks[[s]][1])], 
            x0=s, x1=s, code=3, angle=90, lwd=1.7, length=.08)  
   }
   if (axis == TRUE){
-    axis(1, 1:8, names_abv, las = 2, cex.axis = 1.5)
+    axis(1, 1:8, names_abv, las = 2, cex.axis = 2.5)
   } else {
-    axis(1, 1:8, labels = F, las = 2, cex.axis = 1.5)
+    axis(1, 1:8, labels = F, las = 2, cex.axis = 2.5)
   }
   
   abline(h = 0, lwd = 2, lty = 1)
@@ -152,7 +152,7 @@ gen_plot_roots <- function(results, n, relationship, rootstocks = roots_list,
 multi_plot_roots <- function(results){
   # generates an panel of exponent vs rootstock
   par(mfrow= c(3,3), mar = c(4,5,1,1),  oma = c(9,0,0,0), 
-      cex.lab = 2.7, cex.axis = 2)
+      cex.lab = 2.7, cex.axis = 2.5)
   gen_plot_roots(results, 1, 3) 
   gen_plot_roots(results, 2, 6)
   gen_plot_roots(results, 3, 9)
@@ -166,11 +166,11 @@ multi_plot_roots <- function(results){
 
 exponent_R2 <- function(results, n, relationship, rootstocks = roots_list, xlabel = ''){
   # generates an exponent by R2 plot at rootstock level
-  plot(range(0.4,1), range(min(results[[relationship]][, 1], na.rm=T), 
-                           max(results[[relationship]][, 1], na.rm=T)), 
+  plot(range(0.4,1), range(min(results[[relationship]][, 1][roots_no], na.rm=T), 
+                           max(results[[relationship]][, 1][roots_no], na.rm=T)), 
        ylab = relationships_abv[n], xlab=xlabel, type = 'n',
-       ylim = c(min(results[[relationship]][, 1], na.rm=T), 
-                max(results[[relationship]][, 1], na.rm=T)))
+       ylim = c(min(results[[relationship]][, 1][roots_no], na.rm=T), 
+                max(results[[relationship]][, 1][roots_no], na.rm=T)))
   for(root in rootstocks){
     if (is.character(root[1])){
       points(results[[relationship]][, 4][as.numeric(root[1])], 
@@ -242,6 +242,7 @@ init <- function(){
                       c(15, 3),
                       c(9, 2.5),
                       c(3, 2))
+  roots_no   <<- c(1, 2, 3, 9, 15, 21, 23, 28)
   
   flow    <<- c(2, 2, 2, 
                 .75, .75, .75, 
