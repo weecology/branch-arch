@@ -1,8 +1,5 @@
 # This script calculates slope differences from the SMAResults.csv.
 
-###To Do
-# Make figure with just rootstock level
-
 # Functions ----
 
 get_data <- function(){
@@ -242,6 +239,7 @@ init <- function(){
                       c(15, 3),
                       c(9, 2.5),
                       c(3, 2))
+  
   roots_no   <<- c(1, 2, 3, 9, 15, 21, 23, 28)
   
   flow    <<- c(2, 2, 2, 
