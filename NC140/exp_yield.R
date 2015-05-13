@@ -153,9 +153,9 @@ for (i in 1:27){
 
 root_exp_fruit <- c()
 for (i in 1:27){
-  test <- lm(roots_yield$avg_no_fruit~sma_res[[i]][[1]][roots_loc])
+  test <- lm(log10(roots_yield$avg_no_fruit)~sma_res[[i]][[1]][roots_loc])
   root_exp_fruit <- append(root_exp_fruit, round(summary.lm(test)$r.squared, 3))
-}  # Highest R2 = .717: R2 > 0.6 in c(18, 22*, 23)
+}  # Highest R2 = .87: R2 > 0.6 in c(18, 22*, 23, 27)
 
 # Output ----
 roots_exp <- data.frame(
