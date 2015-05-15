@@ -6,7 +6,8 @@ roots_mass <- mutate(read.csv('RootDryMass.csv', head = T, sep = ','),
                      location = row + num / 100,
                      small = total_m - (large + medium))
 
-yield <- read.csv('AppleYield.csv', head = T, sep = ',') 
+yield      <- read.csv('AppleYield.csv', head = T, sep = ',') 
+yield[yield$location == 9.23, ]$location = 9.24  # Discrepency between data
 
 locations <- select(distinct(roots_mass, location), location) 
 
@@ -34,11 +35,13 @@ get_id <- function(location){
   }
 }
 
-ids_temp          <- c('Bud.9', 'CG.6210', NA, 'CG.3041', 'CG.3041', 'CG.6210', NA, 'CG.3041', NA, 'Bud.9', 
-                  'CG.6210', NA, NA, NA, 'CG.3041', 'Bud.9', 'CG.6210', NA, NA, NA)
+rootstocks          <- c('Bud.9', 'CG.6210', 'M.9', 'CG.3041', 
+                       'CG.3041', 'CG.6210', 'CG.5935', 'CG.3041', 
+                       'CG.5935', 'Bud.9', 'CG.6210', 'CG.5935', 
+                       'CG.5935', 'M.9', 'CG.3041', 'Bud.9', 
+                       'CG.6210', 'M.9', 'Bud.9', 'M.9')
 
 ids          <- c()
-rootstocks   <- c()
 total_roots  <- c()
 total_large  <- c()
 total_medium <- c()
@@ -47,7 +50,7 @@ total_small  <- c()
 for (l in locations[[1]]){
   
   ids          <- append(ids, get_id(l))
-  rootstocks   <- append(rootstocks, filter(yield, location == l)$tree
+
   total_roots  <- append(total_roots, 
                          sum(filter(roots_mass, location == l)$total_m, 
                              na.rm = T))
@@ -67,6 +70,8 @@ for (l in locations[[1]]){
 
 tree_roots <- data.frame(
                 location = locations,
+                tree = ids,
+                rootstock = rootstocks,
                 total = total_roots,
                 large = total_large,
                 medium = total_medium,
