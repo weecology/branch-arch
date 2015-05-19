@@ -34,7 +34,7 @@ rootstocks   <- c('Bud.9', 'CG.6210', 'M.9', 'CG.3041', 'CG.3041',
 tree_totals  <- mutate(tree_tots, 
                        stump_mass = stump_mass$stump_wgt_kg * 1000,
                        id = ids, 
-                       rootstock = rootstocks)
+                       rootstock = factor(rootstocks))
 
 # Group by rootstock ----
 by_rootstock <- group_by(tree_totals, rootstock)
@@ -47,6 +47,20 @@ roots_totals <- arrange(
                             avg_small  = mean(total_small),
                             avg_stump  = mean(stump_mass)),
                   avg_total)
+
+# Analysis ----
+# Split plot methods as per http://www3.imperial.ac.uk/portal/pls/portallive/docs/1/1171923.PDF
+# model<-aov(Glycogen~Treatment+Error(Treatment/Rat/Liver))  # Nested
+# model<-aov(yield~irrigation*density*fertilizer+Error(block/irrigation/density/fertilizer))  # Split-plot
+# Treatment is fixed effect NOT random
+# error is biggest scale to smallest
+
+model <- aov(total_roots ~ rootstock*location+Error(rootstock/location), data = tree_totals)
+model <- aov(avg_total ~ rootstock, data = roots_totals)
+
+model <- aov(total_roots ~ rootstock, data = tree_totals)
+comparison <- duncan.test(model,"rootstock")
+comparison$groups
 
 # Remnant code ----
 
