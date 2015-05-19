@@ -2,78 +2,65 @@
 
 library('dplyr')
 
-roots_mass <- mutate(read.csv('RootDryMass.csv', head = T, sep = ','),
-                     location = row + num / 100,
-                     small = total_m - (large + medium))
+roots_mass   <- mutate(read.csv('RootDryMass.csv', head = T, sep = ','),
+                       location = row + num / 100,
+                       small = total_m - (large + medium))  # in grams
 
-yield      <- read.csv('AppleYield.csv', head = T, sep = ',') 
+stump_mass   <- arrange(read.csv('StumpMass.csv', head = T, sep = ','),
+                        location)                           # in kilograms
+
+yield        <- read.csv('AppleYield.csv', head = T, sep = ',') 
 yield[yield$location == 9.23, ]$location = 9.24  # Discrepency between data
 
-locations <- select(distinct(roots_mass, location), location) 
+# Group by individual tree ----
+by_location  <- group_by(roots_mass, location)
 
-tree_ids     <- c(2,7,12,3,
-                   5,11,6,8,
-                   10,1,4,9,
-                   13,
-                   17,15,18,
-                   20,19,14)
+tree_tots    <- summarize(by_location, 
+                          total_roots  = sum(total_m, na.rm = T),
+                          total_large  = sum(large, na.rm = T),
+                          total_medium = sum(medium, na.rm = T),
+                          total_small  = sum(small, na.rm = T))
 
+ids          <- c(12, 9, NA, 5, 11, 
+                  10, NA, 8, NA, 3, 
+                  4, NA, NA, NA, 6, 
+                  7, 1, NA, 2, NA)
 
-tree_stock   <- c("Bud.9", "Bud.9", "Bud.9", "Bud.9", 
-                   "CG.3041", "CG.3041", "CG.3041", "CG.3041", 
-                   "CG.6210", "CG.6210", "CG.6210", "CG.6210", 
-                   "M.26", 
-                   "JM.8", "JM.8", "JM.8",
-                   "PiAu.5683", "PiAu.5683", "PiAu.5683")
+rootstocks   <- c('Bud.9', 'CG.6210', 'M.9', 'CG.3041', 'CG.3041', 
+                  'CG.6210', 'CG.5935', 'CG.3041', 'CG.5935', 'Bud.9', 
+                  'CG.6210', 'CG.5935', 'CG.5935', 'M.9', 'CG.3041', 
+                  'Bud.9', 'CG.6210', 'M.9', 'Bud.9', 'M.9')
 
-get_id <- function(location){
-  yield_row <- filter(yield, location == l)
-  if (length(yield_row[[1]])){
-    return(filter(yield, location == l)$tree)
-  } else {
-    return(NA)
-  }
-}
+tree_totals  <- mutate(tree_tots, 
+                       stump_mass = stump_mass$stump_wgt_kg * 1000,
+                       id = ids, 
+                       rootstock = rootstocks)
 
-rootstocks          <- c('Bud.9', 'CG.6210', 'M.9', 'CG.3041', 
-                       'CG.3041', 'CG.6210', 'CG.5935', 'CG.3041', 
-                       'CG.5935', 'Bud.9', 'CG.6210', 'CG.5935', 
-                       'CG.5935', 'M.9', 'CG.3041', 'Bud.9', 
-                       'CG.6210', 'M.9', 'Bud.9', 'M.9')
+# Group by rootstock ----
+by_rootstock <- group_by(tree_totals, rootstock)
 
-ids          <- c()
-total_roots  <- c()
-total_large  <- c()
-total_medium <- c()
-total_small  <- c()
+roots_totals <- arrange(
+                  summarize(by_rootstock, 
+                            avg_total  = mean(total_roots),
+                            avg_large  = mean(total_large),
+                            avg_medium = mean(total_medium),
+                            avg_small  = mean(total_small),
+                            avg_stump  = mean(stump_mass)),
+                  avg_total)
 
-for (l in locations[[1]]){
-  
-  ids          <- append(ids, get_id(l))
+# Remnant code ----
 
-  total_roots  <- append(total_roots, 
-                         sum(filter(roots_mass, location == l)$total_m, 
-                             na.rm = T))
-  
-  total_large  <- append(total_large, 
-                          sum(filter(roots_mass, location == l)$large, 
-                              na.rm = T))
-  
-  total_medium <- append(total_medium, 
-                         sum(filter(roots_mass, location == l)$medium, 
-                             na.rm = T))
-  
-  total_small  <- append(total_small,
-                         sum(filter(roots_mass, location == l)$small, 
-                             na.rm = T))
-}
+#  Used to generate ids vector
+# get_id <- function(location){
+#   yield_row <- filter(yield, location == l)
+#   if (length(yield_row[[1]])){
+#     return(filter(yield, location == l)$tree)
+#   } else {
+#     return(NA)
+#   }
+# }
 
-tree_roots <- data.frame(
-                location = locations,
-                tree = ids,
-                rootstock = rootstocks,
-                total = total_roots,
-                large = total_large,
-                medium = total_medium,
-                small = total_small)
-  
+# ids <- c()
+# for (l in tree_totals$location){ 
+#   ids <- append(ids, get_id(l)) 
+# }
