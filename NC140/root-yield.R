@@ -2,6 +2,8 @@
 
 library('dplyr')
 library('agricolae')
+library('ggplot2')
+library('grid')
 
 roots_mass   <- mutate(read.csv('RootDryMass.csv', head = T, sep = ','),
                        location = row + num / 100,
@@ -58,6 +60,23 @@ roots_totals <- arrange(
                             avg_small  = mean(total_small),
                             avg_stump  = mean(stump_mass)),
                   avg_total)
+
+# Group by rootstock by depth ----
+within_between <- rep(c(
+  rep("within", 15), rep("middle", 15), rep("between", 15)), 20)
+
+distance <- 
+rows_mass <- mutate(roots_mass,
+                    distance = rep(c(rep(45, 5), rep(90, 5), rep(135, 5)), 60),
+                    direction =  rep(c(
+                      rep("within", 15), rep("middle", 15), rep("between", 15)), 
+                      20))
+
+by_rootstock_depth <- group_by(rows_mass, rootstock, 
+                               direction, distance, max_depth)
+
+roots_depth <- summarize(by_rootstock_depth,
+                         total_roots = sum(total_m, na.rm=T))
 
 # Analysis ----
 # Split plot methods as per http://www3.imperial.ac.uk/portal/pls/portallive/docs/1/1171923.PDF
@@ -130,7 +149,7 @@ duncan_depth$medium <- duncan.test(model, "max_depth")$groups
 summary_depth$medium <- summary(model)
 
 model <- aov(small ~ rootstock*location*max_depth, data = roots_mass)
-duncan_depth$small <- duncan.test(model, "max_depth")$groups
+duncan_depth$small <- duncan.test(model, "rootstock")$groups
 summary_depth$small <- summary(model)
 
 # Remnant code ----
