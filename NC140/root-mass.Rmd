@@ -1,0 +1,77 @@
+---
+title: "2002 Goldens Root Biomass Results"
+author: "Prepared by: Zack Brym"
+date: "May 20, 2015"
+output: html_document
+---
+
+```{r, include=FALSE}
+source('~/Desktop/branch-arch/NC140/root-yield.R', echo = FALSE)
+```
+#Summary Tables
+
+##Total Mass By Location (i.e., Tree)
+
+```{r, echo=FALSE}
+print(tree_totals)
+```
+
+##Average Mass By Rootstock
+```{r, echo=FALSE}
+print(roots_totals)
+```
+
+#Duncan's Test Restuls
+
+## by rootstock
+I used the summarized data by tree to evaluate a simplified rootstock effect. 
+Results are given for stump mass, total mass and each size-class.
+The ANOVA model is: `root_mass ~ rootstock`
+```{r, echo=FALSE}
+masses <- c("STUMP", "TOTAL", "LARGE", "MEDIUM", "SMALL")
+for (i in c(1:5)){
+  cat(masses[i], "\n")
+  print(summary_rootstock[[i]])
+  cat("\n")
+  print(duncan_rootstock[[i]])
+  cat("\n")
+}
+```
+
+## by location by rootstock
+I used the raw data by rootstock, location, and depth to evaluate location and rootstock
+effect on root biomass. Results are given for total mass and each size-class.
+The ANOVA model is: `root_mass ~ rootstock*locaton`
+From what I'm reading about split-factor design and analysis, this model might 
+be defined incorrectly to introduce pseudoreplication. I explored defining the
+model with error terms, but was unable to pass any of those results to the 
+Duncan test. I don't know enough about ANOVA to determine the most appropriate
+model formulation and analysis proceedure.
+
+```{r, echo=FALSE}
+masses <- c("TOTAL", "LARGE", "MEDIUM", "SMALL")
+for (i in c(1:4)){
+  cat(masses[i], "\n")
+  print(summary_location[[i]])
+  cat("\n")
+  print(duncan_location[[i]])
+  cat("\n")
+}
+```
+
+## by depth by location by rootstock
+I used the raw data by rootstock, location, and depth to evaluate differences in 
+mass. Results are given for total mass and each size-class.
+The ANOVA model is: `root_mass ~ rootstock*locaton*depth`
+We should be able to use this single analysis to interpret all levels of effect.
+
+```{r, echo=FALSE}
+masses <- c("TOTAL", "LARGE", "MEDIUM", "SMALL")
+for (i in c(1:4)){
+  cat(masses[i], "\n")
+  print(summary_depth[[i]])
+  cat("\n")
+  print(duncan_depth[[i]])
+  cat("\n")
+}
+```
