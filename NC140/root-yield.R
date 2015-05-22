@@ -12,8 +12,11 @@ roots_mass   <- mutate(read.csv('RootDryMass.csv', head = T, sep = ','),
 stump_mass   <- arrange(read.csv('StumpMass.csv', head = T, sep = ','),
                         location)                           # in kilograms
 
-yield        <- read.csv('AppleYield.csv', head = T, sep = ',') 
+yield        <- arrange(read.csv('RootYield.csv', head = T, sep = ','),
+                        location)
 yield[yield$location == 9.23, ]$location = 9.24  # Discrepency between data
+
+roots_yield  <- read.csv('RootstockYieldRoots.csv', head=T, sep = ',')
 
 # Group by individual tree ----
 by_location  <- group_by(roots_mass, location)
@@ -34,21 +37,24 @@ rootstocks   <- c('Bud.9', 'CG.6210', 'M.9', 'CG.3041', 'CG.3041',
                   'CG.6210', 'CG.5935', 'CG.5935', 'M.9', 'CG.3041', 
                   'Bud.9', 'CG.6210', 'M.9', 'Bud.9', 'M.9')
 
-tree_totals  <- mutate(tree_tots,
-                       location = factor(location),
-                       stump_mass = stump_mass$stump_wgt_kg * 1000,
-                       id = ids, 
-                       rootstock = factor(rootstocks))
+tree_totals  <- arrange(
+                  mutate(tree_tots,
+                         location = factor(location),
+                         stump_mass = stump_mass$stump_wgt_kg * 1000,
+                         id = ids, 
+                         rootstock = factor(rootstocks)),
+                  location)
 
 roots_list <- c()
 for (r in rootstocks){
   roots_list <- append(roots_list, rep(r, 45))
 }
 
-roots_mass <- mutate(roots_mass,
-                     location = factor(location),
-                     rootstock = factor(roots_list))
+roots_mass  <- mutate(roots_mass,
+                      location = factor(location),
+                      rootstock = factor(roots_list))
 
+  
 # Group by rootstock ----
 by_rootstock <- group_by(tree_totals, rootstock)
 
@@ -59,13 +65,12 @@ roots_totals <- arrange(
                             avg_medium = mean(total_medium),
                             avg_small  = mean(total_small),
                             avg_stump  = mean(stump_mass)),
-                  avg_total)
+                  rootstock)
 
 # Group by rootstock by depth ----
 within_between <- rep(c(
   rep("within", 15), rep("middle", 15), rep("between", 15)), 20)
 
-distance <- 
 rows_mass <- mutate(roots_mass,
                     distance = rep(c(rep(45, 5), rep(90, 5), rep(135, 5)), 60),
                     direction =  rep(c(
@@ -78,7 +83,7 @@ by_rootstock_depth <- group_by(rows_mass, rootstock,
 roots_depth <- summarize(by_rootstock_depth,
                          total_roots = sum(total_m, na.rm=T))
 
-# Analysis ----
+# ANOVA ----
 # Split plot methods as per http://www3.imperial.ac.uk/portal/pls/portallive/docs/1/1171923.PDF
 # model<-aov(Glycogen~Treatment+Error(Treatment/Rat/Liver))  # Nested
 # model<-aov(yield~irrigation*density*fertilizer+Error(block/irrigation/density/fertilizer))  # Split-plot
@@ -152,19 +157,8 @@ model <- aov(small ~ rootstock*location*max_depth, data = roots_mass)
 duncan_depth$small <- duncan.test(model, "rootstock")$groups
 summary_depth$small <- summary(model)
 
-# Remnant code ----
+# Linear Models ----
 
-#  Used to generate ids vector
-# get_id <- function(location){
-#   yield_row <- filter(yield, location == l)
-#   if (length(yield_row[[1]])){
-#     return(filter(yield, location == l)$tree)
-#   } else {
-#     return(NA)
-#   }
-# }
+tree_totals vs yield
 
-# ids <- c()
-# for (l in tree_totals$location){ 
-#   ids <- append(ids, get_id(l)) 
-# }
+roots_totals vs roots_yield
