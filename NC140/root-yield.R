@@ -159,6 +159,46 @@ summary_depth$small <- summary(model)
 
 # Linear Models ----
 
-tree_totals vs yield
+## tree_totals vs yield
+tree_results <- c()
+tree_results$roots <- c('stump_mass', 'total_roots', 'total_large',
+                        'total_medium', 'total_small')
 
-roots_totals vs roots_yield
+for (roots in tree_results$roots){
+  yield_test <- lm(yield$yield~tree_totals[roots][[1]])
+  tree_results$yield <- append(tree_results$yield, 
+                               round(summary.lm(yield_test)$r.squared, 3))
+  
+  cum_yield_test <- lm(yield$cum_yield~tree_totals[roots][[1]])
+  tree_results$cum_yield <- append(tree_results$cum_yield, 
+                               round(summary.lm(cum_yield_test)$r.squared, 3))
+  
+  no_fruit_test <- lm(yield$no_fruit~tree_totals[roots][[1]])
+  tree_results$no_fruit <- append(tree_results$no_fruit, 
+                               round(summary.lm(no_fruit_test)$r.squared, 3))
+  
+  avg_wgt_test <- lm(yield$avg_fruit_wgt~tree_totals[roots][[1]])
+  tree_results$avg_wgt <- append(tree_results$avg_wgt, 
+                               round(summary.lm(avg_wgt_test)$r.squared, 3))
+}
+
+## roots_totals vs roots_yield
+
+roots_results <- c()
+roots_results$roots <- c('avg_stump', 'avg_total', 'avg_large',
+                        'avg_medium', 'avg_small')
+
+for (roots in roots_results$roots){
+  
+  cum_yield_test <- lm(roots_yield$avg_cum_yield~roots_totals[roots][[1]])
+  roots_results$cum_yield <- append(roots_results$cum_yield, 
+                                   round(summary.lm(cum_yield_test)$r.squared, 3))
+  
+  no_fruit_test <- lm(roots_yield$avg_no_fruit~roots_totals[roots][[1]])
+  roots_results$no_fruit <- append(roots_results$no_fruit, 
+                                  round(summary.lm(no_fruit_test)$r.squared, 3))
+  
+  avg_wgt_test <- lm(roots_yield$avg_fruit_wgt~roots_totals[roots][[1]])
+  roots_results$avg_wgt <- append(roots_results$avg_wgt, 
+                                 round(summary.lm(avg_wgt_test)$r.squared, 3))
+}
