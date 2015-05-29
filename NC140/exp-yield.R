@@ -24,8 +24,8 @@ get_data <- function(){
 
 init <- function(){
   
-  tree_ids     <<- c(2,7,12,3,
-                    5,11,6,8,
+  tree_ids     <<- c(2,7,12,3,  # used with tree names as reference for 
+                    5,11,6,8,   # tree_order, roots_exc, and roots_loc 
                     10,1,4,9,
                     13,
                     17,15,18,
