@@ -1,0 +1,13 @@
+level, relationship, R2
+tree, yield ~ no_scars / no_spurs, .594
+tree, yield ~ diamerter_mm, .409
+rootstock, cum_yield ~ L/D_sub, .470
+rootstock, avg_fruit_wgt ~ D/V_sub, .733
+rootstock, no_fruit ~ M/D_seg, .870
+tree, cum_yield ~ stump_mass, .517
+tree, avg_fruit_wgt ~ stump_mass, .587
+rootstock, cum_yield ~ stump_mass, .897
+tree, cum_yield ~ L/D_sub + stump_mass + int, .843
+tree, cum_yield ~ D/V_sub + stump_mass + int, .847
+tree, yield ~ L/D_sub + stump_mass + int, .637
+tree, yield ~ L/D_sub + stump_mass + tot_no_scars / tot_no_spurs, .679
