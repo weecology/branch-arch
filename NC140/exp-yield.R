@@ -68,7 +68,7 @@ sma_res <- get_data()
 
 yield <- read.csv("AppleYield.csv", sep =',', head=T)
 
-roots_yield <- read.csv("RootstockYield.csv", sep =',', head=T)
+roots_yield <- read.csv("RootstockYieldMorph.csv", sep =',', head=T)
 
 init()
 
