@@ -33,6 +33,7 @@ above_trees <- mutate(
                  M_D_sub  = pred_exp[[23]][[1]][-roots_exc],
                  D_SA_sub = pred_exp[[15]][[1]][-roots_exc])
 
+
 # Roots data ----
 
 roots_mass   <- mutate(read.csv('RootDryMass.csv', head = T, sep = ','),
@@ -75,6 +76,7 @@ for (i in tree_ids){
   root_trees <- rbind(root_trees, filter(tree_totals, id == i))
 }
 
+
 # Yield Data ----
 
 yield     <- read.csv('AppleYield.csv', head = T, sep = ',')
@@ -83,3 +85,26 @@ yield_trees <- c()
 for (i in tree_ids){
   yield_trees <- rbind(yield_trees, filter(yield, tree == i))
 }
+
+
+# Analysis ----
+
+cum_yield_exp_stump   <- lm(yield_trees$cum_yield~
+                            above_trees$L_D_sub + root_trees$stump_mass +
+                            above_trees$L_D_sub * root_trees$stump_mass)
+  # R2 == 0.843
+
+afw_exp_stump         <- lm(yield_trees$cum_yield~
+                            above_trees$D_V_sub + root_trees$stump_mass  +
+                            above_trees$D_V_sub * root_trees$stump_mass)
+  # R2 == 0.847
+
+yield_exp_stump       <- lm(yield_trees$yield~
+                            above_trees$L_D_sub + root_trees$stump_mass  +
+                            above_trees$L_D_sub * root_trees$stump_mass)
+  # R2 == 0.637
+
+yield_exp_stump_scars <- lm(yield_trees$yield~
+                            above_trees$L_D_sub + root_trees$stump_mass  +
+                            above_trees$tot_no_scars / above_trees$tot_no_spurs)
+  # R2 == 0.679
