@@ -1,11 +1,12 @@
 # This script analysis and generates figures for the Yield ~ m_diff relationship
 
 # Functions ---
+library("dplyr")
 
 get_data <- function(){
   # Compiles data for computation from the visually oriented SMAResults file
   
-  sma <- read.csv('SMAResults.csv', sep=',', head=T) 
+  sma <- read.csv("SMAResults.csv", sep=",", head=T) 
   
   input_data <- list()
   for (i in 1:27){                              # Scaling relationships
@@ -66,6 +67,8 @@ init <- function(){
 # Execute ----
 sma_res <- get_data()
 
+tree_sum <- read.csv("TreeSummary.csv")
+  
 yield <- read.csv("AppleYield.csv", sep =',', head=T)
 
 roots_yield <- read.csv("RootstockYieldMorph.csv", sep =',', head=T)
@@ -98,8 +101,28 @@ for (i in 1:27){
 }  # Highest R2 = .87: R2 > 0.6 in c(18, 22*, 23, 27)
 
 # Output ----
+trunk_diams <- summarize(group_by(tree_sum, rootstock),
+                        avg_trunk_diam = round(mean(trunk_diam), 0))
+trunk_diam <- select(
+                filter(trunk_diam, rootstock != "M.26"),
+                avg_trunk_diam)
+
+roots_data <- mutate(roots_yield, 
+                     trunk_diam = trunk_diam[[1]],
+                     L_D_sub  = sma_res[[3]][[1]][roots_loc],
+                     D_V_sub  = sma_res[[9]][[1]][roots_loc],
+                     M_D_seg  = sma_res[[22]][[1]][roots_loc],
+                     M_D_sub  = sma_res[[23]][[1]][roots_loc],
+                     D_SA_sub = sma_res[[15]][[1]][roots_loc])
+
+write.csv(roots_data, "yield-exp.csv")
+
 roots_exp <- data.frame(
                relationship = relationships,
                exp_yield = root_exp_yield,
                exp_wgt = root_exp_wgt,
                exp_fruit = root_exp_fruit)
+
+
+
+write.csv(roots_exp, 'exp-R2.csv')
