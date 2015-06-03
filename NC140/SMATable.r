@@ -70,12 +70,17 @@ get_sma_row <- function(name, data, plus = FALSE){
   return(sma_row)
 }
 
+
+
 output <- function(sma_data){
-  return (paste(round(sma(sma_data)$coef[[1]][2,1],2), " [ ",  # exponent
-                round(sma(sma_data)$coef[[1]][2,2],2), " , ",  # 95% -
-                round(sma(sma_data)$coef[[1]][2,3],2), " ]; ", # 95% + 
-                round(sma(sma_data)$r2[[1]], 3), sep = ""))    # R2
-                #round(coef.sma(sma_data)[1],2)                # intercept
+  return(paste(round(sma(sma_data)$coef[[1]][1,1],4),  # intercept
+               round(sma(sma_data)$coef[[1]][1,2],4),  # int 95% -
+               round(sma(sma_data)$coef[[1]][1,3],2),  # int 95% + 
+               round(sma(sma_data)$coef[[1]][2,1],4),  # exponent
+               round(sma(sma_data)$coef[[1]][2,2],4),  # exp 95% -
+               round(sma(sma_data)$coef[[1]][2,3],2),  # exp 95% + 
+               round(sma(sma_data)$r2[[1]], 3),        # R2
+               sep = ";")) 
 } 
 
 
@@ -83,7 +88,7 @@ output <- function(sma_data){
 
 library('smatr')
 
-treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
+tree_data <- read.csv("TreeSummary.csv", sep = ",", head=T)
 branch_size <- read.csv("BranchSegments.csv", sep = ',', header = T)
 
 groups <- c("all-branch", "Bud.9", "CG.3041", "CG.6210", "M.26", "JM.8", "PiAu.5683")
@@ -139,7 +144,6 @@ sma_test[1, ] = c("prediction", "2 - 2/3", "", "",
 
 
 # Tree Level Output ----
-tree_data <- treesum[treesum$species=="apple",]
 
 sma_test[2, 1] = 'all-tree'
 
