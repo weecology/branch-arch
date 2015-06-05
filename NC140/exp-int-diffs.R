@@ -5,17 +5,18 @@
 get_data <- function(){
   # Compiles data for computation from the visually oriented SMAResults file
   
-  sma <- read.csv('SMAResults.csv', sep=',', head=T) 
+  sma <- read.csv("SMAResults.csv", sep=",", head=T) 
   
   input_data <- list()
   for (i in 1:27){                              # Scaling relationships
     input_data[[i]] <- list()
-    for (j in 1:4){                             # Results output
-      #   1.exponent, 2.CI-, 3.CI+, 4.R2 
+    for (j in 1:7){                             # Results output
+      #  1. Intercept, 2. Int CI-, 3. Int CI+, 
+      #  4. Exponent,  5. Exp CI-, 6. Exp CI+, 7.R2 
       input_data[[i]][[j]] <- vector(length = 32)
       for (k in 1:32) {                         # Groups and individuals
-        input_data[[i]][[j]][k] = as.numeric(strsplit(
-          as.character(sma[(k+1),(i+2)]), " ")[[1]][(2*j-1)])
+        input_data[[i]][[j]][k] = as.numeric(str_split(
+          sma[(k+1),(i+2)], ";")[[1]][j])
       }
     }
   }
@@ -24,39 +25,76 @@ get_data <- function(){
 
 calc_m_diffs <- function(relationship, focal_group, i){
   # calculates differences in scaling parameters from focal_group
-  m_diff_all = -1 * (sma_res[[relationship]][[1]][i] -
-               sma_res[[relationship]][[1]][focal_group])
+  m_diff_all = -1 * (sma_res[[relationship]][[4]][i] -
+               sma_res[[relationship]][[4]][focal_group])
   
-  m_diff_CId = -1 * (sma_res[[relationship]][[2]][i] - 
-               sma_res[[relationship]][[1]][focal_group])
+  m_diff_CId = -1 * (sma_res[[relationship]][[5]][i] - 
+               sma_res[[relationship]][[4]][focal_group])
 
-  m_diff_CIu = -1 * (sma_res[[relationship]][[3]][i] - 
-               sma_res[[relationship]][[1]][focal_group])
+  m_diff_CIu = -1 * (sma_res[[relationship]][[6]][i] - 
+               sma_res[[relationship]][[4]][focal_group])
 
   return(c(m_diff_all, m_diff_CId, m_diff_CIu,
-           sma_res[[relationship]][[4]][i]))
+           sma_res[[relationship]][[7]][i]))
+}
+
+calc_int_diffs <- function(relationship, focal_group, i){
+  # calculates differences in scaling parameters from focal_group
+  int_diff_all = -1 * (sma_res[[relationship]][[1]][i] -
+                       sma_res[[relationship]][[1]][focal_group])
+  
+  int_diff_CId = -1 * (sma_res[[relationship]][[2]][i] - 
+                       sma_res[[relationship]][[1]][focal_group])
+  
+  int_diff_CIu = -1 * (sma_res[[relationship]][[3]][i] - 
+                       sma_res[[relationship]][[1]][focal_group])
+  
+  return(c(int_diff_all, int_diff_CId, int_diff_CIu,
+           sma_res[[relationship]][[7]][i]))
 }
 
 calc_m_diffs_std <- function(relationship, focal_group, i){
   # calculates differences in scaling parameters from focal group 
   # standardized by focal group CI
-  all_branch_CI = sma_res[[relationship]][[3]][focal_group] - 
-                  sma_res[[relationship]][[2]][focal_group]
+  all_branch_CI = sma_res[[relationship]][[6]][focal_group] - 
+                  sma_res[[relationship]][[5]][focal_group]
   
-  m_diff_all    = -1 * (sma_res[[relationship]][[1]][i] -
-                  sma_res[[relationship]][[1]][focal_group]) / 
+  m_diff_all    = -1 * (sma_res[[relationship]][[4]][i] -
+                  sma_res[[relationship]][[4]][focal_group]) / 
                   all_branch_CI
   
-  m_diff_CId    = -1 * (sma_res[[relationship]][[2]][i] - 
-                  sma_res[[relationship]][[1]][focal_group]) / 
+  m_diff_CId    = -1 * (sma_res[[relationship]][[5]][i] - 
+                  sma_res[[relationship]][[4]][focal_group]) / 
                   all_branch_CI
   
-  m_diff_CIu    = -1 * (sma_res[[relationship]][[3]][i] - 
-                  sma_res[[relationship]][[1]][focal_group]) / 
+  m_diff_CIu    = -1 * (sma_res[[relationship]][[6]][i] - 
+                  sma_res[[relationship]][[4]][focal_group]) / 
                   all_branch_CI
   
   return(c(m_diff_all, m_diff_CId, m_diff_CIu,
-         sma_res[[relationship]][[4]][i]))  # R2
+         sma_res[[relationship]][[7]][i]))  # R2
+}
+
+calc_int_diffs_std <- function(relationship, focal_group, i){
+  # calculates differences in scaling parameters from focal group 
+  # standardized by focal group CI
+  all_branch_CI = sma_res[[relationship]][[3]][focal_group] - 
+                  sma_res[[relationship]][[2]][focal_group]
+  
+  int_diff_all    = -1 * (sma_res[[relationship]][[1]][i] -
+                          sma_res[[relationship]][[1]][focal_group]) / 
+    all_branch_CI
+  
+  int_diff_CId    = -1 * (sma_res[[relationship]][[2]][i] - 
+                          sma_res[[relationship]][[1]][focal_group]) / 
+    all_branch_CI
+  
+  int_diff_CIu    = -1 * (sma_res[[relationship]][[3]][i] - 
+                          sma_res[[relationship]][[1]][focal_group]) / 
+    all_branch_CI
+  
+  return(c(int_diff_all, int_diff_CId, int_diff_CIu,
+           sma_res[[relationship]][[7]][i]))  # R2
 }
 
 get_m_diffs <- function(relationship, focal_group = 2, standardized = F){
@@ -76,6 +114,29 @@ get_m_diffs <- function(relationship, focal_group = 2, standardized = F){
         output = rbind(output, calc_m_diffs_std(relationship, focal_group, i))
       } else {
         output = calc_m_diffs_std(relationship, focal_group, i)
+      }
+    }
+    return(output)
+  }
+}
+
+get_int_diffs <- function(relationship, focal_group = 2, standardized = F){
+  # compiles scaling parameter diffs into output file
+  if (standardized == F){
+    for (i in 1:length(sma_res[[relationship]][[1]])){
+      if(exists('output')){
+        output = rbind(output, calc_int_diffs(relationship, focal_group, i))
+      } else {
+        output = calc_int_diffs(relationship, focal_group, i)
+      }
+    }
+    return(output)
+  } else {
+    for (i in 1:length(sma_res[[relationship]][[1]])){
+      if(exists('output')){
+        output = rbind(output, calc_int_diffs_std(relationship, focal_group, i))
+      } else {
+        output = calc_int_diffs_std(relationship, focal_group, i)
       }
     }
     return(output)
@@ -275,6 +336,16 @@ for (i in 1:length(sma_res)){
   m_diffs_std[[i]] = get_m_diffs(i, standardized = T)
 }
 
+int_diffs <- list()
+for (i in 1:length(sma_res)){
+  int_diffs[[i]] = get_int_diffs(i)
+}
+
+int_diffs_std <- list()
+for (i in 1:length(sma_res)){
+  int_diffs_std[[i]] = get_int_diffs(i, standardized = T)
+}
+
 # Visualize ----
 
 pdf(file="m_diffFigures_all.pdf", width= 10, height=10,family="Helvetica", pointsize=12)
@@ -318,4 +389,27 @@ dev.off()
 
 pdf(file="m_diffs_stdExpR2.pdf", width= 16, height=12,family="Helvetica", pointsize=14)
 multi_exp_R2(m_diffs_std)
+dev.off()
+
+
+
+pdf(file="int_diff_stdFigures_all.pdf", width= 10, height=10,family="Helvetica", pointsize=12)
+multi_plot(int_diffs_std, c(1:3))
+multi_plot(int_diffs_std, c(4:6))
+multi_plot(int_diffs_std, c(7:9))
+multi_plot(int_diffs_std, c(10:12))
+multi_plot(int_diffs_std, c(13:15))
+multi_plot(int_diffs_std, c(16:18))
+multi_plot(int_diffs_std, c(19:21))
+multi_plot(int_diffs_std, c(22:23), 'bottom')
+multi_plot(int_diffs_std, c(24:26))
+multi_plot(int_diffs_std, c(27))
+dev.off()
+
+pdf(file="int_diffstdFigures.pdf", width= 16, height=12,family="Helvetica", pointsize=14)
+multi_plot_roots(int_diffs_std) 
+dev.off()
+
+pdf(file="int_diffs_stdExpR2.pdf", width= 16, height=12,family="Helvetica", pointsize=14)
+multi_exp_R2(int_diffs_std)
 dev.off()
