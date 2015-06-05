@@ -1,7 +1,8 @@
 # This script analysis and generates figures for the Yield ~ m_diff relationship
 
 # Functions ---
-library("dplyr")
+library('dplyr')
+library('stringr')
 
 get_data <- function(){
   # Compiles data for computation from the visually oriented SMAResults file
@@ -11,12 +12,13 @@ get_data <- function(){
   input_data <- list()
   for (i in 1:27){                              # Scaling relationships
     input_data[[i]] <- list()
-    for (j in 1:4){                             # Results output
-      #   1.exponent, 2.CI-, 3.CI+, 4.R2 
+    for (j in 1:7){                             # Results output
+      #  1. Intercept, 2. Int CI-, 3. Int CI+, 
+      #  4. Exponent,  5. Exp CI-, 6. Exp CI+, 7.R2 
       input_data[[i]][[j]] <- vector(length = 32)
       for (k in 1:32) {                         # Groups and individuals
-        input_data[[i]][[j]][k] = as.numeric(strsplit(
-          as.character(sma[(k+1),(i+2)]), " ")[[1]][(2*j-1)])
+        input_data[[i]][[j]][k] = as.numeric(str_split(
+                                    sma[(k+1),(i+2)], ";")[[1]][j])
       }
     }
   }
@@ -78,28 +80,89 @@ init()
 # Analysis ----
 exp_yield <- c()
 for (i in 1:27){
-  test <- lm(yield$cum_yield[tree_order]~sma_res[[i]][[1]][-roots_exc])
+  test <- lm(yield$cum_yield[tree_order]~sma_res[[i]][[4]][-roots_exc])
   exp_yield <- append(exp_yield, round(summary.lm(test)$r.squared, 3))
 }  # Highest R2 == 0.205
 
+
 root_exp_yield <- c()
 for (i in 1:27){
-  test <- lm(roots_yield$avg_cum_yield~sma_res[[i]][[1]][roots_loc])
+  test <- lm(roots_yield$avg_cum_yield~sma_res[[i]][[4]][roots_loc])
   root_exp_yield <- append(root_exp_yield, round(summary.lm(test)$r.squared, 3))
-}  # Highest R2 = .470; R2 > 0.4 in c(3*, 6, 15, 26)
+} 
 
 root_exp_wgt <- c()
 for (i in 1:27){
-  test <- lm(roots_yield$avg_fruit_wgt~sma_res[[i]][[1]][roots_loc])
+  test <- lm(roots_yield$avg_fruit_wgt~sma_res[[i]][[4]][roots_loc])
   root_exp_wgt <- append(root_exp_wgt, round(summary.lm(test)$r.squared, 3))
-}  # Highest R2 = .733; R2 > 0.6 in c(2, 3, 7, 8, 9*, 13, 14, 15, 23)  
+}  
 
 root_exp_fruit <- c()
 for (i in 1:27){
-  test <- lm(log10(roots_yield$avg_no_fruit)~sma_res[[i]][[1]][roots_loc])
+  test <- lm(roots_yield$avg_no_fruit~sma_res[[i]][[4]][roots_loc])
   root_exp_fruit <- append(root_exp_fruit, round(summary.lm(test)$r.squared, 3))
-}  # Highest R2 = .87: R2 > 0.6 in c(18, 22*, 23, 27)
+}  
 
+root_int_yield <- c()
+for (i in 1:27){
+  test <- lm(roots_yield$avg_cum_yield~sma_res[[i]][[1]][roots_loc])
+  root_int_yield <- append(root_int_yield, round(summary.lm(test)$r.squared, 3))
+} 
+
+root_int_wgt <- c()
+for (i in 1:27){
+  test <- lm(roots_yield$avg_fruit_wgt~sma_res[[i]][[1]][roots_loc])
+  root_int_wgt <- append(root_int_wgt, round(summary.lm(test)$r.squared, 3))
+}  
+
+root_int_fruit <- c()
+for (i in 1:27){
+  test <- lm(roots_yield$avg_no_fruit~sma_res[[i]][[1]][roots_loc])
+  root_int_fruit <- append(root_int_fruit, round(summary.lm(test)$r.squared, 3))
+}  
+
+
+root_expr_yield <- c()
+for (i in 1:27){
+  range <- abs(sma_res[[i]][[6]][roots_loc] - sma_res[[i]][[5]][roots_loc])
+  test <- lm(roots_yield$avg_cum_yield~range)
+  root_expr_yield <- append(root_expr_yield, round(summary.lm(test)$r.squared, 3))
+} 
+
+root_expr_wgt <- c()
+for (i in 1:27){
+  range <- abs(sma_res[[i]][[6]][roots_loc] - sma_res[[i]][[5]][roots_loc])
+  test <- lm(roots_yield$avg_fruit_wgt~range)
+  root_expr_wgt <- append(root_expr_wgt, round(summary.lm(test)$r.squared, 3))
+}  
+
+root_expr_fruit <- c()
+for (i in 1:27){
+  range <- abs(sma_res[[i]][[6]][roots_loc] - sma_res[[i]][[5]][roots_loc])
+  test <- lm(roots_yield$avg_no_fruit~range)
+  root_expr_fruit <- append(root_expr_fruit, round(summary.lm(test)$r.squared, 3))
+}  
+
+root_intr_yield <- c()
+for (i in 1:27){
+  range <- abs(sma_res[[i]][[3]][roots_loc] - sma_res[[i]][[2]][roots_loc])
+  test <- lm(roots_yield$avg_cum_yield~range)
+  root_intr_yield <- append(root_intr_yield, round(summary.lm(test)$r.squared, 3))
+} 
+
+root_intr_wgt <- c()
+for (i in 1:27){
+  range <- abs(sma_res[[i]][[3]][roots_loc] - sma_res[[i]][[2]][roots_loc])
+  test <- lm(roots_yield$avg_fruit_wgt~range)
+  root_intr_wgt <- append(root_intr_wgt, round(summary.lm(test)$r.squared, 3))
+}  
+
+root_intr_fruit <- c()
+for (i in 1:27){
+  range <- abs(sma_res[[i]][[3]][roots_loc] - sma_res[[i]][[2]][roots_loc])
+  test <- lm(roots_yield$avg_no_fruit~range)
+  root_intr_fruit <- append(root_intr_fruit, round(summary.lm(test)$r.squared, 3))
+}  
 # Output ----
 trunk_diams <- summarize(group_by(tree_sum, rootstock),
                         avg_trunk_diam = round(mean(trunk_diam), 0))
@@ -119,9 +182,23 @@ write.csv(roots_data, "yield-exp.csv")
 
 roots_exp <- data.frame(
                relationship = relationships,
-               exp_yield = root_exp_yield,
-               exp_wgt = root_exp_wgt,
-               exp_fruit = root_exp_fruit)
+               exp_yield    = root_exp_yield,
+               exp_wgt      = root_exp_wgt,
+               exp_fruit    = root_exp_fruit,
+               int_yield    = root_int_yield,
+               int_wgt      = root_int_wgt,
+               int_fruit    = root_int_fruit,
+               expr_yield   = root_expr_yield,
+               expr_wgt     = root_expr_wgt,
+               expr_fruit   = root_expr_fruit,
+               intr_yield   = root_intr_yield,
+               intr_wgt     = root_intr_wgt,
+               intr_fruit   = root_intr_fruit)
+
+# Highest R2 Rootstock level
+# # exp_yield - .490; R2 > 0.4 in c(3*, 6, 15, 26)
+# # exp_wgt   - .733; R2 > 0.6 in c(2, 3, 7, 8, 9*, 13, 14, 15, 23) 
+# # exp_fruit - .87: R2 > 0.6 in c(18, 22*, 23, 27)
 
 
 
