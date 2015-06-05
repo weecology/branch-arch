@@ -25,6 +25,18 @@ get_data <- function(){
   return(input_data)
 }
 
+mark_significance <- function(r2_value){
+  if (r2_value >= 0.9) {
+    return(paste("***", r2_value))
+  } else if (r2_value >= 0.8) {
+    return(paste("**", r2_value))
+  } else if (r2_value >= 0.6) {
+    return(paste("*", r2_value))
+  } else {
+    return("")
+  }
+}
+
 init <- function(){
   
   tree_ids     <<- c(2,7,12,3,  # used with tree names as reference for 
@@ -183,23 +195,27 @@ write.csv(roots_data, "yield-exp.csv")
 roots_exp <- data.frame(
                relationship = relationships,
                exp_yield    = root_exp_yield,
-               exp_wgt      = root_exp_wgt,
-               exp_fruit    = root_exp_fruit,
                int_yield    = root_int_yield,
-               int_wgt      = root_int_wgt,
-               int_fruit    = root_int_fruit,
                expr_yield   = root_expr_yield,
-               expr_wgt     = root_expr_wgt,
-               expr_fruit   = root_expr_fruit,
                intr_yield   = root_intr_yield,
+               exp_wgt      = root_exp_wgt,
+               int_wgt      = root_int_wgt,
+               expr_wgt     = root_expr_wgt,
                intr_wgt     = root_intr_wgt,
+               exp_fruit    = root_exp_fruit,
+               int_fruit    = root_int_fruit,     
+               expr_fruit   = root_expr_fruit,
                intr_fruit   = root_intr_fruit)
 
-# Highest R2 Rootstock level
+write.csv(roots_exp, 'exp-R2.csv')
+# Highest R2 Rootstock level (with round(, 2))
 # # exp_yield - .490; R2 > 0.4 in c(3*, 6, 15, 26)
 # # exp_wgt   - .733; R2 > 0.6 in c(2, 3, 7, 8, 9*, 13, 14, 15, 23) 
 # # exp_fruit - .87: R2 > 0.6 in c(18, 22*, 23, 27)
 
 
+roots_exp_digest <- apply(roots_exp[, 2:13], c(1,2), mark_significance)
+roots_exp_digest <- cbind(as.character(roots_exp[["relationship"]]), 
+                          roots_exp_digest)
 
-write.csv(roots_exp, 'exp-R2.csv')
+write.csv(roots_exp_digest, 'exp-R2-digest.csv')
