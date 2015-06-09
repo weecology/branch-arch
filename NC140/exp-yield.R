@@ -55,6 +55,13 @@ init <- function(){
                     "JM.8-1", "JM.8-2", "JM.8-3",
                     "PiAu.5683-1", "PiAu.5683-2", "PiAu.5683-3")
   
+  rootstocks   <<- c("Bud.9", "Bud.9", "Bud.9", "Bud.9", 
+                     "CG.3041", "CG.3041", "CG.3041", "CG.3041", 
+                     "CG.6210", "CG.6210", "CG.6210", "CG.6210", 
+                     "M.26", 
+                     "JM.8", "JM.8", "JM.8",
+                     "PiAu.5683", "PiAu.5683", "PiAu.5683")
+  
   tree_order   <<- c(2,7,12,3,
                      5,11,6,8,
                      10,1,4,9,
@@ -81,7 +88,7 @@ init <- function(){
   
 }  
 
-# Execute ----
+# Data initialization ----
 sma_res <- get_data()
 
 tree_sum <- read.csv("TreeSummary.csv")
@@ -92,13 +99,23 @@ roots_yield <- read.csv("RootstockYieldMorph.csv", sep =',', head=T)
 
 init()
 
-# Analysis ----
 
-# ANOVA
+### Analysis
+
+# ANOVA ----
 summary_rootstock <- c()
 duncan_rootstock  <- c()
 
-x = 3
+x = 2
+for (y in yield[, 3:dim(yield)[2]]){
+  x = x + 1
+  model <- aov(y[tree_order] ~ as.factor(rootstocks))
+  summary_rootstock[['yield']][[colnames(yield)[x]]] <- summary(model)
+  test  <- duncan.test(model, "as.factor(rootstocks)")
+  duncan_rootstock[['yield']][[colnames(yield)[x]]]  <- test$groups
+}
+
+x = 2
 for (morph in tree_sum[, 3:dim(tree_sum)[2]]){
   x = x + 1
   model <- aov(morph ~ as.factor(rootstock), data = tree_sum)
@@ -146,6 +163,8 @@ for (expr in sma_res) {
 }
 
 
+
+# ANOVA Correlation ----
 roots_morph <- arrange(summarize(group_by(tree_sum, rootstock),
                          avg_trunk_diam    = round(mean(trunk_diam), 3),
                          avg_height        = round(mean(height), 3),
@@ -176,12 +195,54 @@ sig_data <- mutate(inner_join(roots_yield, roots_morph),
                                     sma_res[[1]][[2]][roots_loc],
                    intr_M_D_seg   = sma_res[[22]][[3]][roots_loc] - 
                                     sma_res[[22]][[2]][roots_loc])
-
 # write.csv(sig_data, "yield-morph.csv")
 
-# ANOVA Correlation
+morph_yield <- c()
+for (morph in sig_data[, 5:dim(sig_data)[2]]){
+  test <- lm(sig_data$avg_cum_yield ~ morph)
+  morph_yield <- append(morph_yield, round(summary.lm(test)$r.squared, 3))
+} 
 
-# Blast Correlation
+morph_wgt <- c()
+for (morph in sig_data[, 5:dim(sig_data)[2]]){
+  test <- lm(sig_data$avg_fruit_wgt ~ morph)
+  morph_wgt <- append(morph_wgt, round(summary.lm(test)$r.squared, 3))
+} 
+
+morph_fruit <- c()
+for (morph in sig_data[, 5:dim(sig_data)[2]]){
+  test <- lm(sig_data$avg_no_fruit ~ morph)
+  morph_fruit <- append(morph_fruit, round(summary.lm(test)$r.squared, 3))
+} 
+
+morph_R2 <- data.frame(morph         = colnames(sig_data)[5:dim(sig_data)[2]],
+                       yield         = morph_yield,
+                       avg_fruit_wgt = morph_wgt,
+                       avg_no_fruit  = morph_fruit)
+#write.csv(morph_R2, 'morph-R2.csv')
+                                                  
+morph_R2_digest <- apply(morph_R2[, 2:4], c(1,2), mark_significance)
+morph_R2_digest <- cbind(as.character(morph_R2[["morph"]]), 
+                          morph_R2_digest)
+#write.csv(morph_R2_digest, 'morph-R2-digest.csv')
+
+multiple_summary <- list(
+  summary(lm(avg_cum_yield ~ avg_max_path + expr_M_D_seg, data = sig_data)),
+  summary(lm(avg_cum_yield ~ avg_max_path + intr_M_D_seg, data = sig_data)),
+  summary(lm(avg_cum_yield ~ avg_max_path + expr_M_V_path, data = sig_data)),
+  summary(lm(avg_cum_yield ~ avg_max_path + expr_M_V_path + 
+             avg_max_path * expr_M_V_path, data = sig_data)),
+  summary(lm(avg_cum_yield ~ avg_stem_m + expr_L_D_seg, data = sig_data)),
+  summary(lm(avg_cum_yield ~ avg_stem_m + intr_L_D_seg, data = sig_data)),
+  summary(lm(avg_cum_yield ~ avg_Mf + expr_L_D_seg, data = sig_data))
+) 
+
+multiple_R2 <- c()
+for (summary in multiple_summary){
+  multiple_R2 <- c(multiple_R2, round(summary$adj.r.squared, 3))
+}
+
+# Blast Correlation ----
 exp_yield <- c()
 for (i in 1:27){
   test <- lm(yield$cum_yield[tree_order]~sma_res[[i]][[4]][-roots_exc])
