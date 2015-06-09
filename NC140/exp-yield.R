@@ -1,8 +1,9 @@
-# This script analysis and generates figures for the Yield ~ m_diff relationship
+# This script analysis and generates figures for the Yield ~ exp relationship
 
 # Functions ---
 library('dplyr')
 library('stringr')
+library('agricolae')
 
 get_data <- function(){
   # Compiles data for computation from the visually oriented SMAResults file
@@ -26,11 +27,11 @@ get_data <- function(){
 }
 
 mark_significance <- function(r2_value){
-  if (r2_value >= 0.9) {
+  if (r2_value >= 0.85) {
     return(paste("***", r2_value))
-  } else if (r2_value >= 0.8) {
-    return(paste("**", r2_value))
   } else if (r2_value >= 0.6) {
+    return(paste("**", r2_value))
+  } else if (r2_value >= 0.4) {
     return(paste("*", r2_value))
   } else {
     return("")
@@ -61,9 +62,11 @@ init <- function(){
                      16,15,17,  # tree_ids - 1 after 16
                      19,18,14)
   
-  roots_loc    <<- c(3, 9, 15, 23, 28)
-  
+  roots_loc    <<- c(3, 9, 15, 21, 23, 28)  
+    # Gets rootstock level values
+   
   roots_exc    <<- c(1, 2, 3, 8, 9, 11, 15, 19, 22, 23, 26, 28, 32)
+    # Gets tree level values
   
   relationships  <<- c("L~D (Segment)", "L~D (Path)", "L~D (Subtree)", 
                        "SA~V (Segment)", "SA~V (Path)", "SA~V (Subtree)", 
@@ -90,6 +93,95 @@ roots_yield <- read.csv("RootstockYieldMorph.csv", sep =',', head=T)
 init()
 
 # Analysis ----
+
+# ANOVA
+summary_rootstock <- c()
+duncan_rootstock  <- c()
+
+x = 3
+for (morph in tree_sum[, 3:dim(tree_sum)[2]]){
+  x = x + 1
+  model <- aov(morph ~ as.factor(rootstock), data = tree_sum)
+  summary_rootstock[['morph']][[colnames(tree_sum)[x]]] <- summary(model)
+  test  <- duncan.test(model, "as.factor(rootstock)")
+  duncan_rootstock[['morph']][[colnames(tree_sum)[x]]]  <- test$groups
+}
+
+x = 0
+for (int in sma_res) {
+  x = x + 1
+  model <- aov(int[[1]][-roots_exc] ~ as.factor(rootstock), data = tree_sum)
+  summary_rootstock[['int']][[relationships[x]]] <- summary(model)
+  test  <- duncan.test(model, "as.factor(rootstock)")
+  duncan_rootstock[['int']][[relationships[x]]]  <- test$groups
+}
+
+x = 0
+for (exp in sma_res) {
+  x = x + 1
+  model <- aov(exp[[4]][-roots_exc] ~ as.factor(rootstock), data = tree_sum)
+  summary_rootstock[['exp']][[relationships[x]]] <- summary(model)
+  test  <- duncan.test(model, "as.factor(rootstock)")
+  duncan_rootstock[['exp']][[relationships[x]]]  <- test$groups
+}
+
+x = 0
+for (intr in sma_res) {
+  x = x + 1
+  ranges <- intr[[3]][-roots_exc] - intr[[2]][-roots_exc]
+  model <- aov(ranges ~ as.factor(rootstock), data = tree_sum)
+  summary_rootstock[['intr']][[relationships[x]]] <- summary(model)
+  test  <- duncan.test(model, "as.factor(rootstock)")
+  duncan_rootstock[['intr']][[relationships[x]]]  <- test$groups
+}
+
+x = 0
+for (expr in sma_res) {
+  x = x + 1
+  ranges <- expr[[6]][-roots_exc] - expr[[5]][-roots_exc]
+  model <- aov(ranges ~ as.factor(rootstock), data = tree_sum)
+  summary_rootstock[['expr']][[relationships[x]]] <- summary(model)
+  test  <- duncan.test(model, "as.factor(rootstock)")
+  duncan_rootstock[['expr']][[relationships[x]]]  <- test$groups
+}
+
+
+roots_morph <- arrange(summarize(group_by(tree_sum, rootstock),
+                         avg_trunk_diam    = round(mean(trunk_diam), 3),
+                         avg_height        = round(mean(height), 3),
+                         avg_max_path      = round(mean(max_path), 3),
+                         avg_stem_length   = round(mean(tot_length), 3),
+                         avg_stem_area     = round(mean(tot_area), 3),
+                         avg_stem_volume   = round(mean(tot_volume), 3),
+                         avg_Mf            = round(mean(Mf), 3),
+                         avg_canopy_volume = round(mean(canopy_volume), 3),
+                         avg_stem_m        = round(mean(tot_stem_m), 3),
+                         avg_twig_m        = round(mean(tot_twig_m), 3),
+                         avg_no_branches   = round(mean(tot_no_branch), 3),
+                         avg_no_twigs      = round(mean(tot_no_twigs), 3),
+                         avg_no_spurs      = round(mean(tot_no_spurs), 3),
+                         avg_no_scars      = round(mean(tot_no_scars), 3)),
+                       avg_trunk_diam)
+
+sig_data <- mutate(inner_join(roots_yield, roots_morph),
+                   expr_L_D_seg   = sma_res[[1]][[6]][roots_loc] - 
+                                    sma_res[[1]][[5]][roots_loc],
+                   expr_D_V_sub   = sma_res[[9]][[6]][roots_loc] - 
+                                    sma_res[[9]][[5]][roots_loc],
+                   expr_M_D_seg   = sma_res[[22]][[6]][roots_loc] - 
+                                    sma_res[[22]][[5]][roots_loc],
+                   expr_M_V_path  = sma_res[[25]][[6]][roots_loc] - 
+                                    sma_res[[25]][[5]][roots_loc],
+                   intr_L_D_seg   = sma_res[[1]][[3]][roots_loc] - 
+                                    sma_res[[1]][[2]][roots_loc],
+                   intr_M_D_seg   = sma_res[[22]][[3]][roots_loc] - 
+                                    sma_res[[22]][[2]][roots_loc])
+
+# write.csv(sig_data, "yield-morph.csv")
+
+# ANOVA Correlation
+
+# Blast Correlation
 exp_yield <- c()
 for (i in 1:27){
   test <- lm(yield$cum_yield[tree_order]~sma_res[[i]][[4]][-roots_exc])
@@ -133,7 +225,6 @@ for (i in 1:27){
   root_int_fruit <- append(root_int_fruit, round(summary.lm(test)$r.squared, 3))
 }  
 
-
 root_expr_yield <- c()
 for (i in 1:27){
   range <- abs(sma_res[[i]][[6]][roots_loc] - sma_res[[i]][[5]][roots_loc])
@@ -174,23 +265,7 @@ for (i in 1:27){
   range <- abs(sma_res[[i]][[3]][roots_loc] - sma_res[[i]][[2]][roots_loc])
   test <- lm(roots_yield$avg_no_fruit~range)
   root_intr_fruit <- append(root_intr_fruit, round(summary.lm(test)$r.squared, 3))
-}  
-# Output ----
-trunk_diams <- summarize(group_by(tree_sum, rootstock),
-                        avg_trunk_diam = round(mean(trunk_diam), 0))
-trunk_diam <- select(
-                filter(trunk_diam, rootstock != "M.26"),
-                avg_trunk_diam)
-
-roots_data <- mutate(roots_yield, 
-                     trunk_diam = trunk_diam[[1]],
-                     L_D_sub  = sma_res[[3]][[1]][roots_loc],
-                     D_V_sub  = sma_res[[9]][[1]][roots_loc],
-                     M_D_seg  = sma_res[[22]][[1]][roots_loc],
-                     M_D_sub  = sma_res[[23]][[1]][roots_loc],
-                     D_SA_sub = sma_res[[15]][[1]][roots_loc])
-
-write.csv(roots_data, "yield-exp.csv")
+} 
 
 roots_exp <- data.frame(
                relationship = relationships,
@@ -207,15 +282,10 @@ roots_exp <- data.frame(
                expr_fruit   = root_expr_fruit,
                intr_fruit   = root_intr_fruit)
 
-write.csv(roots_exp, 'exp-R2.csv')
-# Highest R2 Rootstock level (with round(, 2))
-# # exp_yield - .490; R2 > 0.4 in c(3*, 6, 15, 26)
-# # exp_wgt   - .733; R2 > 0.6 in c(2, 3, 7, 8, 9*, 13, 14, 15, 23) 
-# # exp_fruit - .87: R2 > 0.6 in c(18, 22*, 23, 27)
-
+#write.csv(roots_exp, 'exp-R2.csv')
 
 roots_exp_digest <- apply(roots_exp[, 2:13], c(1,2), mark_significance)
 roots_exp_digest <- cbind(as.character(roots_exp[["relationship"]]), 
                           roots_exp_digest)
 
-write.csv(roots_exp_digest, 'exp-R2-digest.csv')
+#write.csv(roots_exp_digest, 'exp-R2-digest.csv')
