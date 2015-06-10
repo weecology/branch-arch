@@ -33,10 +33,10 @@ test_slope <- function(name, formulas, data,
 }
 
 check_slopetest_p <- function(slopetest_p) {
-  if (slopetest_p <= 0.1) {
-    return('Diff')
+  if (slopetest_p <= 0.05) {
+    return('  ')
   } else {
-    return('Same')
+    return('X')
   }
 }
 
@@ -193,16 +193,16 @@ relationships <- c("L~D (Segment)", "(Path)", "(Subtree)",
                    "M~V(Segment)", "(Path)", "(Subtree)", 
                    "D/P Ratio ~ P Diam")
 
-predictions <- c("2 - 2/3", "", "", 
-                 "3/4 - 5/8", "", "", 
-                 "1/4 - 3/8", "","", 
-                 "1/2 - 1/4", "", "", 
-                 "1/3 - 3/5", "", "", 
-                 "2/3 - 2/5", "", "", 
-                 "", "", "", 
-                 "", "", 
-                 "", "", "", 
-                 "")
+predictions <- c("2/3 - 2", "[elastic , flow]", "[X = same]", 
+                 "5/8 - 3/4", "", "", 
+                 "3/8 - 1/4", "","", 
+                 "1/4 - 1/2", "", "", 
+                 "3/5 - 1/3", "", "", 
+                 "2/5 - 2/3", "", "", 
+                 "1/4", "", "", 
+                 "8/3 - 2.53", "", 
+                 "1", "", "", 
+                 "0 - 1")
 
 # Output ----
 output <- c()
@@ -243,13 +243,13 @@ for (i in 1:7){
                   test_slope(plus[[3]][i], plus_formulas, ind))
 }
     
-slope_test_out <- rbind(c('predictions', predictions),
+output <- rbind(c('predictions', predictions), output)
+colnames(output) <- c('group', relationships)
+
+slope_test_out <- rbind(
                     output[1:6,], output[33:35,], output[44,],output[36:37,], output[7:8,],
                     output[14:17,], output[38,], output[9,], output[18,], output[39,], 
                     output[19:21,], output[10,], output[22:24,], output[40,], output[25:26,], 
                     output[41,], output[12,], output[27:28,], output[42,], output[29,], 
                     output[13,], output[30:32,], output[43,])
-
-colnames(slope_test_out) <- c('group', relationships)
-
 #write.csv(slope_test_out, "SlopeTestResults.csv")
