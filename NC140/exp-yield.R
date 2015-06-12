@@ -203,6 +203,12 @@ for (morph in sig_data[, 5:dim(sig_data)[2]]){
   morph_yield <- append(morph_yield, round(summary.lm(test)$r.squared, 3))
 } 
 
+morph_yield_eff <- c()
+for (morph in sig_data[, 5:dim(sig_data)[2]]){
+  test <- lm(sig_data$avg_cum_yield / sig_data$avg_trunk_diam ~ morph)
+  morph_yield_eff <- append(morph_yield_eff, round(summary.lm(test)$r.squared, 3))
+}
+
 morph_wgt <- c()
 for (morph in sig_data[, 5:dim(sig_data)[2]]){
   test <- lm(sig_data$avg_fruit_wgt ~ morph)
@@ -217,11 +223,12 @@ for (morph in sig_data[, 5:dim(sig_data)[2]]){
 
 morph_R2 <- data.frame(morph         = colnames(sig_data)[5:dim(sig_data)[2]],
                        yield         = morph_yield,
+                       yield_eff     = morph_yield_eff,
                        avg_fruit_wgt = morph_wgt,
                        avg_no_fruit  = morph_fruit)
 #write.csv(morph_R2, 'morph-R2.csv')
                                                   
-morph_R2_digest <- apply(morph_R2[, 2:4], c(1,2), mark_significance)
+morph_R2_digest <- apply(morph_R2[, 2:5], c(1,2), mark_significance)
 morph_R2_digest <- cbind(as.character(morph_R2[["morph"]]), 
                           morph_R2_digest)
 #write.csv(morph_R2_digest, 'morph-R2-digest.csv')
