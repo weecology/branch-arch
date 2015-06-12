@@ -1,5 +1,5 @@
-### This script runs SMA slope test and group test to determine sign differences 
-### from predictions (tree and branch level for all, species, rootstocks, individuals, and branch order groups)
+### This script runs SMA group test to determine sign differences 
+### between species for tree and branch level
 
 library('smatr')
 
