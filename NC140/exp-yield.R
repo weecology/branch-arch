@@ -115,6 +115,24 @@ for (y in yield[, 3:dim(yield)[2]]){
   duncan_rootstock[['yield']][[colnames(yield)[x]]]  <- test$groups
 }
 
+yield_eff <- yield$cum_yield[tree_order] / (tree_sum$trunk_diam * pi)
+model <- aov(yield_eff ~ as.factor(rootstocks))
+summary_rootstock[['yield']][['yield_eff']] <- summary(model)
+test  <- duncan.test(model, "as.factor(rootstocks)")
+duncan_rootstock[['yield']][['yield_eff']]  <- test$groups
+
+yield_path <- yield$cum_yield[tree_order] / tree_sum$max_path
+model <- aov(yield_path ~ as.factor(rootstocks))
+summary_rootstock[['yield']][['yield_path']] <- summary(model)
+test  <- duncan.test(model, "as.factor(rootstocks)")
+duncan_rootstock[['yield']][['yield_path']]  <- test$groups
+
+yield_scars <- yield$cum_yield[tree_order] / tree_sum$tot_no_scars
+model <- aov(yield_scars ~ as.factor(rootstocks))
+summary_rootstock[['yield']][['yield_scars']] <- summary(model)
+test  <- duncan.test(model, "as.factor(rootstocks)")
+duncan_rootstock[['yield']][['yield_scars']]  <- test$groups
+
 x = 2
 for (morph in tree_sum[, 3:dim(tree_sum)[2]]){
   x = x + 1
