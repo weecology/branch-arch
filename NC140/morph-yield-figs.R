@@ -15,8 +15,12 @@ gen_fig <- function(x, x_lab, R2, position,
   legend(position, legend=R2, bty='n', cex=2.5) 
 }
 
-insert_legend <- function(){
+insert_blank <- function(){
   plot(range(0,1), range(0,1), bty='n', main = '', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
+}
+
+insert_legend <- function(){
+  insert_blank()
   par(xpd=T)
   legend('center', bty = 'n', cex = 2, pt.lwd = 4,
          legend = sig_data$rootstock, 
@@ -34,16 +38,18 @@ get_ab <- function(x, y){
 sig_data <- read.csv('yield-morph.csv')
  
 
-pdf(file="morph-yield.pdf", width= 10, height=10, family="Helvetica", 
+pdf(file="morph-yield.pdf", width= 12, height=9, family="Helvetica", 
     pointsize=14)
-par(mfrow= c(3,3), mar = c(5,5,1,1),  oma = c(0,0,0,0), 
+par(mfrow= c(3,4), mar = c(5,5,1,1),  oma = c(0,0,0,0), 
     cex.lab = 2, cex.axis = 1.8)
 gen_fig((sig_data$avg_trunk_diam * pi), 'TCSA [cm2]', 
         expression(R^2 == 0.592), 'bottomright', 
         y_lab = 'Cumulative Yield [Kg]')
+gen_fig(sig_data$avg_canopy_spread, 'Canopy Spread [cm]', 
+        expression(R^2 == 0.763), 'bottomright')
 gen_fig(sig_data$avg_max_path, 'Longest Branch [cm]',
         expression(R^2 == 0.868), 'bottomright')
-insert_legend()
+insert_blank()
 gen_fig(sig_data$avg_no_branches, 'No. Branches',
         expression(R^2 == 0.786), 'bottomright',
         y_lab = 'Cumulative Yield [Kg]')
@@ -51,6 +57,7 @@ gen_fig(sig_data$avg_no_twigs, 'No. Twigs',
         expression(R^2 == 0.842), 'bottomright')
 gen_fig(sig_data$avg_no_scars, 'No. Scars', 
         expression(R^2 == 0.862), 'bottomright')
+insert_legend()
 gen_fig(sig_data$expr_L_D_seg, 'Segment L~D Variance', 
         expression(R^2 == 0.777), 'topright', 
         y_lab = 'Cumulative Yield [Kg]')
