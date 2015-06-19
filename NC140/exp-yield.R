@@ -121,6 +121,13 @@ summary_rootstock[['yield']][['yield_eff']] <- summary(model)
 test  <- duncan.test(model, "as.factor(rootstocks)")
 duncan_rootstock[['yield']][['yield_eff']]  <- test$groups
 
+yield_spread <- yield$cum_yield[tree_order] / (tree_sum$canopy_spread*100)
+model <- aov(yield_spread ~ as.factor(rootstocks))
+summary_rootstock[['yield']][['yield_spread']] <- summary(model)
+test  <- duncan.test(model, "as.factor(rootstocks)")
+duncan_rootstock[['yield']][['yield_spread']]  <- test$groups
+
+
 yield_path <- yield$cum_yield[tree_order] / tree_sum$max_path
 model <- aov(yield_path ~ as.factor(rootstocks))
 summary_rootstock[['yield']][['yield_path']] <- summary(model)
@@ -191,6 +198,7 @@ roots_morph <- arrange(summarize(group_by(tree_sum, rootstock),
                          avg_stem_area     = round(mean(tot_area), 3),
                          avg_stem_volume   = round(mean(tot_volume), 3),
                          avg_Mf            = round(mean(Mf), 3),
+                         avg_canopy_spread = round(mean(canopy_spread),3),
                          avg_canopy_volume = round(mean(canopy_volume), 3),
                          avg_stem_m        = round(mean(tot_stem_m), 3),
                          avg_twig_m        = round(mean(tot_twig_m), 3),
