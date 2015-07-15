@@ -1,5 +1,6 @@
 # This script calculates slope differences from the SMAResults.csv.
 
+library(`stringr`)
 # Functions ----
 
 get_data <- function(){
@@ -277,9 +278,9 @@ init <- function(){
                        "M~V (Segment)", "M~V (Path)", "M~V (Subtree)", 
                        "D/P Ratio ~ P Diam")
   
-  relationships_abv <<- c("L~D", "SA~V", "D~V", 
-                          "L~V", "D~SA", "L~SA", 
-                          "L~M", "M~D", "M~V")
+  relationships_abv <<- c("Length ~ Diameter", "Area ~ Volume", "Diameter ~ Volume", 
+                          "Length ~ Volume", "Diameter ~ Area", "Length ~ Area", 
+                          "Length ~ Mass", "Mass ~ Diameter", "Mass ~ Volume")
   
   group_names <<- c("all-tree", "all-branch",
                     "Bud.9", "Bud.9-1", "Bud.9-2", "Bud.9-3", "Bud.9-4", "Bud.9-4+",
@@ -381,7 +382,7 @@ dev.off()
 
 pdf(file="m_diffstdFigures.pdf", width= 16, height=12,family="Helvetica", pointsize=14)
 multi_plot_roots(m_diffs_std) 
-dev.off()
+dev.off()  # Used for FIG 1
 
 pdf(file="m_diffsExpR2.pdf", width= 16, height=12,family="Helvetica", pointsize=14)
 multi_exp_R2(m_diffs)
