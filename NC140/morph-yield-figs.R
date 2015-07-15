@@ -58,11 +58,11 @@ gen_fig(sig_data$avg_no_twigs, 'No. Twigs',
 gen_fig(sig_data$avg_no_scars, 'No. Scars', 
         expression(R^2 == 0.862), 'bottomright')
 insert_legend()
-gen_fig(sig_data$expr_L_D_seg, 'Segment L~D Variance', 
-        expression(R^2 == 0.777), 'topright', 
+gen_fig(sig_data$expr_L_D_seg, 'Segment L~D Var.', 
+        expression(R^2 == 0.777), 'bottom', 
         y_lab = 'Cumulative Yield [Kg]')
-gen_fig(sig_data$expr_M_D_seg, 'Segment M~D Variance',
-        expression(R^2 == 0.782), 'topright')
+gen_fig(sig_data$expr_M_D_seg, 'Segment M~D Var.',
+        expression(R^2 == 0.782), 'bottom')
 gen_fig(sig_data$expr_M_V_path, 'Path M~V Variance',
-        expression(R^2 == 0.782), 'topright')
+        expression(R^2 == 0.782), 'bottom')
 dev.off()
