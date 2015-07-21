@@ -66,3 +66,32 @@ gen_fig(sig_data$expr_M_D_seg, 'Segment M~D Var.',
 gen_fig(sig_data$expr_M_V_path, 'Path M~V Variance',
         expression(R^2 == 0.782), 'bottom')
 dev.off()
+
+png(file="morph-yield.png", width= 12, height=9, units = "in", res = 600,
+    pointsize=14)
+par(mfrow= c(3,4), mar = c(5,5,1,1),  oma = c(0,0,0,0), 
+    cex.lab = 2, cex.axis = 1.8)
+gen_fig((sig_data$avg_trunk_diam * pi), 'TCSA [cm2]', 
+        expression(R^2 == 0.592), 'bottomright', 
+        y_lab = 'Cumulative Yield [Kg]')
+gen_fig(sig_data$avg_canopy_spread, 'Canopy Spread [cm]', 
+        expression(R^2 == 0.763), 'bottomright')
+gen_fig(sig_data$avg_max_path, 'Longest Branch [cm]',
+        expression(R^2 == 0.868), 'bottomright')
+insert_blank()
+gen_fig(sig_data$avg_no_branches, 'No. Branches',
+        expression(R^2 == 0.786), 'bottomright',
+        y_lab = 'Cumulative Yield [Kg]')
+gen_fig(sig_data$avg_no_twigs, 'No. Twigs',
+        expression(R^2 == 0.842), 'bottomright')
+gen_fig(sig_data$avg_no_scars, 'No. Scars', 
+        expression(R^2 == 0.862), 'bottomright')
+insert_legend()
+gen_fig(sig_data$expr_L_D_seg, 'Segment L~D Var.', 
+        expression(R^2 == 0.777), 'bottom', 
+        y_lab = 'Cumulative Yield [Kg]')
+gen_fig(sig_data$expr_M_D_seg, 'Segment M~D Var.',
+        expression(R^2 == 0.782), 'bottom')
+gen_fig(sig_data$expr_M_V_path, 'Path M~V Variance',
+        expression(R^2 == 0.782), 'bottom')
+dev.off()

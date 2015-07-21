@@ -384,6 +384,11 @@ pdf(file="m_diffstdFigures.pdf", width= 16, height=12,family="Helvetica", points
 multi_plot_roots(m_diffs_std) 
 dev.off()  # Used for FIG 1
 
+png(file="m_diffstdFigures.png", width= 16, height=12, units = "in", res = 600, 
+    pointsize=14)
+multi_plot_roots(m_diffs_std) 
+dev.off()
+
 pdf(file="m_diffsExpR2.pdf", width= 16, height=12,family="Helvetica", pointsize=14)
 multi_exp_R2(m_diffs)
 dev.off()
