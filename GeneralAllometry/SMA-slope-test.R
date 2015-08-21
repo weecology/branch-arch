@@ -4,6 +4,7 @@
 treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
 branch_size <- read.csv("BranchSegments.csv", sep = ',', header = T)
 library('smatr')
+library('stringr')
 
 test_slope <- function(name, formulas, data, 
                        slope_e = elastic, slope_f = flow){  
@@ -17,29 +18,57 @@ test_slope <- function(name, formulas, data,
       test_flow    <- sma(formulas[i][[1]], log = '', 
                           slope.test = slope_f[i], data = data)
       sma_row <- c(sma_row, 
-                   paste(check_slopetest_p(test_elastic$slopetest[[1]]$p), ',',
-                         check_slopetest_p(test_flow$slopetest[[1]]$p)))
+                   paste(check_slopetest_p(test_elastic$slopetest[[1]]$p, 'E'),
+                         ',', 
+                         check_slope(test_elastic$coef[[1]][2,1], 
+                                     slope_e[i], slope_f[i]),
+                         ',',
+                         check_slopetest_p(test_flow$slopetest[[1]]$p, 'F')))
     } else {
       test_elastic <- sma(formulas[i][[1]], log = 'xy', 
                          slope.test = slope_e[i], data = data)
       test_flow    <- sma(formulas[i][[1]], log = 'xy', 
                           slope.test = slope_f[i], data = data)
       sma_row <- c(sma_row, 
-                   paste(check_slopetest_p(test_elastic$slopetest[[1]]$p), ',',
-                         check_slopetest_p(test_flow$slopetest[[1]]$p)))
+                   paste(check_slopetest_p(test_elastic$slopetest[[1]]$p, 'E'),
+                         ',', 
+                         check_slope(test_elastic$coef[[1]][2,1], 
+                                     slope_e[i], slope_f[i]),
+                         ',',
+                         check_slopetest_p(test_flow$slopetest[[1]]$p, 'F')))
     }
   }
   return(sma_row)
 }
 
-check_slopetest_p <- function(slopetest_p) {
+check_slopetest_p <- function(slopetest_p, tag) {
   if (slopetest_p <= 0.05) {
     return('  ')
   } else {
-    return('X')
+    return(tag)
   }
 }
 
+check_slope <- function(slopetest_slope, slope_e, slope_f) {
+  if (slope_e > slope_f) {
+    if (slopetest_slope <= slope_e & slopetest_slope >= slope_f) {
+      return('B')
+    } else {
+      return(' ')
+    }
+  } else {
+    if (slopetest_slope >= slope_e & slopetest_slope <= slope_f) {
+      return('B')
+    } else {
+      return(' ')
+    }
+  }
+}
+
+score <- function(value, out_of){
+  return(round(sum(value)/out_of*100, 0))
+}
+      
 tree_formulas <- c(height     ~ trunk_diam,
                    max_path   ~ trunk_diam,
                    tot_length ~ trunk_diam,
@@ -253,3 +282,59 @@ slope_test_out <- rbind(
                     output[41,], output[12,], output[27:28,], output[42,], output[29,], 
                     output[13,], output[30:32,], output[43,])
 #write.csv(slope_test_out, "SlopeTestResults.csv")
+
+# Scoring ----
+
+segment_columns <- c(2, 5, 8, 11, 14, 17, 20, 23, 25)
+subtree_columns <- c(4, 7, 10, 13, 16, 19, 22, 24, 27)
+relationship_abv <- c("L~D", "SA~V", "D~V", "L~V", "D~SA", 
+                      "L~SA", "L~M", "M~D", "M~V")
+
+row_scores <- c()
+for (i in 2:37) {
+  seg_e <- score(str_count(output[i, segment_columns], 'E'), 9)
+  seg_b <- score(str_count(output[i, segment_columns], 'B'), 9)
+  seg_f <- score(str_count(output[i, segment_columns], 'F'), 9)
+  
+  sub_e <- score(str_count(output[i, subtree_columns], 'E'), 9)
+  sub_b <- score(str_count(output[i, subtree_columns], 'B'), 9)
+  sub_f <- score(str_count(output[i, subtree_columns], 'F'), 9)
+  
+  row_scores <- rbind(row_scores,
+                      c(output[i,1], seg_e, seg_b, seg_f, sub_e, sub_b, sub_f))
+  colnames(row_scores) <- c("Group", "Segment - Elastic", 
+                            "Between", "Flow", "Subtree - Elastic", "Between",
+                            "Flow")
+}
+
+#write.csv(row_scores, "GroupScores.csv")
+
+column_scores <- c()
+for (i in 1:9) {
+  a_seg_e <- score(str_count(output[14:32, segment_columns[i]], 'E'), 19)
+  a_seg_b <- score(str_count(output[14:32, segment_columns[i]], 'B'), 19)
+  a_seg_f <- score(str_count(output[14:32, segment_columns[i]], 'F'), 19)
+  
+  a_sub_e <- score(str_count(output[14:32, subtree_columns[i]], 'E'), 19)
+  a_sub_b <- score(str_count(output[14:32, subtree_columns[i]], 'B'), 19)
+  a_sub_f <- score(str_count(output[14:32, subtree_columns[i]], 'F'), 19)
+  
+  c_seg_e <- score(str_count(output[33:37, segment_columns[i]], 'E'), 5)
+  c_seg_b <- score(str_count(output[33:37, segment_columns[i]], 'B'), 5)
+  c_seg_f <- score(str_count(output[33:37, segment_columns[i]], 'F'), 5)
+  
+  c_sub_e <- score(str_count(output[33:37, subtree_columns[i]], 'E'), 5)
+  c_sub_b <- score(str_count(output[33:37, subtree_columns[i]], 'B'), 5)
+  c_sub_f <- score(str_count(output[33:37, subtree_columns[i]], 'F'), 5)
+  
+  column_scores <- rbind(column_scores,
+                      c(relationship_abv[i], a_seg_e, a_seg_b, a_seg_f, a_sub_e, 
+                        a_sub_b, a_sub_f, c_seg_e, c_seg_b, c_seg_f, c_sub_e, 
+                        c_sub_b, c_sub_f))
+  colnames(column_scores) <- c("Relationship", "Apple - Segment - Elastic", 
+                               "Between", "Flow", "Subtree - Elastic", "Between",
+                               "Flow", "Cherry - Segment - Elastic", "Between",
+                               "Flow", "Subtree - Elastic", "Between", "Flow")                        
+}
+
+#write.csv(column_scores, "RelationshipScores.csv")
