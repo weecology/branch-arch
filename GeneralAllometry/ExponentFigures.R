@@ -25,11 +25,13 @@ gen_plot <- function(n){
 }
 
 multi_plot <- function(col_list, location){
-  par(mfrow = c(length(col_list),1), oma = c(7,0,0,0), mar = c(1,5,1,2), cex.lab = 1.5, bty = 'o')
+  par(mfrow = c(length(col_list),1), oma = c(9,0,0,0), mar = c(1,5,1,2), 
+      cex.lab = 1.7, cex.axis=1.7, bty = 'o')
   gen_plot(col_list[1])
   par(xpd=T)
   legend(location, legend=c("R2 = 0.99", "R2 = 0.80", "R2 = 0.67", "R2 = 0.33", "Elastic Exp", "Flow Exp"), 
-         lty = c(0,0,0,0,2,6), lwd = c(0,0,0,0,1.5,1.5), pch=19, bty = 'n', pt.cex = c(3*.99, 3*.80, 3*.67, 3*.33, 0, 0))
+         lty = c(0,0,0,0,2,6), lwd = c(0,0,0,0,1.5,1.5), pch=19, bty = 'n', 
+         pt.cex = c(3*.99, 3*.80, 3*.67, 3*.33, 0, 0), cex = 1.25)
   par(xpd=F)
   for (i in col_list[-1]){ gen_plot(i) }
   axis(1, 1:42, sma[2:43,2], las = 2)
@@ -59,7 +61,7 @@ flow <- c(2, 2, 2, .75, .75, .75, .25, .25, .25, .5, .5, .5, .33, .33, .33, .67,
 
 elastic <- c(.67, .67, .67, .625, .625, .625, .375, .375, .375, .25, .25, .25, .6, .6, .6, .4, .4, .4, .25, .25, .25, 2.67, 2.67, 10, 10, 10, 10)
 
-pdf(file="ExponentFigures.pdf", width= 10, height=10,family="Helvetica", pointsize=12)
+pdf(file="ExponentFigures.pdf", width= 10, height=10,family="Helvetica", pointsize=14)
 
 multi_plot(c(1:3), 'bottomright')
 multi_plot(c(4:6), 'topright')
