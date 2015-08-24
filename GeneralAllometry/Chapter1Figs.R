@@ -297,40 +297,46 @@ for (i in 1:22){
 
 multi_plot_r <- function(col_list){
   if (length(col_list) == 2){
-    plot(r_vals[,col_list[1]], fit_vals[,col_list[1]], main = labels[col_list[1]], pch=19, cex = 1.5, 
-         ylim=c(0,3), xlim=c(0,1), ylab = 'Fit Value', xlab = 'R2')
+    plot(r_vals[,col_list[1]], fit_vals[,col_list[1]], main = labels[col_list[1]], pch=19, cex = 1.75, 
+         ylim=c(0,3), xlim=c(0,1), ylab = 'Fit Value', xlab = 'R2',  yaxt='n')
+    axis(2, at = c(0,1,3), labels = c("Polynomial", "NS", "Linear"))
     plot(range(0,1), range(0,1), bty='n', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
-    plot(r_vals[,col_list[2]], fit_vals[,col_list[2]], main = labels[col_list[2]], pch=19, cex = 1.5, 
-         ylim=c(0,3), xlim=c(0,1), ylab = 'Fit Value', xlab = 'R2')
+    plot(r_vals[,col_list[2]], fit_vals[,col_list[2]], main = labels[col_list[2]], pch=19, cex = 1.75, 
+         ylim=c(0,3), xlim=c(0,1), ylab = 'Fit Value', xlab = 'R2', yaxt='n')
+    axis(2, at = c(0,1,3), labels = c("Polynomial", "NS", "Linear"))
   }
   else{
     for (i in col_list){
-      plot(r_vals[,i], fit_vals[,i], main = labels[i], pch=19, cex = 1.5, 
-           ylim=c(0,3), xlim=c(0,1), ylab = 'Fit Value', xlab = 'R2')
+      plot(r_vals[,i], fit_vals[,i], main = labels[i], pch=19, cex = 1.75, 
+           ylim=c(0,3), xlim=c(0,1), ylab = 'Fit Value', xlab = 'R2', yaxt='n')
+      axis(2, at = c(0,1,3), labels = c("Polynomial", "NS", "Linear"))
     }
   }
 }
 
 multi_plot_n <- function(col_list){
   if (length(col_list) == 2){
-    plot(n_vals[,col_list[1]], fit_vals[,col_list[1]], main = labels[col_list[1]], pch=19, cex = 1.5, 
-         ylim=c(0,3), xlim=c(0,820), ylab = 'Fit Value', xlab = 'n')
+    plot(n_vals[,col_list[1]], fit_vals[,col_list[1]], main = labels[col_list[1]], pch=19, cex = 1.75, 
+         ylim=c(0,3), xlim=c(0,820), ylab = 'Fit Value', xlab = 'n', yaxt='n')
+    axis(2, at = c(0,1,3), labels = c("Polynomial", "NS", "Linear"))
     plot(range(0,1), range(0,1), bty='n', xaxt='n', yaxt='n', xlab='', ylab='', type ='n')
-    plot(n_vals[,col_list[2]], fit_vals[,col_list[2]], main = labels[col_list[2]], pch=19, cex = 1.5, 
-         ylim=c(0,3), xlim=c(0,820), ylab = 'Fit Value', xlab = 'n')
+    plot(n_vals[,col_list[2]], fit_vals[,col_list[2]], main = labels[col_list[2]], pch=19, cex = 1.75, 
+         ylim=c(0,3), xlim=c(0,820), ylab = 'Fit Value', xlab = 'n', yaxt='n')
+    axis(2, at = c(0,1,3), labels = c("Polynomial", "NS", "Linear"))
   }
   else{
     for (i in col_list){
-      plot(n_vals[,i], fit_vals[,i], main = labels[i], pch=19, cex = 1.5, 
-           ylim=c(0,3), xlim=c(0,820), ylab = 'Fit Value', xlab = 'n')
+      plot(n_vals[,i], fit_vals[,i], main = labels[i], pch=19, cex = 1.75, 
+           ylim=c(0,3), xlim=c(0,820), ylab = 'Fit Value', xlab = 'n', yaxt='n')
+      axis(2, at = c(0,1,3), labels = c("Polynomial", "NS", "Linear"))
     }
   }
 }
 
-pdf(file="FitsRelations.pdf", width=12, height=24, family="Helvetica", pointsize=12)
+pdf(file="FitsRelations.pdf", width=12, height=26, family="Helvetica", pointsize=14)
 
 ###Fit vs R2
-par(mfrow= c(9,3))
+par(mfrow= c(9,3), mar=c(5,5,2,0), cex.lab = 1.5, cex.axis=1.1)
 multi_plot_r(c(1:3))
 multi_plot_r(c(4:5))
 multi_plot_r(c(6:7))
