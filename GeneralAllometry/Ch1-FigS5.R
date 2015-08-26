@@ -42,7 +42,7 @@ exp_exp <- function(x, y, k, m, point){
 }
 
 relationships <- c("Length ~ Diameter", "Area ~ Volume", "Diamter ~ Volume", 
-                   "Length ~ Volume", "Diameter ~ Area", "Lenght ~ Area",
+                   "Length ~ Volume", "Diameter ~ Area", "Length ~ Area",
                    "Length ~ Mass", "Mass ~ Diameter", "Mass ~ Volume")
 
 relationship_ref <- c("L~D (Segment)", "(Path)", "(Subtree)", 

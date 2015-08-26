@@ -29,6 +29,7 @@ exponent_R2 <- function(col_list, n, k=5, m=6, xlabel="R2"){
   plot(range(0,1), range(min(min_range, na.rm=T), max(max_range, na.rm=T)), 
        ylab = ylabels[n], xlab=xlabel, type = "n",
        ylim = c(min(min_range, na.rm=T), max(max_range, na.rm=T)))
+  legend("topleft", LETTERS[n], bty="n", cex=2, x.intersp=0)
    
   for (i in 1:length(col_list)){
     for(j in k:m){
