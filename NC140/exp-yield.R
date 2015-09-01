@@ -1,4 +1,4 @@
-# This script analysis and generates figures for the Yield ~ exp relationship
+# This script analyses the Yield ~ exp relationship
 
 # Functions ---
 library('dplyr')

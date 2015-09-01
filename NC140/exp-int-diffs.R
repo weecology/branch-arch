@@ -1,4 +1,5 @@
-# This script calculates slope differences from the SMAResults.csv.
+# This script calculates slope differences from the SMAResults.csv
+# AND generates Fig 1
 
 library(`stringr`)
 # Functions ----
@@ -192,26 +193,30 @@ gen_plot_roots <- function(results, n, relationship, rootstocks = roots_list,
        ylim = c(min(results[[relationship]][, 3][roots_no]), 
                 max(results[[relationship]][, 2][roots_no]))
        )
+  
   for(s in 1:8){
     points(s, results[[relationship]][, 1][as.numeric(rootstocks[[s]][1])], 
-           pch = 19, cex = 4, bg = "black")
+           pch = 19, cex = 5, bg = "black")
     arrows(y0=results[[relationship]][, 2][as.numeric(rootstocks[[s]][1])], 
            y1=results[[relationship]][, 3][as.numeric(rootstocks[[s]][1])], 
-           x0=s, x1=s, code=3, angle=90, lwd=1.7, length=.08)  
-  }
-  if (axis == TRUE){
-    axis(1, 1:8, names_abv, las = 2, cex.axis = 2.5)
-  } else {
-    axis(1, 1:8, labels = F, las = 2, cex.axis = 2.5)
+           x0=s, x1=s, code=3, angle=90, lwd=2.5, length=.08)  
   }
   
-  abline(h = 0, lwd = 2, lty = 1)
+  legend("topright", LETTERS[n], cex=2.5, bty="n", x.intersp=0)
+  
+  if (axis == TRUE){
+    axis(1, 1:8, names_abv, las = 2, cex.axis = 2.7)
+  } else {
+    axis(1, 1:8, labels = F, las = 2, cex.axis = 2.7)
+  }
+  
+  abline(h = 0, lwd = 2.5, lty = 1)
 }
 
 multi_plot_roots <- function(results){
   # generates an panel of exponent vs rootstock
   par(mfrow= c(3,3), mar = c(4,5,1,1),  oma = c(9,0,0,0), 
-      cex.lab = 2.7, cex.axis = 2.5)
+      cex.lab = 2.7, cex.axis = 2.7)
   gen_plot_roots(results, 1, 3) 
   gen_plot_roots(results, 2, 6)
   gen_plot_roots(results, 3, 9)
@@ -291,7 +296,7 @@ init <- function(){
                     "PiAu.5683", "PiAu.5683-1", "PiAu.5683-2", "PiAu.5683-3", "PiAu.5683-3+")
   
   names_abv <<- c("All-tree", "All-branch", 
-                  "Bud.9", "CG.3041","CG.6210","M.26", "JM.8", "PiAu.5683")
+                  "Bud.9", "G.41","G.210","M.26", "JM.8", "PiAu 56-83")
   
   roots_list <<- list(c(1, 'black'),
                       c(2, 'grey'),

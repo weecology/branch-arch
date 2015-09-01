@@ -34,7 +34,7 @@ exponent_R2 <- function(col_list, n, k=5, m=6, xlabel="R2"){
   for (i in 1:length(col_list)){
     for(j in k:m){
       points(results[[col_list[i]]][[4]][j], results[[col_list[i]]][[1]][j], pch = as.numeric(di_points[[i]][j]), 
-             bg = "grey", cex=3.5, lwd=2.5)
+             bg = "dark grey", cex=3.5, lwd=2.5)
       arrows(x0=results[[col_list[i]]][[4]][j], y0=results[[col_list[i]]][[2]][j], y1=results[[col_list[i]]][[3]][j], 
              code=3, angle=90, lwd=1.7, length=.08)
     }
@@ -46,8 +46,8 @@ exponent_R2 <- function(col_list, n, k=5, m=6, xlabel="R2"){
 ylabels <- c("Length ~ Diameter", "Area ~ Volume", "Diamter ~ Volume", 
              "Length ~ Volume", "Diameter ~ Area", "Length ~ Area", 
              "Length ~ Mass", "Mass ~ Diameter", "Mass ~ Volume")
-flow <- c(2, .75, .25, .5, .33, .67, NA, 2.67, NA)
-elastic <- c(.67, .625, .375, .25, .6, .4, .25, 2.53, NA)
+flow <- c(2, .75, .25, .5, .33, .67, NA, NA, NA)
+elastic <- c(.67, .625, .375, .25, .6, .4, .25, 2.67, NA)
 di_points <- list(list(17, 24, 2, 17, 24, 2),
                   list(15, 22, 0, 15, 22, 0))
 
@@ -65,7 +65,7 @@ exponent_R2(c(16,18), 6)
 plot(range(0,1), range(0,1), bty="n", xaxt="n", yaxt="n", xlab="", ylab="", type ="n")
 par(xpd=T)
 legend("left", legend=c("", "", "Cherry", "Apple"), 
-       pch=c(24, 2, 22, 0), pt.bg="grey", cex=1.4, pt.cex=2, 
+       pch=c(24, 2, 22, 0), pt.bg="dark grey", cex=1.4, pt.cex=2, 
        bty="n", title="Segment  Subtree", title.adj=-.35, ncol=2)
 legend("bottomleft", legend=c("Elastic Similarity","Flow Similarity"), lty=c(2,6), lwd = 1.7, 
        bty = "n", cex=1.4)
