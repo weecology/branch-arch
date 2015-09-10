@@ -24,7 +24,7 @@ insert_blank <- function(){
 insert_legend <- function(){
   insert_blank()
   par(xpd=T)
-  legend('center', bty = 'n', cex = 2, pt.lwd = 4,
+  legend('left', bty = 'n', cex = 2, pt.lwd = 4,
          legend = c('Bud.9', 'G.41', 'G.210', 'M.26', 'JM.8', 'PiAu 56-83'), 
          pch = 21, pt.bg = c('white', 'grey', 'white', 'grey', 'white', 'grey'),
          pt.cex = c(2, 2.5, 3, 3.5, 4, 4.5)
@@ -107,16 +107,18 @@ dev.off()
 
 ### COVARIATION
 
-pdf(file="std-yield-cov.pdf", width=4, height=9, family="Helvetica", 
+pdf(file="std-yield-cov.pdf", width=7, height=9, family="Helvetica", 
     pointsize=14)
-par(mfrow= c(3,1), mar = c(6,5,1.2,1), 
+par(mfrow= c(3,2), mar = c(6,5,1.2,1), 
     cex.lab = 1.8, cex.axis = 1.8)
 gen_fig((sig_data$avg_cum_yield/sig_data$avg_canopy_spread), 'Yield per Area', 
         expression(R^2 == 0.010), 'bottomright', 'A',
         y = sig_data$avg_cum_yield/TCSA, y_lab = 'Yield Efficiency')
+insert_blank()
 gen_fig((sig_data$avg_cum_yield/sig_data$avg_max_path), 'Yield per Max Length', 
-        expression(R^2 == 0.239), 'right', 'B',
+        expression(R^2 == 0.239), 'bottomright', 'B',
         y = TCSA, y_lab = 'Yield Efficiency')
+insert_legend()
 gen_fig((sig_data$avg_cum_yield/sig_data$avg_max_path), 'Yield per Max Length', 
         expression(R^2 == 0.839), 'bottomright', 'C',
         y = (sig_data$avg_cum_yield/sig_data$avg_canopy_spread), 
