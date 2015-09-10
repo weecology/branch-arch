@@ -115,7 +115,7 @@ for (y in yield[, 3:dim(yield)[2]]){
   duncan_rootstock[['yield']][[colnames(yield)[x]]]  <- test$groups
 }
 
-yield_eff <- yield$cum_yield[tree_order] / (tree_sum$trunk_diam * pi)
+yield_eff <- yield$cum_yield[tree_order] / (pi*(tree_sum$trunk_diam/20)^2)
 model <- aov(yield_eff ~ as.factor(rootstocks))
 summary_rootstock[['yield']][['yield_eff']] <- summary(model)
 test  <- duncan.test(model, "as.factor(rootstocks)")
@@ -248,7 +248,7 @@ for (morph in sig_data[, 5:dim(sig_data)[2]]){
 } 
 
 morph_R2 <- data.frame(morph         = colnames(sig_data)[5:dim(sig_data)[2]],
-                       yield         = morph_yield,
+                       cum_yield     = morph_yield,
                        yield_eff     = morph_yield_eff,
                        avg_fruit_wgt = morph_wgt,
                        avg_no_fruit  = morph_fruit)
@@ -280,7 +280,7 @@ exp_yield <- c()
 for (i in 1:27){
   test <- lm(yield$cum_yield[tree_order]~sma_res[[i]][[4]][-roots_exc])
   exp_yield <- append(exp_yield, round(summary.lm(test)$r.squared, 3))
-}  # Highest R2 == 0.205
+}  # Highest R2 == 0.224
 
 
 root_exp_yield <- c()
@@ -323,7 +323,7 @@ root_expr_yield <- c()
 for (i in 1:27){
   range <- abs(sma_res[[i]][[6]][roots_loc] - sma_res[[i]][[5]][roots_loc])
   test <- lm(roots_yield$avg_cum_yield~range)
-  root_expr_yield <- append(root_expr_yield, round(summary.lm(test)$r.squared, 3))
+  root_expr_yield <- append(root_expr_yield, round(summary.lm(test)$r.squared, 7))
 } 
 
 root_expr_wgt <- c()
