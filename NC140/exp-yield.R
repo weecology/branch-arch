@@ -121,11 +121,11 @@ summary_rootstock[['yield']][['yield_eff']] <- summary(model)
 test  <- duncan.test(model, "as.factor(rootstocks)")
 duncan_rootstock[['yield']][['yield_eff']]  <- test$groups
 
-yield_spread <- yield$cum_yield[tree_order] / (tree_sum$canopy_spread*100)
-model <- aov(yield_spread ~ as.factor(rootstocks))
-summary_rootstock[['yield']][['yield_spread']] <- summary(model)
+yield_area <- yield$cum_yield[tree_order] / (pi*((tree_sum$canopy_spread)/2)^2)
+model <- aov(yield_area ~ as.factor(rootstocks))
+summary_rootstock[['yield']][['yield_area']] <- summary(model)
 test  <- duncan.test(model, "as.factor(rootstocks)")
-duncan_rootstock[['yield']][['yield_spread']]  <- test$groups
+duncan_rootstock[['yield']][['yield_area']]  <- test$groups
 
 
 yield_path <- yield$cum_yield[tree_order] / tree_sum$max_path
@@ -133,6 +133,12 @@ model <- aov(yield_path ~ as.factor(rootstocks))
 summary_rootstock[['yield']][['yield_path']] <- summary(model)
 test  <- duncan.test(model, "as.factor(rootstocks)")
 duncan_rootstock[['yield']][['yield_path']]  <- test$groups
+
+yield_spread <- yield$cum_yield[tree_order] / (tree_sum$canopy_spread*100)
+model <- aov(yield_spread ~ as.factor(rootstocks))
+summary_rootstock[['yield']][['yield_spread']] <- summary(model)
+test  <- duncan.test(model, "as.factor(rootstocks)")
+duncan_rootstock[['yield']][['yield_spread']]  <- test$groups
 
 yield_scars <- yield$cum_yield[tree_order] / tree_sum$tot_no_scars
 model <- aov(yield_scars ~ as.factor(rootstocks))
