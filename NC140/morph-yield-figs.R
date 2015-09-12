@@ -48,30 +48,30 @@ pdf(file="morph-yield.pdf", width= 12, height=9, family="Helvetica",
 par(mfrow= c(3,4), mar = c(6,5,1.2,1),  oma = c(0,0,0,0), 
     cex.lab = 1.8, cex.axis = 1.8)
 gen_fig(TCSA, 'TCSA [cm2]', 
-        expression(R^2 == 0.473), 'bottomright', 'A',
+        expression(r^2 == 0.473), 'bottomright', 'A',
         y_lab = 'Cumulative Yield [Kg]')
 gen_fig(sig_data$avg_canopy_spread, 'Canopy Spread [cm]', 
-        expression(R^2 == 0.763), 'bottomright', 'B')
+        expression(r^2 == 0.763), 'bottomright', 'B')
 gen_fig(sig_data$avg_max_path, 'Longest Branch [cm]',
-        expression(R^2 == 0.868), 'bottomright', 'C')
+        expression(r^2 == 0.868), 'bottomright', 'C')
 insert_blank()
 gen_fig(sig_data$avg_no_branches, 'No. Branches',
-        expression(R^2 == 0.786), 'bottomright', 'D',
+        expression(r^2 == 0.786), 'bottomright', 'D',
         y_lab = 'Cumulative Yield [Kg]')
 gen_fig(sig_data$avg_no_twigs, 'No. Twigs',
-        expression(R^2 == 0.842), 'bottomright', 'E')
+        expression(r^2 == 0.842), 'bottomright', 'E')
 gen_fig(sig_data$avg_no_scars, 'No. Scars',
-        expression(R^2 == 0.862), 'bottomright', 'F')
+        expression(r^2 == 0.862), 'bottomright', 'F')
 insert_legend()
-gen_fig(sig_data$expr_L_D_seg, 'Variance in Segment',
-        expression(R^2 == 0.777), 'bottom', 'G',
+gen_fig(sig_data$expr_L_D_seg, 'Range in Segment',
+        expression(r^2 == 0.777), 'bottom', 'G',
         y_lab = 'Cumulative Yield [Kg]')
 title(sub="Length ~ Diameter ", cex.sub=2, line=4.5)
-gen_fig(sig_data$expr_M_D_seg, 'Variance in Segment', 
-        expression(R^2 == 0.782), 'bottom', 'H')
+gen_fig(sig_data$expr_M_D_seg, 'Range in Segment', 
+        expression(r^2 == 0.782), 'bottom', 'H')
 title(sub="Mass ~ Diameter", cex.sub=2, line=4.5)
-gen_fig(sig_data$expr_M_V_path, 'Variance in Path',
-        expression(R^2 == 0.782), 'bottom', 'I')
+gen_fig(sig_data$expr_M_V_path, 'Range in Path',
+        expression(r^2 == 0.782), 'bottom', 'I')
 title(sub="Mass ~ Volume", cex.sub=2, line=4.5) 
 dev.off()
 
@@ -107,20 +107,20 @@ dev.off()
 
 ### COVARIATION
 
-pdf(file="std-yield-cov.pdf", width=7, height=9, family="Helvetica", 
+pdf(file="std-yield-cov.pdf", width=7, height=10, family="Helvetica", 
     pointsize=14)
 par(mfrow= c(3,2), mar = c(6,5,1.2,1), 
     cex.lab = 1.8, cex.axis = 1.8)
-gen_fig((sig_data$avg_cum_yield/sig_data$avg_canopy_spread), 'Yield per Area', 
-        expression(R^2 == 0.010), 'bottomright', 'A',
+gen_fig((sig_data$avg_cum_yield/sig_data$avg_canopy_spread), 
+        'Yield per Canopy Spread', '', 'bottomright', 'A',
         y = sig_data$avg_cum_yield/TCSA, y_lab = 'Yield Efficiency')
 insert_blank()
-gen_fig((sig_data$avg_cum_yield/sig_data$avg_max_path), 'Yield per Max Length', 
-        expression(R^2 == 0.239), 'bottomright', 'B',
-        y = TCSA, y_lab = 'Yield Efficiency')
+gen_fig((sig_data$avg_cum_yield/sig_data$avg_max_path), 
+        'Yield per Longest Branch', '', 'bottomright', 'B',
+        y = sig_data$avg_cum_yield/TCSA, y_lab = 'Yield Efficiency')
 insert_legend()
-gen_fig((sig_data$avg_cum_yield/sig_data$avg_max_path), 'Yield per Max Length', 
-        expression(R^2 == 0.839), 'bottomright', 'C',
+gen_fig((sig_data$avg_cum_yield/sig_data$avg_max_path), 
+        'Yield per Longest Branch', '', 'bottomright', 'C',
         y = (sig_data$avg_cum_yield/sig_data$avg_canopy_spread), 
-        y_lab = 'Yield per Area')
+        y_lab = 'Yield per Canopy Spread')
 dev.off()
