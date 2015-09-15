@@ -1,4 +1,15 @@
-###This script explores the relationship between light and sugar content (brix) in the Utah Co tarts data.
+###This script generates the per tree averages of light and sugar content (brix) in the Utah Co tarts data.
+
+gen_plot <- function(x, y, x_lab, y_lab, r2) {
+  test <- lm(y~x)
+  plot(x, y,
+       xlim=c(min(x, na.rm=T)-0.2, max(x, na.rm=T)+0.2), 
+       ylim=c(min(y, na.rm=T)-0.2, max(y, na.rm=T)+0.2),
+       xlab=x_lab, ylab=y_lab, cex.lab=1.5, cex=2.5, pch=19, col="black")
+  abline(test$coefficients[1], test$coefficients[2], lwd=3, lty=2)
+  legend('topright', legend=r2, bty='n', cex=3)
+  print(summary(test)$r.squared)
+}
 
 scaffold <- read.csv('scaffold.csv', sep=',', head=T)
 light_raw <- read.csv('light.csv', sep=',', head=T)
@@ -9,8 +20,7 @@ extinction <- round(log(light_raw$light_sun / light_raw$light), 3)
 
 light <- cbind(light_raw, absorbed, extinction)
 
-
-#Tree-level averages
+#Tree-level averages table
 for (i in 1:15){
   
   light_block <- light[light$id==i,]
@@ -49,43 +59,60 @@ for (i in 1:15){
                            'avg_extinction', 'avg_extinction_low', 'avg_extinction_high', 'avg_sugar') 
 }
 
-pdf(file="SugarPred.pdf", width= 12, height=8,family="Helvetica", pointsize=12)
-par(oma = c(2,2,0,0))
-    
-#trunk diameter vs. sugar (R2 = 0.464)
-test <- lm(averages[,10]~ averages[,3])
-plot(averages[,3], averages[,10],
-     xlim = c((min(averages[,3])-0.2),(max(averages[,3])+0.2)), 
-     ylim = c((min(averages[,10], na.rm=T)-0.2),(max(averages[,10], na.rm=T)+0.2)),
-     xlab = 'Trunk Diameter [mm]', ylab = 'Fruit Sugar Content[Brix]', cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
-abline(test$coefficients[1], test$coefficients[2], lwd = 3, lty = 2)
-legend('topright', legend=expression(R^2 == 0.464), bty='n', cex=3)  
+#write.csv(averages, "tree-averages.csv")
 
-#scaffold length vs. sugar (R2 = 0.600)
-test <- lm(averages[,10]~ averages[,4])
-plot(averages[,4], averages[,10],
-     xlim = c((min(averages[,4])-0.2),(max(averages[,4])+0.2)), 
-     ylim = c((min(averages[,10], na.rm=T)-0.2),(max(averages[,10], na.rm=T)+0.2)),
-     xlab = 'Average Scaffold Length [cm]', ylab = 'Fruit Sugar Content [Brix]', cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
-abline(test$coefficients[1], test$coefficients[2], lwd = 3, lty = 2)
-legend('topright', legend=expression(R^2 == 0.600), bty='n', cex=3)  
 
-#scaffold diameter vs. sugar (R2 = 0.431)
-test <- lm(averages[,10]~ averages[,5])
-plot(averages[,5], averages[,10], 
-     xlim = c((min(averages[,5])-0.2),(max(averages[,5])+0.2)), 
-     ylim = c((min(averages[,10], na.rm=T)-0.2),(max(averages[,10], na.rm=T)+0.2)),
-     xlab = 'Average Scaffold Diameter [mm]', ylab = 'Fruit Sugar Content [Brix]', cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
-abline(test$coefficients[1], test$coefficients[2], lwd = 3, lty = 2)
-legend('topright', legend=expression(R^2 == 0.431), bty='n', cex=3)  
+### Tree average regression
 
-#light abs vs. sugar (R2 = 0.109)
-test <- lm(averages[,10]~ averages[,6])
-plot(averages[,6], averages[,10], 
-     xlim = c((min(averages[,6], na.rm=T)-0.05),(max(averages[,6], na.rm=T)+0.05)), 
-     ylim = c((min(averages[,10], na.rm=T)-0.05),(max(averages[,10], na.rm=T)+0.05)),
-     xlab = 'Average Light Absorption', ylab = 'Fruit Sugar Content [Brix]', cex.lab = 1.5, cex = 2.5, pch = 19, col = "black")
-abline(test$coefficients[1], test$coefficients[2], lwd = 3, lty = 2)
-legend('bottomleft', legend=expression(R^2 == 0.109), bty='n', cex=3)  
+averages <- read.csv("tree-averages.csv")
+TCSA <- pi*(averages$trunk/20)^2
 
-dev.off()
+#trunk diameter vs. scaffold diameter
+gen_plot(averages$trunk, averages$avg_scaffold_d,
+         'Trunk Diameter [mm]', 'Avg. Scaffold Diameter',
+         expression(R^2 == 0.898))
+
+#trunk diameter vs. scaffold length
+gen_plot(averages$trunk, averages$avg_scaffold_l,
+         'Trunk Diameter [mm]', 'Avg. Scaffold Length',
+         expression(R^2 == 0.872))
+
+#scaffold diameter vs. scaffold length
+gen_plot(averages$avg_scaffold_d, averages$avg_scaffold_l,
+         'Avg Scaffold Diameter', 'Avg. Scaffold Length',
+         expression(R^2 == 0.811))
+
+#TCSA vs. scaffold diameter
+gen_plot(TCSA, averages$avg_scaffold_d,
+         'TCSA [cm2]', 'Avg. Scaffold Diameter',
+         expression(R^2 == 0.876))
+
+#TCSA vs. scaffold length
+gen_plot(TCSA, averages$avg_scaffold_l,
+         'TCSA [cm2]', 'Avg. Scaffold Length',
+         expression(R^2 == 0.839))
+
+#trunk diameter vs. sugar (R2 = 0.438)
+gen_plot(averages$trunk, averages$avg_sugar, 
+         'Trunk Diameter [mm]', 'Fruit Sugar Content[Brix]',
+         expression(R^2 == 0.438))
+
+#TCSA vs. sugar (R2 = 0.365)
+gen_plot(TCSA, averages$avg_sugar, 
+         'TCSA [cm2]', 'Fruit Sugar Content[Brix]',
+         expression(R^2 == 0.365))  
+
+#scaffold length vs. sugar 
+gen_plot(averages$avg_scaffold_l, averages$avg_sugar,
+         'Average Scaffold Length [cm]', 'Fruit Sugar Content [Brix]', 
+         expression(R^2 == 0.554))  
+
+#scaffold diameter vs. sugar
+gen_plot(averages$avg_scaffold_d, averages$avg_sugar, 
+         'Average Scaffold Diameter [mm]', 'Fruit Sugar Content [Brix]', 
+         expression(R^2 == 0.381))  
+
+#light abs vs. sugar
+gen_plot(averages$avg_absorbed, averages$avg_sugar, 
+         'Average Light Absorption', 'Fruit Sugar Content [Brix]',
+         expression(R^2 == 0.097))  
