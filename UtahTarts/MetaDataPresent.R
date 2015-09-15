@@ -4,15 +4,15 @@ volume <- read.csv('volume.csv', sep = ',', header = T)
 light <- read.csv('light.csv', sep = ',', header = T)
 sugars <- read.csv('sugars.csv', sep = ',', header = T)
 
-branches <- scaffold[scaffold$Scaffold > 0,]
+branches <- scaffold[scaffold$scaffold > 0,]
 
 library('smatr')
 
-plot(scaffold$Diameter, scaffold$Length)
-plot(log10(scaffold$Diameter), log10(scaffold$Length))
+plot(scaffold$diameter, scaffold$Length)
+plot(log10(scaffold$diameter), log10(scaffold$length))
 
-diameter_length <- sma(log10(branches$Length)~log10(branches$Diameter))
-plot(log10(branches$Diameter), log10(branches$Length))
+diameter_length <- sma(log10(branches$length)~log10(branches$diameter))
+plot(log10(branches$diameter), log10(branches$length))
 
 ### METADATA
 
