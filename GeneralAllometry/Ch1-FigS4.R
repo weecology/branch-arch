@@ -18,6 +18,7 @@ branch_graph <- function(x, y, labx, laby, point){
            log10(max(x, na.rm=T))+0.01,
            (sma(test)$coef[[1]][2,1]*log10(max(x, na.rm=T)))+sma(test)$coef[[1]][1,1]+0.01,
            lwd = 4, lty = 2, col='grey')
+  legend('bottomright', paste("a = ", round(sma(test)$coef[[1]][2,1],3)), bty="n")
 }
 
 species <- list(list(c("apple", 2, 0),
