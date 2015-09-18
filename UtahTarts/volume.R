@@ -4,7 +4,7 @@ library('hypervolume')
 library('dplyr')
 
 get_V_frustum <- function(bottom, top){
-  points <- north_or_northeast(ind_canopy_points)
+  points <- north_or_northeast(bottom)
   top1 <- filter(top, Direction==points[1])$Distance_cm/100 + 
     filter(top, Direction==points[3])$Distance_cm/100
   top2 <- filter(top, Direction==points[2])$Distance_cm/100 + 
@@ -71,7 +71,7 @@ sphere_exceptions <- arrange(filter(sphere_exceptions, H_rank==2), Block, Tree)
 
 ## Height
 trunk_tree <- group_by(filter(volume, Direction==0), Block, Tree)
-height_tree <- summarize(trunk_groups, height = max(Height_cm))
+height_tree <- summarize(trunk_tree, height = max(Height_cm))
 height_block <- summarize(group_by(height_tree, Block), avg_height = mean(height))
 
 
@@ -86,20 +86,24 @@ max_dist_vol <- mutate(max_dist, volume = 4/3*pi*(max_dist/100)^3)
 max_dist_vol_tree <- group_by(max_dist_vol, Block, Tree)
 sum_sphere <- summarize(max_dist_vol, sum_sphere = round(sum(volume/4), 0))
 
+
 ## Use multiple elipse frustum (https://en.wikipedia.org/wiki/Tree_volume_measurement)
 
 frustum_volumes <- c()
-for (b in unique(volume$Block)[19]) {
+colnames(frustum_volumes) <- c('block', 'tree', 'total_V', 'bottom_frust', 
+                               'top_frust', 'bot_cone', 'top_cone') 
+for (b in unique(volume$Block)) {
   block_points <- filter(rank_groups, Block==b)
   block_heights <- filter(trunk_tree, Block==b)
-  for (t in unique(block$Tree)[1]) {
+  for (t in unique(block$Tree)) {
     tree_points <- filter(block_points, Tree==t)
     tree_heights <- filter(block_heights, Tree==t)
     volumes <- get_canopy_volume(tree_points, tree_heights)
-    total_volume <- round(sum(volumes), 0)
-    bottom_frust <- round((total_volume - volumes[2]) / total_volume * 100, 0)
-    top_frust <- round((total_volume - volumes[3]) / total_volume * 100, 0)
-    frust_set <- c(b, t, total_volume, bottom_frust, top_frust)
+    total_volume <- sum(volumes)
+    bottom_frust <- round(volumes[2] / total_volume * 100, 0)
+    top_frust <- round(volumes[3] / total_volume * 100, 0)
+    frust_set <- c(b, t, round(total_volume, 0), bottom_frust, top_frust, 
+                   round(volumes[1], 2), round(volumes[4], 2))
     frustum_volumes <- rbind(frustum_volumes, frust_set) 
   }
 }
