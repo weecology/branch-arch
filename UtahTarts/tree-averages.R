@@ -27,7 +27,7 @@ for (i in 1:15){
   sugar_block <- sugar[sugar$id==i,]
   scaffold_block <- subset(scaffold, light_id==i)
   
-  subout <- matrix(ncol= 10, nrow = 5)
+  subout <- matrix(ncol= 12, nrow = 5)
   
   for (j in 1:5){
     
@@ -46,17 +46,20 @@ for (i in 1:15){
     subout[j,7] = round(mean(light_pos$extinction), 3)
     subout[j,8] = round(mean(light_ind$extinction[1:8]), 3)
     subout[j,9] = round(mean(light_ind$extinction[9:16]), 3)
-    subout[j,10] = round(mean(sugar_ind$sugar, na.rm=T), 3)
-    
+    subout[j,10] = round(mean(sugar_ind$sugar, na.rm=T), 2)
+    subout[j,11] = round(mean(sugar_ind$sugar[1:4], na.rm=T), 2)
+    subout[j,12] = round((subout[j,11] - sugar_ind$sugar[5]) / subout[j,11],3)
   }
   
   if (exists('averages'))
-    averages = rbind(averages, subout)
+    averages <- rbind(averages, subout)
   
   else
     averages <- subout
-    colnames(averages) = c('block', 'tree', 'trunk', 'avg_scaffold_l', 'avg_scaffold_d', 'avg_absorbed', 
-                           'avg_extinction', 'avg_extinction_low', 'avg_extinction_high', 'avg_sugar') 
+    colnames(averages) = c('block', 'tree', 'trunk', 'avg_scaffold_l', 
+                           'avg_scaffold_d', 'avg_absorbed', 'avg_extinction', 
+                           'avg_extinction_low', 'avg_extinction_high', 
+                           'avg_sugar', 'avg_sugar_out', 'sugar_diff') 
 }
 
 #write.csv(averages, "tree-averages.csv")
