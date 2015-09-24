@@ -3,10 +3,12 @@ library('dplyr')
 
 gen_plot <- function(x, y, x_lab, y_lab, r2, location) {
   test <- lm(y~x)
+  par(mar=c(5,5,1,1))
   plot(x, y,
        xlim=c(min(x, na.rm=T)-0.2, max(x, na.rm=T)+0.2), 
        ylim=c(min(y, na.rm=T)-0.2, max(y, na.rm=T)+0.2),
-       xlab=x_lab, ylab=y_lab, cex.lab=1.5, cex=2.5, pch=19, col="black")
+       xlab=x_lab, ylab=y_lab, cex.lab=1.8, cex.axis=1.3, cex=3, pch=19, 
+       col="black")
   abline(test$coefficients[1], test$coefficients[2], lwd=4, lty=2)
   legend(location, legend=r2, bty='n', cex=3, x.intersp=0)
   print(summary(test)$r.squared)
@@ -14,10 +16,12 @@ gen_plot <- function(x, y, x_lab, y_lab, r2, location) {
 
 gen_plot_poly <- function(x, y, x_lab, y_lab, r2, location) {
   test <- lm(y~poly(x, 2, raw=T))
+  par(mar=c(5,5,1,1))
   plot(x, y,
        xlim=c(min(x, na.rm=T)-0.2, max(x, na.rm=T)+0.2), 
        ylim=c(min(y, na.rm=T)-0.2, max(y, na.rm=T)+0.2),
-       xlab=x_lab, ylab=y_lab, cex.lab=1.5, cex=2.5, pch=19, col="black")
+       xlab=x_lab, ylab=y_lab, cex.lab=1.8, cex.axis=1.3, cex=3, pch=19, 
+       col="black")
   curve(test$coef[3]*x^2 + test$coef[2]*x + test$coef[1],
         min(x)-0.1, max(x)+0.1,
         lwd=4, lty=2, add=T)
@@ -85,7 +89,6 @@ avg_vol_light_alt <- summarize(group_by(avg_vol_light_tree_alt, block),
 avg_vol_light <- inner_join(avg_vol_light, avg_vol_light_alt)
 
 
-### Top performers
 ## How does tree size affect tree architecture and canopy size?
 
 #architecture
@@ -143,20 +146,16 @@ gen_plot(avg_vol_light$TCSA, avg_vol_light$sugar_out,
          expression(R^2 == 0.477), 'topright')  
 
 gen_plot(avg_vol_light$height/avg_vol_light$TCSA, avg_vol_light$sugar_out, 
-         'Height:TCSA', 'Fruit Sugar Content[Brix]',
+         'Height : TCSA', 'Fruit Sugar Content[Brix]',
          expression(R^2 == 0.560), 'topleft')  
 
 gen_plot(avg_vol_light$spread/avg_vol_light$TCSA, avg_vol_light$sugar_out, 
-         'Spread:TCSA', 'Fruit Sugar Content[Brix]',
+         'Spread : TCSA', 'Fruit Sugar Content[Brix]',
          expression(R^2 == 0.629), 'topleft') 
 
-gen_plot(avg_vol_light$no_scaffold/avg_vol_light$TCSA, avg_vol_light$sugar_out, 
-         'No.Scaffold:TCSA', 'Fruit Sugar Content[Brix]',
-         expression(R^2 == 0.648), 'topleft') 
-
-gen_plot(avg_vol_light$spread/avg_vol_light$scaffold_l, avg_vol_light$sugar_out, 
-         'No.Scaffold:TCSA', 'Fruit Sugar Content[Brix]',
-         expression(R^2 == 0.648), 'topleft')
+gen_plot(avg_vol_light$TCSA/avg_vol_light$no_scaffold, avg_vol_light$sugar_out, 
+         'TCSA : No.Scaffold', 'Fruit Sugar Content[Brix]',
+         expression(R^2 == 0.446), 'topleft') 
 
 plot(avg_vol_light$grower, avg_vol_light$sugar_out)
 
