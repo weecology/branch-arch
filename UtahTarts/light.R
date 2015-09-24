@@ -46,13 +46,17 @@ light_sugar_bot_avg <- select(light_sugar_bot_avg_join, grower, block, tree, pos
 light_sugar_17 <- filter(light_sugar_bottom, position==17)
 light_sugar_18 <- filter(light_sugar_top, position==17)
 
-light_sugar_S <- filter(light_sugar_top, position>=4 & position<=6)
-light_sugar_avg_S <- filter(light_sugar_top_avg, position>=4 & position<=6)
+light_sugar_S <- filter(light_sugar_top, position>=3 & position<=8)
+light_sugar_avg_S <- summarize(group_by(light_sugar_S, grower, block, tree),
+                               avg_light = mean(absorbed),
+                               avg_sugar = mean(sugar))
 
 light_sugar_N <- filter(light_sugar_top, position==c(1,2,8))
 light_sugar_avg_N <- filter(light_sugar_top_avg,  position==c(1,2,8))
 
 ###Output
+
+#write.csv(light_sugar_avg_S, 'light-sugar.csv')
 
 plot(light_sugar_bottom$extinction, light_sugar_bottom$sugar) 
 plot(light_sugar_bottom$absorbed, light_sugar_bottom$sugar, xlim = c(0,1)) 
@@ -65,8 +69,10 @@ plot(light_sugar_S$absorbed, light_sugar_S$sugar)
 
 plot(light_sugar_top_avg$avg_light, light_sugar_top_avg$sugar)  #avg_light from absorbed
 
-S_top_light_sugar <- lm(sugar~avg_light, data = light_sugar_avg_S) 
+plot(light_sugar_avg_S$avg_light, light_sugar_avg_S$avg_sugar)
+S_top_light_sugar <- lm(avg_sugar~avg_light, data = light_sugar_avg_S) 
 summary(S_top_light_sugar)$r.squared
 
 top_light_sugar <- lm(sugar~avg_light, data = light_sugar_top_avg) 
 summary(top_light_sugar)$r.squared
+
