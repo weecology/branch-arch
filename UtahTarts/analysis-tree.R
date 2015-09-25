@@ -50,17 +50,10 @@ avg_vol_light <- inner_join(avg_l_block_code, volumes,
 ## How does tree size affect tree architecture and canopy size?
 
 #architecture
-gen_plot(averages$trunk_mm, averages$avg_scaffold_d,
-         'Trunk Diameter [mm]', 'Avg. Scaffold Diameter',
-         expression(R^2 == 0.747), 'topleft')
 
 gen_plot(averages$TCSA_cm2, averages$avg_scaffold_d,
          'TCSA [cm2]', 'Avg. Scaffold Diameter',
          expression(R^2 == 0.744), 'topleft')
-
-gen_plot(averages$trunk_mm, averages$avg_scaffold_l,
-         'Trunk Diameter [mm]', 'Avg. Scaffold Length',
-         expression(R^2 == 0.720), 'topleft')
 
 gen_plot(averages$TCSA_cm2, averages$avg_scaffold_l,
          'TCSA [cm2]', 'Avg. Scaffold Length',
@@ -69,6 +62,14 @@ gen_plot(averages$TCSA_cm2, averages$avg_scaffold_l,
 gen_plot(averages$avg_scaffold_d, averages$avg_scaffold_l,
          'Avg Scaffold Diameter', 'Avg. Scaffold Length',
          expression(R^2 == 0.676), 'topleft')
+
+gen_plot(averages$trunk_mm, averages$avg_scaffold_d,
+         'Trunk Diameter [mm]', 'Avg. Scaffold Diameter',
+         expression(R^2 == 0.747), 'topleft')
+
+gen_plot(averages$trunk_mm, averages$avg_scaffold_l,
+         'Trunk Diameter [mm]', 'Avg. Scaffold Length',
+         expression(R^2 == 0.720), 'topleft')
 
 ## How does tree size affect fruit quality?
 
@@ -123,21 +124,6 @@ gen_plot(averages_light$TCSA_cm2, averages_light$avg_absorbed,
 gen_plot(avg_vol_light$frustum, avg_vol_light$avg_absorbed,
          'Canopy Volume [m3]', 'Fruit Sugar Content[Brix]',
          expression(R^2 == 0.017), 'topright')
-
-
-#canopy
-
-gen_plot_poly(avg_vol$TCSA_cm2, avg_vol$height,
-              'TCSA', 'Canopy Height',
-              expression(R^2 == 0.643), 'topleft')
-
-gen_plot_poly(avg_vol$TCSA_cm2, avg_vol$spread,
-         'TCSA', 'Canopy Spread',
-         expression(R^2 == 0.543), 'topleft')
-
-gen_plot_poly(avg_vol$TCSA_cm2, avg_vol$frustum,
-              'TCSA', 'Canopy Volume',
-              expression(R^2 == 0.533), 'topleft')
 
 
 ### Other regression

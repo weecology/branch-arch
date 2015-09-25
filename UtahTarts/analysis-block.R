@@ -171,14 +171,19 @@ dev.off()
 
 ## How does tree size afect light?
 
-#TCSA vs. light
+pdf(file="block-light.pdf", width=4.5, height=7, family="Helvetica", 
+    pointsize=14)
+
+par(mfrow=c(2,1))
+
 gen_plot(avg_vol_light$TCSA, avg_vol_light$absorbed, 
          'TCSA [cm2]', 'Absorbed Light',
-         expression(R^2 == 0.000), 'topright')
+         expression(R^2 == 0.000), 'bottomleft', 'A')
 
 gen_plot(avg_vol_light$volume, avg_vol_light$absorbed,
          'Canopy Volume [m3]', 'Absorbed Light',
-         expression(R^2 == 0.015), 'topright')
+         expression(R^2 == 0.015), 'bottomleft', 'B')
+dev.off()
 
 ## How does grower affect tree shape?
 plot(avg_vol$grower, avg_vol$TCSA)
