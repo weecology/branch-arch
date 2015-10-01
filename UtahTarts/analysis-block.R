@@ -44,6 +44,7 @@ insert_blank <- function(){
 tree_averages <- read.csv('tree-averages-all.csv')
 tree_averages_light <- read.csv('tree-averages-light.csv')
 tree_volumes <- read.csv('canopy-size.csv')
+block_info <- read.csv('block.csv')
 
 scaffold <- read.csv('scaffold.csv')
 block_id <- distinct(select(scaffold, grower, block, id, light_id))
@@ -55,6 +56,7 @@ avg_block_code <- inner_join(tree_averages, block_code, by = c('block' = 'id'))
 avg_vol_tree <- inner_join(avg_block_code, tree_volumes, 
                            by = c('block_code' = 'block', 'tree'))
 avg_vol <- summarize(group_by(avg_vol_tree, block),
+                     block_code = unique(block_code),
                      grower = unique(grower),
                      TCSA = mean(TCSA_cm2),
                      no_scaffolds = mean(no_scaffolds),
@@ -68,12 +70,15 @@ avg_vol <- summarize(group_by(avg_vol_tree, block),
                      top_size = mean(top_frust),
                      top_cone = mean(top_cone))
 
+avg_vol <- inner_join(avg_vol, block_info, by = 'block_code')
+
 tree_light_sugar <- read.csv('light-sugar.csv')
 avg_l_block_code <- inner_join(tree_averages_light, block_code, by = c('block' = 'light_id'))
 avg_vol_light_tree <- inner_join(avg_l_block_code, tree_volumes, 
                                  by = c('block_code' = 'block', 'tree'))
 
 avg_vol_light <- summarize(group_by(avg_vol_light_tree, block),
+                           block_code = unique(block_code),
                            grower = unique(grower),
                            TCSA = mean(TCSA_cm2),
                            no_scaffolds = mean(no_scaffolds),
@@ -99,7 +104,7 @@ avg_vol_light_alt <- summarize(group_by(avg_vol_light_tree_alt, block),
                                light_alt = mean(avg_light))
 
 avg_vol_light <- inner_join(avg_vol_light, avg_vol_light_alt)
-
+avg_vol_light <- inner_join(avg_vol_light, block_info, by = 'block_code')
 
 ## How does tree size affect tree architecture and canopy size?
 
@@ -167,7 +172,7 @@ gen_plot(avg_vol_light$spread/avg_vol_light$TCSA, avg_vol_light$sugar_out,
          'Spread : TCSA', 'Sugar Content [Brix]',
          expression(R^2 == 0.629), 'bottomright', 'F') 
 dev.off()
-
+  
 
 ## How does tree size afect light?
 
@@ -185,6 +190,7 @@ gen_plot(avg_vol_light$volume, avg_vol_light$absorbed,
          expression(R^2 == 0.015), 'bottomleft', 'B')
 dev.off()
 
+
 ## How does grower affect tree shape?
 plot(avg_vol$grower, avg_vol$TCSA)
 plot(avg_vol$grower, avg_vol$height)
@@ -194,6 +200,19 @@ plot(avg_vol_light$grower, avg_vol_light$sugar_out)
 plot(avg_vol_light$grower, avg_vol_light$absorbed)
 
 ### Other regression
+
+avg_vol_zero <- filter(avg_vol, planting_year > 0)
+gen_plot_poly((2014-avg_vol_zero$planting_year), avg_vol_zero$TCSA,
+              'Age', 'TCSA',
+              expression(R^2 == 0.825, 'bottomright', 'C')
+
+gen_plot(avg_vol_light$TCSA/(2014-avg_vol_light$planting_year), avg_vol_light$absorbed,
+         'Age', 'Absorbed Light',
+         expression(R^2 == 0.150), 'bottomleft', 'B')
+
+gen_plot(avg_vol_light$TCSA/(2014-avg_vol_light$planting_year), avg_vol_light$sugar_out, 
+         'Age', 'Sugar Content[Brix]',
+         expression(R^2 == 0.435), 'topright', 'A')
 
 gen_plot(avg_vol_light$scaffold_l, avg_vol_light$sugar_out,
          'Scaffold Length [cm]', 'Sugar Content [Brix]', 
