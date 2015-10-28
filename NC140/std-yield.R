@@ -29,3 +29,4 @@ ggplot(tree_yield) +
   geom_point(aes(x = (tot_stem_m + tot_twig_m), y = cum_yield, 
                  color = factor(rootstock), size = 5))
 
+##NEXT simulate mass using D~M equation
