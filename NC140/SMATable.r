@@ -33,7 +33,8 @@ get_sma_row <- function(name, data, plus = FALSE){
     sma_row[21] = output(sma(log10(data$path_length)~log10(data$tot_stem_m)))
     sma_row[22] = output(sma(log10(data$tot_length)~log10(data$tot_stem_m)))
     sma_row[23] = output(sma(log10(rm_zero$stem_m)~log10(rm_zero$diameter_mm)))
-    sma_row[24] = output(sma(log10(data$tot_stem_m)~log10(data$diameter_mm)))
+    sma_row[24] = output(sma(log10(data$tot_stem_m + data$tot_twig_m)~
+                               log10(data$diameter_mm)))
     sma_row[25] = output(sma(log10(rm_zero$stem_m)~log10(rm_zero$volume)))
     sma_row[26] = output(sma(log10(rm_zero$stem_m)~log10(rm_zero$path_volume)))
     sma_row[27] = output(sma(log10(data$tot_stem_m)~log10(data$tot_volume)))
@@ -87,7 +88,6 @@ output <- function(sma_data){
 # Data and Set-up ----
 
 library('smatr')
-
 tree_data <- read.csv("TreeSummary.csv", sep = ",", head=T)
 branch_size <- read.csv("BranchSegments.csv", sep = ',', header = T)
 
@@ -206,7 +206,8 @@ sma_test[2, 22] = output(test)
 
 sma_test[2, 23] = "-"
 
-test <- sma(log10(tree_data$tot_stem_m)~log10(tree_data$trunk_diam))
+test <- sma(log10(tree_data$tot_stem_m + tree_data$tot_twig_m)~
+              log10(tree_data$trunk_diam))
 sma_test[2, 24] = output(test)
 
 sma_test[2, 25] = "-"
