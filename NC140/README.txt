@@ -15,7 +15,7 @@ ANALYSIS
 
 - exp-yield.R: ANOVA for allometric parameters and hort measures; Linear Regression for parameters & measures with significant difference, primarily at roostock level. Tree level analysis summarized by first entry after 'Blast Correlation'
  
-- std-yield.R: analysis of standard metrics (TCSA, yield efficiency)
+- std-yield.R: analysis of standard metrics (TCSA, HI, yield efficiency)
 
 
 OUTPUT
