@@ -1,10 +1,10 @@
 ### This code generates and analyses standard yield metric in hort research.
 
 library(agricolae)
-library(dplyr)
 library(ggplot2)
 library(stringr)
-
+library(smatr)
+library(dplyr)
 
 ## Data
 
@@ -43,14 +43,14 @@ summary_YE <- summary(model)
 test  <- duncan.test(model, "as.factor(tree_yield$rootstock)")
 duncan_YE  <- test$groups
 
-model <- aov(1000*yield / (tot_stem_m + tot_twig_m)  ~ as.factor(rootstock),
-             data = tree_yield)
+model <- aov(1000*yield / (tot_stem_m + tot_twig_m + 1000*yield)  ~ 
+               as.factor(rootstock), data = tree_yield)
 summary_YI <- summary(model)
 test  <- duncan.test(model, "as.factor(rootstock)")
 duncan_YI  <- test$groups
 
-model <- aov(1000*cum_yield / (tot_stem_m + tot_twig_m)  ~ as.factor(rootstock),
-             data = tree_yield)
+model <- aov(1000*cum_yield / (tot_stem_m + tot_twig_m + 1000*cum_yield)  ~ 
+               as.factor(rootstock), data = tree_yield)
 summary_HI <- summary(model)
 test  <- duncan.test(model, "as.factor(rootstock)")
 duncan_HI  <- test$groups
@@ -74,6 +74,13 @@ model <- aov(1000*cum_yield / mass  ~ as.factor(rootstock),
 summary_HI_a <- summary(model)
 test  <- duncan.test(model, "as.factor(rootstock)")
 duncan_HI_a  <- test$groups
+
+## Test SMA for TCSA
+
+test <- sma(log10((tree_yield$tot_stem_m + tree_yield$tot_twig_m)) ~ 
+              log10(tree_yield$trunk_diam))
+
+test <- sma((tree_yield$tot_stem_m + tree_yield$tot_twig_m) ~ TCSA)
 
 ## Visualize
 
