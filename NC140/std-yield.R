@@ -5,14 +5,27 @@ library(ggplot2)
 library(stringr)
 library(smatr)
 library(dplyr)
+library(grid)
 
 ## Data
 
 tree_sum <- read.csv("TreeSummary.csv")
+canopy_volumes <- read.csv("VolumeEstimates.csv") %>%
+  dplyr::filter(species == "apple") %>%
+  dplyr::select(tree, triangles)
+tree_sum <- inner_join(tree_sum, canopy_volumes)
+
 yield <- read.csv("AppleYield.csv", sep =',', head=T)
 tree_yield <- inner_join(tree_sum, yield)
-tree_yield <- dplyr::mutate(tree_yield, TCSA = pi*(trunk_diam_cm/2)^2)
+tree_yield <- dplyr::mutate(tree_yield, 
+                            TCSA = pi*(trunk_diam_cm/2)^2,
+                            tot_length_m = tot_length/100,
+                            tot_area_m2 = tot_area/10000,
+                            tot_volume_m3 = tot_volume/1000000,
+                            canopy_area = pi*(canopy_spread/2)^2,
+                            tot_mass_kg = (tot_stem_m + tot_twig_m)/1000)
 sma <- read.csv("SMAResults.csv")
+
 
 ## ANOVA and Duncan's test
 
@@ -43,6 +56,26 @@ summary_YE <- summary(model)
 test  <- duncan.test(model, "as.factor(tree_yield$rootstock)")
 duncan_YE  <- test$groups
 
+model <- aov((cum_yield/height) ~ rootstock, tree_yield)
+summary_YH <- summary(model)
+test  <- duncan.test(model, "rootstock")
+duncan_YH  <- test$groups
+
+model <- aov((100*cum_yield/tot_length) ~ rootstock, tree_yield)
+summary_YL <- summary(model)
+test  <- duncan.test(model, "rootstock")
+duncan_YL  <- test$groups
+
+model <- aov((10000*cum_yield/tot_area) ~ rootstock, tree_yield)
+summary_YSA <- summary(model)
+test  <- duncan.test(model, "rootstock")
+duncan_YSA  <- test$groups
+
+model <- aov((1000000*cum_yield/tot_volume) ~ rootstock, tree_yield)
+summary_YSV <- summary(model)
+test  <- duncan.test(model, "rootstock")
+duncan_YSV  <- test$groups
+
 model <- aov((cum_yield/canopy_spread) ~ rootstock, tree_yield)
 summary_YS <- summary(model)
 test  <- duncan.test(model, "rootstock")
@@ -54,9 +87,14 @@ test  <- duncan.test(model, "rootstock")
 duncan_canopy_area  <- test$groups
 
 model <- aov((cum_yield/(pi*(canopy_spread/2)^2)) ~ rootstock, tree_yield)
-summary_YA <- summary(model)
+summary_YCA <- summary(model)
 test  <- duncan.test(model, "rootstock")
-duncan_YA  <- test$groups
+duncan_YCA  <- test$groups
+
+model <- aov((cum_yield/triangles) ~ rootstock, tree_yield)
+summary_YCV <- summary(model)
+test  <- duncan.test(model, "rootstock")
+duncan_YCV  <- test$groups
 
 model <- aov(1000*yield / (tot_stem_m + tot_twig_m + 1000*yield)  ~ 
                as.factor(rootstock), data = tree_yield)
@@ -73,7 +111,7 @@ duncan_HI  <- test$groups
 ## Allometry
 
 Y0 <- -0.86  # str_split(sma$X.Subtree..7[3], ";")[[1]][1]
-a <- 2.67  # str_split(sma$X.Subtree..7[3], ";")[[1]][4]
+a <- 2.5  # str_split(sma$X.Subtree..7[3], ";")[[1]][4]
 mass <- 10^(as.numeric(Y0) +  as.numeric(a)*log10(tree_yield$trunk_diam))
 
 allom_mass <- lm(mass ~ (tree_yield$tot_stem_m + tree_yield$tot_twig_m))  #0.972
@@ -116,30 +154,59 @@ morph_harvest_index <- cbind(names(tree_yield[c(-1,-2)]), morph_harvest_index)
 
 ## Visualize
 
-ggplot(tree_yield) +
-  geom_point(aes(x = (tot_stem_m + tot_twig_m)/1000, y = yield, 
-                 color = factor(rootstock)), size = 5) +
-  labs(x = "Total Above-ground Biomass", y = "Yield", 
-       color="Rootstocks") +
-  geom_abline(slope = 6) + geom_abline(slope = 2) + 
-  geom_abline(slope = 0.5) + geom_abline(slope = 0.1) +
-  geom_text(data=NULL, x=5, y=55, label="HI = 6") +
-  geom_text(data=NULL, x=25, y=55, label="2") +
-  geom_text(data=NULL, x=75, y=40, label="0.5") +
-  geom_text(data=NULL, x=80, y=10, label="0.1") +
-  theme_classic(base_size = 18, base_family = "Helvetica") +
-  theme(axis.title=element_text(size=20))
+yield_index <- dplyr::transmute(tree_yield, tree, rootstock,
+                                harvest_index = cum_yield / 
+                                  (tot_mass_kg + cum_yield),
+                                yield_eff = cum_yield / TCSA,
+                                modeled_HI = cum_yield / (mass + cum_yield),
+                                yield_height = cum_yield / height,
+                                yield_length = cum_yield / tot_length_m,
+                                yield_stem_area = cum_yield / tot_area_m2,
+                                yield_stem_volume = cum_yield / tot_volume_m3,
+                                yield_spread = cum_yield / canopy_spread,
+                                yield_canopy_area = cum_yield / canopy_area,
+                                yield_canopy_volume = cum_yield / triangles)
 
-ggplot(tree_yield) +
-  geom_point(aes(x = (tot_stem_m + tot_twig_m)/1000, y = cum_yield, 
-                 color = factor(rootstock)), size = 5) +
-  labs(x = "Total Above-ground Biomass", y = "Cumulative Yield", 
-       color="Rootstocks") +
-  geom_abline(slope = 30) + geom_abline(slope = 15) + 
-  geom_abline(slope = 8) + geom_abline(slope = 4) +
-  geom_text(data=NULL, x=6, y=350, label="HI = 30") +
-  geom_text(data=NULL, x=21, y=375, label="15") +
-  geom_text(data=NULL, x=35, y=325, label="8") +
-  geom_text(data=NULL, x=45, y=200, label="4") +
-  theme_classic(base_size = 18, base_family = "Helvetica") +
-  theme(axis.title=element_text(size=20))
+yield_index_root <- dplyr::summarize(dplyr::group_by(yield_index, rootstock),
+                                     avg_HI = mean(harvest_index),
+                                     avg_YE = mean(yield_eff),
+                                     avg_HI_a = mean(modeled_HI),
+                                     avg_YH = mean(yield_height),
+                                     avg_YL = mean(yield_length),
+                                     avg_YSA = mean(yield_stem_area),
+                                     avg_YSV = mean(yield_stem_volume),
+                                     avg_YS = mean(yield_spread),
+                                     avg_YCA = mean(yield_canopy_area),
+                                     avg_YCV = mean(yield_canopy_volume))
+
+index_labels <- c("Yield eff.", "Modeled HI", "Yield : Height", 
+                  "Stem Length", "Stem Area", "Stem Volume",
+                  "Canopy Spread", "Yield : Canopy Area", "Canopy Volume")
+
+index_long <- yield_index %>% 
+  select(-harvest_index) %>%
+  gather(index, value, -rootstock, -tree)
+
+harvest_index <- dplyr::select(yield_index, tree, rootstock, harvest_index)
+index_data <- distinct(select(index_long, index))
+index_join <- cbind(index_data, index_labels) 
+
+index_graph <- left_join(index_long, harvest_index)
+index_graph <- left_join(index_graph, index_join)
+index_graph$index_labels <- factor(index_graph$index_labels, levels = index_labels)
+index_graph <- dplyr::filter(index_graph, 
+                             index_labels == "Yield eff." | 
+                               index_labels == "Modeled HI" |
+                               index_labels ==  "Yield : Height" | 
+                               index_labels == "Yield : Canopy Area")
+
+png("index_comp.png", width = 1500, height = 450)
+ggplot(index_graph) +
+  geom_point(aes(y=harvest_index, x=value, shape = rootstock), size = 10) +
+  facet_grid(. ~ index_labels, scales="free_x") +
+  labs(x = "", y = "Harvest Index") +
+  theme_bw(base_size = 36, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), 
+        strip.background = element_rect(color='white', fill='white')) +
+  theme(panel.margin = unit(1.5, "lines"))
+dev.off()

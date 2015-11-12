@@ -92,6 +92,10 @@ init <- function(){
 sma_res <- get_data()
 
 tree_sum <- read.csv("TreeSummary.csv")
+canopy_volumes <- read.csv("VolumeEstimates.csv") %>%
+  dplyr::filter(species == "apple") %>%
+  dplyr::select(tree, triangles)
+tree_sum <- inner_join(tree_sum, canopy_volumes)
   
 yield <- read.csv("AppleYield.csv", sep =',', head=T)
 
