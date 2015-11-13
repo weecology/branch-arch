@@ -185,9 +185,9 @@ test <- lm(harvest_index ~ yield_height, data = yield_index)
 test <- lm(harvest_index ~ yield_canopy_area, data = yield_index)
 summary(test)
 
-index_labels <- c("Yield eff.", "Modeled HI", "Yield : Height", 
+index_labels <- c("A", "B", "C", 
                   "Stem Length", "Stem Area", "Stem Volume",
-                  "Canopy Spread", "Yield : Canopy Area", "Canopy Volume")
+                  "Canopy Spread", "D", "Canopy Volume")
 
 index_long <- yield_index %>% 
   select(-harvest_index) %>%
@@ -201,18 +201,20 @@ index_graph <- left_join(index_long, harvest_index)
 index_graph <- left_join(index_graph, index_join)
 index_graph$index_labels <- factor(index_graph$index_labels, levels = index_labels)
 index_graph <- dplyr::filter(index_graph, 
-                             index_labels == "Yield eff." | 
-                               index_labels == "Modeled HI" |
-                               index_labels ==  "Yield : Height" | 
-                               index_labels == "Yield : Canopy Area")
+                             index_labels == "A" | 
+                               index_labels == "B" |
+                               index_labels ==  "C" | 
+                               index_labels == "D")
 
 png("index_comp.png", width = 1500, height = 450)
 ggplot(index_graph) +
   geom_point(aes(y=harvest_index, x=value, shape = rootstock), size = 10) +
   facet_grid(. ~ index_labels, scales="free_x") +
-  labs(x = "", y = "Harvest Index") +
-  theme_bw(base_size = 36, base_family = "Helvetica") +
-  theme(axis.title=element_text(size=36), 
+  labs(x = "    Yield efficiency               Modeled HI                Yield : Height        Yield : Canopy Area", 
+       y = "Harvest Index") +
+  theme_bw(base_size = 28, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=32), 
         strip.background = element_rect(color='white', fill='white')) +
-  theme(panel.margin = unit(1.5, "lines"))
+  theme(panel.margin = unit(1.5, "lines"), legend.key = element_blank(),
+        axis.title.x = element_text(hjust=0))
 dev.off()
