@@ -179,6 +179,12 @@ yield_index_root <- dplyr::summarize(dplyr::group_by(yield_index, rootstock),
                                      avg_YCA = mean(yield_canopy_area),
                                      avg_YCV = mean(yield_canopy_volume))
 
+test <- lm(harvest_index ~ yield_eff, data = yield_index)
+test <- lm(harvest_index ~ modeled_HI, data = yield_index)
+test <- lm(harvest_index ~ yield_height, data = yield_index)
+test <- lm(harvest_index ~ yield_canopy_area, data = yield_index)
+summary(test)
+
 index_labels <- c("Yield eff.", "Modeled HI", "Yield : Height", 
                   "Stem Length", "Stem Area", "Stem Volume",
                   "Canopy Spread", "Yield : Canopy Area", "Canopy Volume")
