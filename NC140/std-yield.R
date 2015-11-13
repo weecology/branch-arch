@@ -110,11 +110,11 @@ duncan_HI  <- test$groups
 
 ## Allometry
 
-Y0 <- -0.86  # str_split(sma$X.Subtree..7[3], ";")[[1]][1]
-a <- 2.5  # str_split(sma$X.Subtree..7[3], ";")[[1]][4]
-mass <- 10^(as.numeric(Y0) +  as.numeric(a)*log10(tree_yield$trunk_diam))
+Y0 <- 1.83  # str_split(sma$X.Subtree..7[3], ";")[[1]][1]
+a <- 1.25  # str_split(sma$X.Subtree..7[3], ";")[[1]][4]
+mass <- 10^(as.numeric(Y0) +  as.numeric(a)*log10(tree_yield$TCSA))
 
-allom_mass <- lm(mass ~ (tree_yield$tot_stem_m + tree_yield$tot_twig_m))  #0.972
+allom_mass <- lm(mass ~ (tree_yield$tot_stem_m + tree_yield$tot_twig_m))  #0.981
 
 model <- aov(1000*tree_yield$yield / (1000*tree_yield$yield + mass)  ~ 
                as.factor(tree_yield$rootstock))
