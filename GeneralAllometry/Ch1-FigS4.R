@@ -23,11 +23,11 @@ branch_graph <- function(x, y, labx, laby, point){
 
 species <- list(list(c("apple", 2, 0),
                      c(2,7,12,3,5,11,6,8,10,1,4,9,13,17,15,18,20,19,14),
-                     c("Apple-1 (Bud.9)", "Apple-2 (Bud.9)", "Apple-3 (Bud.9)", "Apple-4 (Bud.9)", 
+                     c("Apple-1 (B.9)", "Apple-2 (B.9)", "Apple-3 (B.9)", "Apple-4 (B.9)", 
                        "Apple-5 (G.41)", "Apple-6 (G.41)","Apple-7 (G.41)", "Apple-8 (G.41)", 
                        "Apple-9 (G.210)", "Apple-10 (G.210)", "Apple-11 (G.210)", "Apple-12 (G.210)",
                        "Apple-13 (M.26)", "Apple-14 (JM.8)", "Apple-15 (JM.8)", "Apple-16 (JM.8)", 
-                       "Apple-17 (PiAu.5683)", "Apple-18 (PiAu.5683)", "Apple-19 (PiAu.5683)")),
+                       "Apple-17 (Pi-AU 56-83)", "Apple-18 (Pi-AU 56-83)", "Apple-19 (Pi-AU 56-83)")),
                 list(c("cherry", 24, 22),
                      c(7,13,15,1,10),
                      c("Cherry-1", "Cherry-2", "Cherry-3", "Cherry-4", "Cherry-5")))
