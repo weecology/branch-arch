@@ -35,7 +35,7 @@ multi_plot <- function(col_list, title, location){
          pt.cex = c(3*.99, 3*.80, 3*.67, 3*.33, 0, 0), cex = 1.25)
   par(xpd=F)
   gen_plot(col_list[2], "Subtree")
-  axis(1, 1:42, sma[2:43,2], las = 2)
+  axis(1, 1:42, xlabels, las = 2)
 }
 
 
@@ -52,6 +52,14 @@ for (i in 1:27){
   }
 }
 
+xlabels <- c('Tree-level: All', 'Cherry', 'Apple', 'Branch-level: All', 'Cherry', 
+             'Cherry - 1', 'Cherry - 2', 'Cherry - 3', 'Cherry - 3+', 'Cherry - 4', 'Cherry - 5',
+             'Apple', 'B.9', 'B.9 - 1', 'B.9 - 2', 'B.9 - 3', 'B.9 - 4', 'B.9 - 4+',
+             'G.41', 'G.41 - 1', 'G.41 - 1+', 'G.41 - 2', 'G.41 - 3', 'G.41 - 4',   
+             'G.210', 'G.210 - 1', 'G.210 - 2', 'G.210 - 3', 'G.210 - 3+', 'G.210 - 4',    
+             'M.26', 'M.26+', 
+             'JM.8', 'JM.8 - 1', 'JM.8 - 2',  'JM.8 - 2+',  'JM.8 - 3',       
+             'Pi-AU 56-83', 'Pi-AU 56-83 - 1', 'Pi-AU 56-83 - 2', 'Pi-AU 56-83 - 3',  'Pi-AU 56-83 - 3+')
 
 flow <- c(2, 2, 2, .75, .75, .75, .25, .25, .25, .5, .5, .5, .33, .33, .33, .67, .67, .67, 10, 10, 10, 10, 10, 10, 10, 10, 10)
 
