@@ -81,7 +81,7 @@ for (i in 1:38){
     subout[j, 7] = round(sd(scaffolds$length), 3)
     subout[j, 8] = round(mean(scaffolds$diameter), 0)
     subout[j, 9] = round(sd(scaffolds$diameter), 3)
-    subout[j, 10] = sum(pi*(scaffolds$diameter/2)^2)
+    subout[j, 10] = round(sum(pi*(scaffolds$diameter/20)^2), 0)
 
   }
   
