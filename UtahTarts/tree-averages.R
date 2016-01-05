@@ -64,7 +64,7 @@ for (i in 1:38){
   
   scaffold_block <- subset(scaffold, id==i)
   
-  subout <- matrix(ncol= 9, nrow = 5)
+  subout <- matrix(ncol= 10, nrow = 5)
   
   for (j in 1:5){
     
@@ -81,6 +81,7 @@ for (i in 1:38){
     subout[j, 7] = round(sd(scaffolds$length), 3)
     subout[j, 8] = round(mean(scaffolds$diameter), 0)
     subout[j, 9] = round(sd(scaffolds$diameter), 3)
+    subout[j, 10] = sum(pi*(scaffolds$diameter/2)^2)
 
   }
   
@@ -91,7 +92,7 @@ for (i in 1:38){
     averages_all <- subout
     colnames(averages_all) = c('block', 'tree', 'trunk_mm', 'TCSA_cm2', 'no_scaffolds', 
                                'avg_scaffold_l', 'sd_scaffold_l',
-                               'avg_scaffold_d', 'sd_scaffold_d') 
+                               'avg_scaffold_d', 'sd_scaffold_d', 'cum_BCSA') 
 }
 
 #write.csv(averages_all, "tree-averages-all.csv")
