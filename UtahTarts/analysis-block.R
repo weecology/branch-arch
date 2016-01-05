@@ -59,6 +59,7 @@ avg_vol <- summarize(group_by(avg_vol_tree, block),
                      block_code = unique(block_code),
                      grower = unique(grower),
                      TCSA = mean(TCSA_cm2),
+                     cum_BCSA = mean(cum_BCSA),
                      no_scaffolds = mean(no_scaffolds),
                      scaffold_l = mean(avg_scaffold_l),
                      scaffold_l_sd = mean(sd_scaffold_l),
@@ -106,71 +107,76 @@ avg_vol_light_alt <- summarize(group_by(avg_vol_light_tree_alt, block),
 avg_vol_light <- inner_join(avg_vol_light, avg_vol_light_alt)
 avg_vol_light <- inner_join(avg_vol_light, block_info, by = 'block_code')
 
+smalls <- filter(avg_vol, TCSA < 200)
+scaffolds <- filter(scaffold, scaffold!=0)
 ## How does tree size affect tree architecture and canopy size?
 
-#architecture
-pdf(file="block-architecture.pdf", width= 4, height=9, family="Helvetica", 
+#architecture [Fig 1]
+pdf(file="block-architecture.pdf", width=4, height=9, family="Helvetica", 
     pointsize=14)
 par(mfrow=c(3,1))
-gen_plot(avg_vol$TCSA, avg_vol$scaffold_d/10,
-         'TCSA [cm2]', 'Scaffold Diameter [cm]',
-         expression(R^2 == 0.901), 'bottomright', 'A')
+gen_plot(avg_vol$TCSA, avg_vol$cum_BCSA,
+         'TCSA [cm2]', 'BCSA [cm]',
+         expression(r^2 == 0.945), 'bottomright', 'A')
 
 gen_plot(avg_vol$TCSA, avg_vol$scaffold_l,
          'TCSA [cm2]', 'Scaffold Length [cm]',
-         expression(R^2 == 0.788), 'bottomright', 'B')
+         expression(r^2 == 0.788), 'bottomright', 'B')
 
-gen_plot(avg_vol$scaffold_d/10, avg_vol$scaffold_l,
+gen_plot(avg_vol$scaffold_d, avg_vol$scaffold_l,
          'Scaffold Diameter [cm]', 'Scaffold Length [cm]',
-         expression(R^2 == 0.738), 'bottomright', 'C')
+         expression(r^2 == 0.739), 'bottomright', 'C')
 dev.off()
 
-#canopy
-pdf(file="block-canopy.pdf", width= 4, height=9, family="Helvetica", 
+#canopy [Fig 2]
+pdf(file="block-canopy.pdf", width=4, height=9, family="Helvetica", 
     pointsize=14)
 par(mfrow=c(3,1))
 gen_plot_poly(avg_vol$TCSA, avg_vol$height,
               'TCSA [cm2]', 'Height [cm]',
-              expression(R^2 == 0.789), 'bottomright', 'A')
+              expression(r^2 == 0.789), 'bottomright', 'A')
 
 gen_plot_poly(avg_vol$TCSA, avg_vol$spread,
               'TCSA [cm2]', 'Canopy Spread [cm]',
-              expression(R^2 == 0.543), 'bottomright', 'B')
+              expression(r^2 == 0.698), 'bottomright', 'B')
 
 gen_plot_poly(avg_vol$TCSA, avg_vol$volume,
               'TCSA [cm2]', 'Canopy Volume [m3]',
-              expression(R^2 == 0.691), 'bottomright', 'C')
+              expression(r^2 == 0.691), 'bottomright', 'C')
 dev.off()
 
 
-## How does tree size affect fruit quality?
-pdf(file="block-sugar.pdf", width= 8, height=9, family="Helvetica", 
+## How does tree size affect fruit quality? [Fig 3 & 4]
+pdf(file="block-sugar.pdf", width=10, height=8, family="Helvetica", 
     pointsize=14)
-par(mfrow=c(3,2))
-
+par(mfrow=c(2,2))
 gen_plot(avg_vol_light$TCSA, avg_vol_light$sugar_out, 
          'TCSA [cm2]', 'Sugar Content[Brix]',
-         expression(R^2 == 0.477), 'topright', 'A')  
+         expression(r^2 == 0.477), 'topright', 'A')  
 
 gen_plot(avg_vol_light$height, avg_vol_light$sugar_out,
          'Height [cm]', 'Sugar Content [Brix]',
-         expression(R^2 == 0.765), 'topright', 'B')
+         expression(r^2 == 0.765), 'topright', 'B')
 
 gen_plot(avg_vol_light$volume, avg_vol_light$sugar_out,
          'Canopy Volume [m3]', 'Sugar Content [Brix]',
-         expression(R^2 == 0.558), 'topright', 'C')
+         expression(r^2 == 0.558), 'topright', 'C')
 
 gen_plot(avg_vol_light$spread, avg_vol_light$sugar_out,
          'Canopy Spread [cm]', 'Sugar Content [Brix]',
-         expression(R^2 == 0.523), 'topright', 'D')
+         expression(r^2 == 0.523), 'topright', 'D')
+dev.off()
 
+pdf(file="block-sugar-byTCSA.pdf", width=5, height=8, family="Helvetica", 
+    pointsize=14)
+par(mfrow=c(2,1))
 gen_plot(avg_vol_light$height/avg_vol_light$TCSA, avg_vol_light$sugar_out, 
          'Height : TCSA', 'Sugar Content [Brix]',
-         expression(R^2 == 0.560), 'bottomright', 'E')  
+         expression(r^2 == 0.560), 'bottomright', 'A')  
 
 gen_plot(avg_vol_light$spread/avg_vol_light$TCSA, avg_vol_light$sugar_out, 
          'Spread : TCSA', 'Sugar Content [Brix]',
-         expression(R^2 == 0.629), 'bottomright', 'F') 
+         expression(r^2 == 0.629), 'bottomright', 'B') 
 dev.off()
   
 
@@ -204,7 +210,19 @@ plot(avg_vol_light$grower, avg_vol_light$absorbed)
 avg_vol_zero <- filter(avg_vol, planting_year > 0)
 gen_plot_poly((2014-avg_vol_zero$planting_year), avg_vol_zero$TCSA,
               'Age', 'TCSA',
-              expression(R^2 == 0.825, 'bottomright', 'C')
+              expression(r^2 == 0.825), 'bottomright', 'C')
+
+gen_plot_poly(avg_vol_zero$scaffold_d/10, (2014-avg_vol_zero$planting_year),
+         'Scaffold Diameter', 'Age',
+         expression(r^2 == 0.775), 'bottomright', 'C')
+
+gen_plot(avg_vol_zero$scaffold_l, (2014-avg_vol_zero$planting_year),
+         'Scaffold Length', 'Age',
+         expression(r^2 == 0.499), 'bottomright', 'C')
+
+gen_plot(avg_vol_zero$height, (2014-avg_vol_zero$planting_year),
+         'Height', 'Age',
+         expression(r^2 == 0.499), 'bottomright', 'C')
 
 gen_plot(avg_vol_light$TCSA/(2014-avg_vol_light$planting_year), avg_vol_light$absorbed,
          'Age', 'Absorbed Light',
