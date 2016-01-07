@@ -158,13 +158,13 @@ gen_plot(avg_vol_light$height, avg_vol_light$sugar_out,
          'Height [cm]', 'Sugar Content [Brix]',
          expression(r^2 == 0.765), 'topright', 'B')
 
-gen_plot(avg_vol_light$volume, avg_vol_light$sugar_out,
-         'Canopy Volume [m3]', 'Sugar Content [Brix]',
-         expression(r^2 == 0.558), 'topright', 'C')
-
 gen_plot(avg_vol_light$spread, avg_vol_light$sugar_out,
          'Canopy Spread [cm]', 'Sugar Content [Brix]',
-         expression(r^2 == 0.523), 'topright', 'D')
+         expression(r^2 == 0.523), 'topright', 'C')
+
+gen_plot(avg_vol_light$volume, avg_vol_light$sugar_out,
+         'Canopy Volume [m3]', 'Sugar Content [Brix]',
+         expression(r^2 == 0.558), 'topright', 'D')
 dev.off()
 
 pdf(file="block-sugar-byTCSA.pdf", width=5, height=8, family="Helvetica", 
