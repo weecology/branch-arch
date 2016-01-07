@@ -108,6 +108,7 @@ avg_vol_light <- inner_join(avg_vol_light, avg_vol_light_alt)
 avg_vol_light <- inner_join(avg_vol_light, block_info, by = 'block_code')
 
 smalls <- filter(avg_vol, TCSA < 200)
+bigs <- filter(avg_vol, TCSA > 200)
 scaffolds <- filter(scaffold, scaffold!=0)
 ## How does tree size affect tree architecture and canopy size?
 
@@ -205,8 +206,9 @@ plot(avg_vol$grower, avg_vol$spread)
 plot(avg_vol_light$grower, avg_vol_light$sugar_out)
 plot(avg_vol_light$grower, avg_vol_light$absorbed)
 
-### Other regression
+### Other regressions
 
+##Age
 avg_vol_zero <- filter(avg_vol, planting_year > 0)
 gen_plot_poly((2014-avg_vol_zero$planting_year), avg_vol_zero$TCSA,
               'Age', 'TCSA',
@@ -232,6 +234,18 @@ gen_plot(avg_vol_light$TCSA/(2014-avg_vol_light$planting_year), avg_vol_light$su
          'Age', 'Sugar Content[Brix]',
          expression(R^2 == 0.435), 'topright', 'A')
 
+##Spacing
+abs(100 / (median(avg_vol$spacing_x)*0.3048)) * abs(100 / (median(avg_vol$spacing_y)*0.3048))
+
+gen_plot(avg_vol_light$spacing_x, avg_vol_light$sugar_out, 
+         'In Row spacing', 'Sugar Content[Brix]',
+         expression(R^2 == 0.163), 'topright', 'A')
+
+gen_plot(bigs$spacing_x, bigs$spread, 
+         'In Row spacing', 'Canopy Spread',
+         expression(R^2 == 0.112), 'topright', 'A')
+
+##Sugar
 gen_plot(avg_vol_light$scaffold_l, avg_vol_light$sugar_out,
          'Scaffold Length [cm]', 'Sugar Content [Brix]', 
          expression(R^2 == 0.727), 'topright', 'B') 
