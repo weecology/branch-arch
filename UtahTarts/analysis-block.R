@@ -235,6 +235,8 @@ gen_plot(avg_vol_light$TCSA/(2014-avg_vol_light$planting_year), avg_vol_light$su
          expression(R^2 == 0.435), 'topright', 'A')
 
 ##Spacing
+spacing <- mutate(avg_vol, grid_size = (spacing_x*0.3048) * (spacing_y*0.3048))
+hist(10000/spacing$grid_size)
 abs(100 / (median(avg_vol$spacing_x)*0.3048)) * abs(100 / (median(avg_vol$spacing_y)*0.3048))
 
 gen_plot(avg_vol_light$spacing_x, avg_vol_light$sugar_out, 
