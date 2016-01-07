@@ -152,6 +152,42 @@ a3 <- ggplot(tree_yield, aes(x = log10(TCSA), y = log10(cum_yield))) +
 multiplot(a1, a2, a3, cols=3)
 dev.off()
 
+a4 <- ggplot(tree_yield, aes(x = (tot_mass_kg + yield), 
+                             y = yield)) +
+  geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape = rootstock), size = 8) +
+  labs(x = "Total Stem Biomass & Yield", y = "Yield",
+       title="A") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+
+a5 <- ggplot(tree_yield, aes(x = (tot_mass_kg + cum_yield), 
+                             y = cum_yield)) +
+  geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape = rootstock), size = 8) +
+  labs(x = "Total Stem Biomass & Cumulative Yield", y = "Cumulative Yield",
+       title="B") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+
+a6 <- ggplot(tree_yield, aes(x = cum_yield / (tot_mass_kg + cum_yield), 
+                             y = TCSA)) +
+  geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape = rootstock), size = 8) +
+  labs(x = "Harvest Index", y = "TCSA",
+       title="C") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+
+a7 <- ggplot(tree_yield, aes(y = cum_yield/canopy_spread, 
+                             x = canopy_spread)) +
+  geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape = rootstock), size = 8) +
+  labs(x = "Canopy Spread", y = "Yield:Canopy Spread",
+       title="C") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+
 ggplot() +
   geom_point(aes(x=log10(TCSA), y=log10(tree_yield$height), 
                  col=tree_yield$rootstock))
