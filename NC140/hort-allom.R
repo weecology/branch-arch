@@ -1,5 +1,6 @@
 ### This script generates the allometries reported in Table 1.
 
+library(dplyr)
 library(smatr)
 library(ggplot2)
 
@@ -17,8 +18,52 @@ tree_yield <- dplyr::mutate(tree_yield,
                             tot_volume_m3 = tot_volume/1000000,
                             canopy_area = pi*(canopy_spread/2)^2,
                             tot_mass_kg = (tot_stem_m + tot_twig_m)/1000)
+rootstock_names <- data.frame(old_root_names = c("Bud.9", "CG.3041", "CG.6210",
+                                                 "M.26", "JM.8", "PiAu.5683"),
+                              new_root_names = c("B.9", "G.41", "G.210",
+                                                 "M.26", "JM.8", "Pi-AU 56-83"))
+tree_yield <- left_join(tree_yield, rootstock_names, 
+                        by = c("rootstock" = "old_root_names"))
+tree_yield$new_root_names <- factor(tree_yield$new_root_names, 
+                                     levels = c("B.9", "G.41", "G.210",
+                                                "M.26", "JM.8", "Pi-AU 56-83"))
 sma <- read.csv("SMAResults.csv")
 
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+  
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
 ### Individual Level
 
 test <- sma(log10((tot_stem_m + tot_twig_m)) ~ log10(TCSA), data = tree_yield)
@@ -88,64 +133,28 @@ test <- sma(log10((tot_stem_m + tot_twig_m + stump_wgt_kg)) ~ log10(cum_yield), 
 
 ### Visualize
 
-multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-  library(grid)
-  
-  # Make a list from the ... arguments and plotlist
-  plots <- c(list(...), plotlist)
-  
-  numPlots = length(plots)
-  
-  # If layout is NULL, then use 'cols' to determine layout
-  if (is.null(layout)) {
-    # Make the panel
-    # ncol: Number of columns of plots
-    # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
-                     ncol = cols, nrow = ceiling(numPlots/cols))
-  }
-  
-  if (numPlots==1) {
-    print(plots[[1]])
-    
-  } else {
-    # Set up the page
-    grid.newpage()
-    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
-    
-    # Make each plot, in the correct location
-    for (i in 1:numPlots) {
-      # Get the i,j matrix positions of the regions that contain this subplot
-      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-      
-      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
-                                      layout.pos.col = matchidx$col))
-    }
-  }
-}
-
-
-png("allometries.png", width = 1500, height = 450)
+png("allometries.png", width = 1500, height = 450)  # FIG 1
 a1 <- ggplot(tree_yield, aes(x=log10(TCSA), y=log10(tot_mass_kg))) +
   geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
-  geom_point(aes(shape=rootstock), size=8) +
-  labs(x="Log( TCSA )", y="Log( Stem Biomass )", title = "A") +
+  geom_point(aes(shape=new_root_names), size=10) +
+  labs(x="Log( TCSA )", y="Log( Stem Biomass )", 
+       shape = "Rootstock", title = "A") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
 
 a2 <- ggplot(tree_yield, aes(x = log10(tot_mass_kg), y = log10(cum_yield))) +
   geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
-  geom_point(aes(shape = rootstock), size = 8) +
+  geom_point(aes(shape = new_root_names), size = 10) +
   labs(x = "Log( Stem Biomass )", y = "Log( Cumulative Yield )",
-       title="B") +
+       shape = "Rootstock", title="B") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
 
 a3 <- ggplot(tree_yield, aes(x = log10(TCSA), y = log10(cum_yield))) +
   geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
-  geom_point(aes(shape = rootstock), size = 8) +
+  geom_point(aes(shape = new_root_names), size = 10) +
   labs(x = "Log( TCSA )", y = "Log( Cumulative Yield )",
-       title="C") +
+       shape = "Rootstock", title="C") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), 
         legend.justification=c(1,0), legend.position=c(1, 0))
