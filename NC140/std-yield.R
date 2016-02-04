@@ -113,7 +113,7 @@ duncan_HI  <- test$groups
 
 Y0 <- 1.83  # str_split(sma$X.Subtree..7[3], ";")[[1]][1]
 a <- 1.25  # str_split(sma$X.Subtree..7[3], ";")[[1]][4]
-mass <- 10^(as.numeric(Y0) +  as.numeric(a)*log10(tree_yield$TCSA))
+mass <- 10^(as.numeric(Y0) +  as.numeric(a)*log10(tree_yield$TCSA))  # est. in g
 
 allom_mass <- lm(mass ~ (tree_yield$tot_stem_m + tree_yield$tot_twig_m))  #0.981
 
@@ -223,6 +223,7 @@ ggplot(index_graph) +
   facet_grid(. ~ index_labels, scales="free_x") +
   labs(x = "    Yield efficiency               Modeled HI                Yield : Height        Yield : Canopy Area", 
        y = "Harvest Index", shape = "Rootstock") +
+  #geom_smooth(aes(y=harvest_index, x=value), method = "lm") +
   theme_bw(base_size = 28, base_family = "Helvetica") +
   theme(axis.title=element_text(size=32), 
         strip.background = element_rect(color='white', fill='white')) +
