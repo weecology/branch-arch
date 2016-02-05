@@ -191,6 +191,7 @@ yield_index_root <- dplyr::summarize(dplyr::group_by(yield_index, rootstock),
                                      avg_YCV = mean(yield_canopy_volume))
 
 test <- lm(harvest_index ~ yield_eff, data = yield_index)
+test <- lm(harvest_index ~ poly(yield_eff, 2, raw=T), data = yield_index)
 test <- lm(harvest_index ~ modeled_HI, data = yield_index)
 test <- lm(harvest_index ~ yield_height, data = yield_index)
 test <- lm(harvest_index ~ yield_canopy_area, data = yield_index)
@@ -223,7 +224,7 @@ ggplot(index_graph) +
   facet_grid(. ~ index_labels, scales="free_x") +
   labs(x = "    Yield efficiency               Modeled HI                Yield : Height        Yield : Canopy Area", 
        y = "Harvest Index", shape = "Rootstock") +
-  #geom_smooth(aes(y=harvest_index, x=value), method = "lm") +
+  geom_smooth(aes(y=harvest_index, x=value)) +
   theme_bw(base_size = 28, base_family = "Helvetica") +
   theme(axis.title=element_text(size=32), 
         strip.background = element_rect(color='white', fill='white')) +
