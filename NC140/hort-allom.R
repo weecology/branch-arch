@@ -72,8 +72,13 @@ test <- sma(log10((tot_stem_m + tot_twig_m)) ~ log10(height), data = tree_yield)
 test <- sma(log10((tot_stem_m + tot_twig_m)) ~ log10(tot_volume), data = tree_yield)
 test <- sma(log10((tot_volume)) ~ log10(TCSA), data = tree_yield)
 test <- sma(log10(cum_yield) ~ log10(TCSA), data = tree_yield)
+
 test <- sma(log10(tot_stem_m + tot_twig_m) ~ log10(pi*(canopy_spread/2)^2), data = tree_yield)
+test <- sma(log10(tot_stem_m + tot_twig_m) ~ log10(canopy_volume), data = tree_yield)
+test <- sma(log10(TCSA) ~ log10(pi*(canopy_spread/2)^2), data = tree_yield)
+test <- sma(log10(TCSA) ~ log10(canopy_volume), data = tree_yield)
 test <- sma(log10(cum_yield) ~ log10(pi*(canopy_spread/2)^2), data = tree_yield)
+
 summary(test)
 
 mass_allometry <- c()
