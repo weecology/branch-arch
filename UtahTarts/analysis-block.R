@@ -116,17 +116,17 @@ scaffolds <- filter(scaffold, scaffold!=0)
 pdf(file="block-architecture.pdf", width=4, height=9, family="Helvetica", 
     pointsize=14)
 par(mfrow=c(3,1))
-gen_plot(avg_vol$TCSA, avg_vol$cum_BCSA,
-         'TCSA [cm2]', 'BCSA [cm]',
+gen_plot(log(avg_vol$TCSA), log(avg_vol$cum_BCSA),
+         'TCSA [cm2]', 'BCSA [cm2]',
          expression(r^2 == 0.945), 'bottomright', 'A')
 
-gen_plot(avg_vol$TCSA, avg_vol$scaffold_l,
+gen_plot_poly(avg_vol$TCSA, avg_vol$scaffold_l,
          'TCSA [cm2]', 'Scaffold Length [cm]',
-         expression(r^2 == 0.788), 'bottomright', 'B')
+         expression(r^2 == 0.876), 'bottomright', 'B')
 
-gen_plot(avg_vol$scaffold_d, avg_vol$scaffold_l,
+gen_plot_poly(avg_vol$scaffold_d, avg_vol$scaffold_l,
          'Scaffold Diameter [cm]', 'Scaffold Length [cm]',
-         expression(r^2 == 0.739), 'bottomright', 'C')
+         expression(r^2 == 0.812), 'bottomright', 'C')
 dev.off()
 
 #canopy [Fig 2]
@@ -199,12 +199,19 @@ dev.off()
 
 
 ## How does grower affect tree shape?
-plot(avg_vol$grower, avg_vol$TCSA)
-plot(avg_vol$grower, avg_vol$height)
-plot(avg_vol$grower, avg_vol$no_scaffold)
-plot(avg_vol$grower, avg_vol$spread)
-plot(avg_vol_light$grower, avg_vol_light$sugar_out)
-plot(avg_vol_light$grower, avg_vol_light$absorbed)
+pdf(file="grower.pdf", width=7.5, height=5.5, family="Helvetica", 
+    pointsize=12)
+plot(avg_vol$grower.y, avg_vol$TCSA, ylab="TCSA")
+plot(avg_vol$grower.y, avg_vol$height, ylab="Height")
+plot(avg_vol$grower.y, avg_vol$no_scaffold, ylab="No. of Scaffolds")
+plot(avg_vol$grower.y, avg_vol$spread, ylab="Canopy Spread")
+plot(avg_vol_light$grower.y, avg_vol_light$sugar_out, ylab="Sugar Content")
+plot(avg_vol_light$grower.y, avg_vol_light$sugar_out/avg_vol_light$TCSA, 
+     ylab="Sugar Content / TCSA")
+plot(avg_vol_light$grower.y, avg_vol_light$absorbed, ylab="Light Absorption")
+plot(avg_vol_light$grower.y, avg_vol_light$absorbed/avg_vol_light$TCSA, 
+     ylab="Light Absorption / TCSA")
+dev.off()
 
 ### Other regressions
 
