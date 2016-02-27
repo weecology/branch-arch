@@ -16,7 +16,7 @@ for (i in 1:15){
   sugar_block <- sugar[sugar$id==i,]
   scaffold_block <- subset(scaffold, light_id==i)
   
-  subout <- matrix(ncol= 16, nrow = 5)
+  subout <- matrix(ncol= 18, nrow = 5)
   
   for (j in 1:5){
     
@@ -36,13 +36,15 @@ for (i in 1:15){
     subout[j, 7] = round(sd(scaffolds$length), 3)
     subout[j, 8] = round(mean(scaffolds$diameter), 0)
     subout[j, 9] = round(sd(scaffolds$diameter), 3)
-    subout[j, 10] = round(mean(light_pos$absorbed), 3)
-    subout[j, 11] = round(mean(light_pos$extinction), 3)
-    subout[j, 12] = round(mean(light_ind$extinction[1:8]), 3)
-    subout[j, 13] = round(mean(light_ind$extinction[9:16]), 3)
-    subout[j, 14] = round(mean(sugar_ind$sugar, na.rm=T), 2)
-    subout[j, 15] = round(mean(sugar_ind$sugar[1:4], na.rm=T), 2)
-    subout[j, 16] = round((subout[j,15] - sugar_ind$sugar[5]) / subout[j,15],3)
+    subout[j, 10] = round(mean(scaffolds$declination), 0)
+    subout[j, 11] = round(sd(scaffolds$declination), 3)
+    subout[j, 12] = round(mean(light_pos$absorbed), 3)
+    subout[j, 13] = round(mean(light_pos$extinction), 3)
+    subout[j, 14] = round(mean(light_ind$extinction[1:8]), 3)
+    subout[j, 15] = round(mean(light_ind$extinction[9:16]), 3)
+    subout[j, 16] = round(mean(sugar_ind$sugar, na.rm=T), 2)
+    subout[j, 17] = round(mean(sugar_ind$sugar[1:4], na.rm=T), 2)
+    subout[j, 18] = round((subout[j,15] - sugar_ind$sugar[5]) / subout[j,15],3)
   }
   
   if (exists('averages'))
@@ -52,7 +54,8 @@ for (i in 1:15){
     averages <- subout
     colnames(averages) = c('block', 'tree', 'trunk_mm', 'TCSA_cm2', 'no_scaffolds', 
                            'avg_scaffold_l', 'sd_scaffold_l',
-                           'avg_scaffold_d', 'sd_scaffold_d', 'avg_absorbed', 
+                           'avg_scaffold_d', 'sd_scaffold_d',
+                           'avg_angle', 'sd_angle', 'avg_absorbed', 
                            'avg_extinction', 'avg_extinction_low', 
                            'avg_extinction_high', 'avg_sugar', 'avg_sugar_out', 
                            'sugar_diff') 
@@ -64,7 +67,7 @@ for (i in 1:38){
   
   scaffold_block <- subset(scaffold, id==i)
   
-  subout <- matrix(ncol= 10, nrow = 5)
+  subout <- matrix(ncol= 12, nrow = 5)
   
   for (j in 1:5){
     
@@ -81,7 +84,9 @@ for (i in 1:38){
     subout[j, 7] = round(sd(scaffolds$length), 3)
     subout[j, 8] = round(mean(scaffolds$diameter), 0)
     subout[j, 9] = round(sd(scaffolds$diameter), 3)
-    subout[j, 10] = round(sum(pi*(scaffolds$diameter/20)^2), 0)
+    subout[j, 10] = round(mean(scaffolds$declination), 0)
+    subout[j, 11] = round(sd(scaffolds$declination), 3)
+    subout[j, 12] = round(sum(pi*(scaffolds$diameter/20)^2), 0)
 
   }
   
@@ -92,7 +97,8 @@ for (i in 1:38){
     averages_all <- subout
     colnames(averages_all) = c('block', 'tree', 'trunk_mm', 'TCSA_cm2', 'no_scaffolds', 
                                'avg_scaffold_l', 'sd_scaffold_l',
-                               'avg_scaffold_d', 'sd_scaffold_d', 'cum_BCSA') 
+                               'avg_scaffold_d', 'sd_scaffold_d', 
+                               'avg_angle', 'sd_angle', 'cum_BCSA') 
 }
 
 #write.csv(averages_all, "tree-averages-all.csv")
