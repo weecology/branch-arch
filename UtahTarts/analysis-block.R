@@ -249,6 +249,39 @@ gen_plot(avg_vol_light$TCSA/(2014-avg_vol_light$planting_year), avg_vol_light$su
          'Age', 'Sugar Content[Brix]',
          expression(R^2 == 0.435), 'topright', 'A')
 
+##Grower by Age
+young <- filter(avg_vol_zero, 2014-avg_vol_zero$planting_year <= 17) 
+young_light <- filter(avg_vol_light, 2014-avg_vol_light$planting_year <= 15)
+old <- filter(avg_vol_zero, 2014-avg_vol_zero$planting_year > 17) 
+old_light <- filter(avg_vol_light, 2014-avg_vol_light$planting_year > 17)
+
+pdf(file="grower_age.pdf", width=7.5, height=5.5, family="Helvetica", 
+    pointsize=12)
+par(mfrow = c(1,2))
+plot(young$grower.x, young$TCSA, ylab="TCSA", main = "Young (<15 yrs)")
+plot(old$grower.x, old$TCSA, ylab="TCSA", main = "Old (> 15 yrs)")
+plot(young$grower.x, young$height, ylab="Height", main = "Young (<15 yrs)")
+plot(old$grower.x, old$height, ylab="Height", main = "Old (> 15 yrs)")
+plot(young$grower.x, young$no_scaffold, ylab="No. of Scaffolds", main = "Young (<15 yrs)")
+plot(old$grower.x, old$no_scaffold, ylab="No. of Scaffolds", main = "Old (> 15 yrs)")
+plot(young$grower.x, young$angles, ylab="Branch Angle", ylim=c(40,70), main = "Young (<15 yrs)")
+plot(old$grower.x, old$angles, ylab="Branch Angle", ylim=c(40,70), main = "Old (> 15 yrs)")
+plot(young$grower.x, young$spread, ylab="Canopy Spread", main = "Young (<15 yrs)")
+plot(old$grower.x, old$spread, ylab="Canopy Spread", main = "Old (> 15 yrs)")
+plot(young_light$grower.x, young_light$sugar_out, ylab="Sugar Content", main = "Young (<15 yrs)")
+plot(old_light$grower.x, old_light$sugar_out, ylab="Sugar Content", main = "Old (> 15 yrs)")
+plot(young_light$grower.x, young_light$sugar_out/young_light$TCSA, 
+     ylab="Sugar Content / TCSA", main = "Young (<15 yrs)")
+plot(old_light$grower.x, old_light$sugar_out/old_light$TCSA, 
+     ylab="Sugar Content / TCSA", main = "Old (> 15 yrs)")
+plot(young_light$grower.x, young_light$absorbed, ylab="Light Absorption", main = "Young (<15 yrs)")
+plot(old_light$grower.x, old_light$absorbed, ylab="Light Absorption", main = "Old (> 15 yrs)")
+plot(young_light$grower.x, young_light$absorbed/young_light$TCSA, 
+     ylab="Light Absorption / TCSA", main = "Young (<15 yrs)")
+plot(old_light$grower.x, old_light$absorbed/old_light$TCSA, 
+     ylab="Light Absorption / TCSA", main = "Old (> 15 yrs)")
+dev.off()
+
 ##Spacing
 spacing <- mutate(avg_vol, grid_size = (spacing_x*0.3048) * (spacing_y*0.3048))
 hist(10000/spacing$grid_size)
