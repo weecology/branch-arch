@@ -65,6 +65,8 @@ avg_vol <- summarize(group_by(avg_vol_tree, block),
                      scaffold_l_sd = mean(sd_scaffold_l),
                      scaffold_d = mean(avg_scaffold_d),
                      scaffold_d_sd = mean(sd_scaffold_d),
+                     angles = mean(avg_angle),
+                     angles_sd = mean(sd_angle),
                      height = mean(height),
                      spread = mean(spread),
                      volume = mean(frustum),
@@ -87,6 +89,8 @@ avg_vol_light <- summarize(group_by(avg_vol_light_tree, block),
                            scaffold_l_sd = mean(sd_scaffold_l),
                            scaffold_d = mean(avg_scaffold_d),
                            scaffold_d_sd = mean(sd_scaffold_d),
+                           angles = mean(avg_angle),
+                           angles_sd = mean(sd_angle),
                            height = mean(height),
                            spread = mean(spread),
                            volume = mean(frustum),
@@ -204,6 +208,7 @@ pdf(file="grower.pdf", width=7.5, height=5.5, family="Helvetica",
 plot(avg_vol$grower.y, avg_vol$TCSA, ylab="TCSA")
 plot(avg_vol$grower.y, avg_vol$height, ylab="Height")
 plot(avg_vol$grower.y, avg_vol$no_scaffold, ylab="No. of Scaffolds")
+plot(avg_vol$grower.y, avg_vol$angles, ylab="Branch Angle", ylim=c(40,70))
 plot(avg_vol$grower.y, avg_vol$spread, ylab="Canopy Spread")
 plot(avg_vol_light$grower.y, avg_vol_light$sugar_out, ylab="Sugar Content")
 plot(avg_vol_light$grower.y, avg_vol_light$sugar_out/avg_vol_light$TCSA, 
@@ -212,6 +217,9 @@ plot(avg_vol_light$grower.y, avg_vol_light$absorbed, ylab="Light Absorption")
 plot(avg_vol_light$grower.y, avg_vol_light$absorbed/avg_vol_light$TCSA, 
      ylab="Light Absorption / TCSA")
 dev.off()
+
+plot(avg_vol$grower.y, avg_vol$angles, ylab="Branch Angle", ylim=c(40,70))
+
 
 ### Other regressions
 
@@ -263,6 +271,10 @@ gen_plot(avg_vol_light$TCSA/avg_vol_light$no_scaffold, avg_vol_light$sugar_out,
          'TCSA : No.Scaffold', 'Sugar Content [Brix]',
          expression(R^2 == 0.446), 'topleft', 'H') 
 
+gen_plot(avg_vol_light$TCSA/avg_vol_light$angles, avg_vol_light$sugar_out, 
+         'TCSA : No.Scaffold', 'Sugar Content [Brix]',
+         expression(R^2 == 0.366), 'topleft', 'H') 
+
 gen_plot(averages_light$avg_scaffold_l, averages_light$avg_sugar,
          'Average Scaffold Length [cm]', 'Fruit Sugar Content [Brix]', 
          expression(R^2 == 0.554)) 
@@ -293,3 +305,5 @@ gen_plot(averages_light$avg_absorbed, averages_light$avg_sugar,
 gen_plot(averages$TCSA_cm2, averages$no_scaffold,
          'TCSA [cm2]', 'No. of Scaffolds,
          expression(R^2 == 0.004), 'topleft')
+
+plot(avg_vol$height, avg_vol$angles)
