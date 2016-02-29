@@ -120,7 +120,7 @@ scaffolds <- filter(scaffold, scaffold!=0)
 pdf(file="block-architecture.pdf", width=4, height=9, family="Helvetica", 
     pointsize=14)
 par(mfrow=c(3,1))
-gen_plot(log(avg_vol$TCSA), log(avg_vol$cum_BCSA),
+gen_plot(avg_vol$TCSA, avg_vol$cum_BCSA,
          'TCSA [cm2]', 'BCSA [cm2]',
          expression(r^2 == 0.945), 'bottomright', 'A')
 
