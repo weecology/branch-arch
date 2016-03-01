@@ -16,4 +16,6 @@ for pdf in *.pdf
 
     # OCR the png and extract the text
     tesseract $filename-0.png $filename
+    rm $filename-*.png
+
   done
