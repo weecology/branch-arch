@@ -58,17 +58,17 @@ avg_vol_light <- summarize(group_by(avg_vol_light_tree, block),
                            volume = mean(frustum),
                            top_size = mean(top_frust),
                            top_cone = mean(top_cone),
-                           sugar = mean(avg_sugar),
-                           sugar_out = mean(avg_sugar_out),
-                           sugar_diff = mean(sugar_diff),
-                           absorbed = mean(avg_absorbed),
-                           extinction = mean(avg_extinction))
+                           sugar = mean(avg_sugar, na.rm=T),
+                           sugar_out = mean(avg_sugar_out, na.rm=T),
+                           sugar_diff = mean(sugar_diff, na.rm=T),
+                           absorbed = mean(avg_absorbed, na.rm=T),
+                           extinction = mean(avg_extinction, na.rm=T))
 
 avg_vol_light_tree_alt <- left_join(avg_vol_light_tree, tree_light_sugar,
                                     by = c('grower', 'block.y' = 'block', 'tree'))
 avg_vol_light_alt <- summarize(group_by(avg_vol_light_tree_alt, block),
-                               sugar_alt = mean(avg_sugar.y),
-                               light_alt = mean(avg_light))
+                               sugar_alt = mean(avg_sugar.y, na.rm=T),
+                               light_alt = mean(avg_light, na.rm=T))
 
 avg_vol_light <- inner_join(avg_vol_light, avg_vol_light_alt)
 avg_vol_light <- inner_join(avg_vol_light, block_info, by = 'block_code')
