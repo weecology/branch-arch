@@ -41,79 +41,8 @@ insert_blank <- function(){
        xlab='', ylab='', type ='n')
 }
 
-tree_averages <- read.csv('tree-averages-all.csv')
-tree_averages_light <- read.csv('tree-averages-light.csv')
-tree_volumes <- read.csv('canopy-size.csv')
-block_info <- read.csv('block.csv')
+source("block-summaries.R")
 
-scaffold <- read.csv('scaffold.csv')
-block_id <- distinct(select(scaffold, grower, block, id, light_id))
-block_code <- mutate(block_id, block_code = paste(grower, 0, block, sep=''))
-block_code[37, ]$block_code <- 'SS10'
-block_code[38, ]$block_code <- 'SS12'
-
-avg_block_code <- inner_join(tree_averages, block_code, by = c('block' = 'id'))
-avg_vol_tree <- inner_join(avg_block_code, tree_volumes, 
-                           by = c('block_code' = 'block', 'tree'))
-avg_vol <- summarize(group_by(avg_vol_tree, block),
-                     block_code = unique(block_code),
-                     grower = unique(grower),
-                     TCSA = mean(TCSA_cm2),
-                     cum_BCSA = mean(cum_BCSA),
-                     no_scaffolds = mean(no_scaffolds),
-                     scaffold_l = mean(avg_scaffold_l),
-                     scaffold_l_sd = mean(sd_scaffold_l),
-                     scaffold_d = mean(avg_scaffold_d),
-                     scaffold_d_sd = mean(sd_scaffold_d),
-                     angles = mean(avg_angle),
-                     angles_sd = mean(sd_angle),
-                     height = mean(height),
-                     spread = mean(spread),
-                     volume = mean(frustum),
-                     top_size = mean(top_frust),
-                     top_cone = mean(top_cone))
-
-avg_vol <- inner_join(avg_vol, block_info, by = 'block_code')
-
-tree_light_sugar <- read.csv('light-sugar.csv')
-avg_l_block_code <- inner_join(tree_averages_light, block_code, by = c('block' = 'light_id'))
-avg_vol_light_tree <- inner_join(avg_l_block_code, tree_volumes, 
-                                 by = c('block_code' = 'block', 'tree'))
-
-avg_vol_light <- summarize(group_by(avg_vol_light_tree, block),
-                           block_code = unique(block_code),
-                           grower = unique(grower),
-                           TCSA = mean(TCSA_cm2),
-                           no_scaffolds = mean(no_scaffolds),
-                           scaffold_l = mean(avg_scaffold_l),
-                           scaffold_l_sd = mean(sd_scaffold_l),
-                           scaffold_d = mean(avg_scaffold_d),
-                           scaffold_d_sd = mean(sd_scaffold_d),
-                           angles = mean(avg_angle),
-                           angles_sd = mean(sd_angle),
-                           height = mean(height),
-                           spread = mean(spread),
-                           volume = mean(frustum),
-                           top_size = mean(top_frust),
-                           top_cone = mean(top_cone),
-                           sugar = mean(avg_sugar, na.rm=T),
-                           sugar_out = mean(avg_sugar_out, na.rm=T),
-                           sugar_diff = mean(sugar_diff, na.rm=T),
-                           absorbed = mean(avg_absorbed, na.rm=T),
-                           extinction = mean(avg_extinction))
-
-avg_vol_light_tree_alt <- left_join(avg_vol_light_tree, tree_light_sugar,
-                                    by = c('grower', 'block.y' = 'block', 'tree'))
-avg_vol_light_alt <- summarize(group_by(avg_vol_light_tree_alt, block),
-                               sugar_alt = mean(avg_sugar.y, na.rm=T),
-                               light_alt = mean(avg_light, na.rm=T))
-
-avg_vol_light <- inner_join(avg_vol_light, avg_vol_light_alt)
-avg_vol_light <- inner_join(avg_vol_light, block_info, by = 'block_code')
-
-smalls <- filter(avg_vol, TCSA < 200)
-bigs <- filter(avg_vol, TCSA > 200)
-scaffolds <- filter(scaffold, scaffold!=0)
 ## How does tree size affect tree architecture and canopy size?
 
 #architecture [Fig 1]
@@ -210,15 +139,16 @@ plot(avg_vol$grower.y, avg_vol$height, ylab="Height")
 plot(avg_vol$grower.y, avg_vol$no_scaffold, ylab="No. of Scaffolds")
 plot(avg_vol$grower.y, avg_vol$angles, ylab="Branch Angle", ylim=c(40,70))
 plot(avg_vol$grower.y, avg_vol$spread, ylab="Canopy Spread")
+plot(avg_vol$grower.y, avg_vol$tree_acre, ylab="Tree / Acre")
+plot(avg_vol$grower.y, avg_vol$tree_yield_2014, ylab="Yield / Tree")
 plot(avg_vol_light$grower.y, avg_vol_light$sugar_out, ylab="Sugar Content")
 plot(avg_vol_light$grower.y, avg_vol_light$sugar_out/avg_vol_light$TCSA, 
      ylab="Sugar Content / TCSA")
 plot(avg_vol_light$grower.y, avg_vol_light$absorbed, ylab="Light Absorption")
 plot(avg_vol_light$grower.y, avg_vol_light$absorbed/avg_vol_light$TCSA, 
      ylab="Light Absorption / TCSA")
+plot(avg_vol_light$grower.y, avg_vol_light$absorbed, ylab="Light Absorption")
 dev.off()
-
-plot(avg_vol$grower.y, avg_vol$angles, ylab="Branch Angle", ylim=c(40,70))
 
 
 ### Other regressions
@@ -268,6 +198,10 @@ plot(young$grower.x, young$angles, ylab="Branch Angle", ylim=c(40,70), main = "Y
 plot(old$grower.x, old$angles, ylab="Branch Angle", ylim=c(40,70), main = "Old (> 15 yrs)")
 plot(young$grower.x, young$spread, ylab="Canopy Spread", main = "Young (<15 yrs)")
 plot(old$grower.x, old$spread, ylab="Canopy Spread", main = "Old (> 15 yrs)")
+plot(young$grower.y, young$tree_acre, ylab="Tree / Acre", main = "Young (<15 yrs)")
+plot(old$grower.y, old$tree_acre, ylab="Tree / Acre", main = "Old (> 15 yrs)")
+plot(young$grower.y, young$tree_yield_2014, ylab="Yield / Tree", main = "Young (<15 yrs)")
+plot(old$grower.y, old$tree_yield_2014, ylab="Yield / Tree", main = "Old (> 15 yrs)")
 plot(young_light$grower.x, young_light$sugar_out, ylab="Sugar Content", main = "Young (<15 yrs)")
 plot(old_light$grower.x, old_light$sugar_out, ylab="Sugar Content", main = "Old (> 15 yrs)")
 plot(young_light$grower.x, young_light$sugar_diff, ylab="Sugar Difference", main = "Young (<15 yrs)")
@@ -285,9 +219,11 @@ plot(old_light$grower.x, old_light$absorbed/old_light$TCSA,
 dev.off()
 
 ##Spacing
-spacing <- mutate(avg_vol, grid_size = (spacing_x*0.3048) * (spacing_y*0.3048))
-hist(10000/spacing$grid_size)
-abs(100 / (median(avg_vol$spacing_x)*0.3048)) * abs(100 / (median(avg_vol$spacing_y)*0.3048))
+hist(avg_vol$tree_hect)
+hist(avg_vol$tree_acre)
+
+abs(median(spacing$spacing_x)*0.3048)) * abs(100 / (median(avg_vol$spacing_y)*0.3048))
+abs(100 / (min(avg_vol$spacing_x)*0.3048)) * abs(100 / (min(avg_vol$spacing_y)*0.3048))
 
 gen_plot(avg_vol_light$spacing_x, avg_vol_light$sugar_out, 
          'In Row spacing', 'Sugar Content[Brix]',
@@ -331,14 +267,14 @@ gen_plot(averages_light$sd_scaffold_d, averages_light$avg_sugar,
          expression(R^2 == 0.110))
 
 gen_plot(averages_light$sd_scaffold_l, averages_light$avg_sugar, 
-         'St. Dev. Scaffold Diameter [mm]', 'Fruit Sugar Content [Brix]', 
+         'St. Dev. Scaffold Diameter [mm]', 'Fruit Sugar Content [Brix]') 
 
 gen_plot(averages_light$avg_absorbed, averages_light$avg_sugar, 
          'Average Light Absorption', 'Fruit Sugar Content [Brix]',
          expression(R^2 == 0.097))
 
 gen_plot(averages$TCSA_cm2, averages$no_scaffold,
-         'TCSA [cm2]', 'No. of Scaffolds,
+         'TCSA [cm2]', 'No. of Scaffolds',
          expression(R^2 == 0.004), 'topleft')
 
 plot(avg_vol$height, avg_vol$angles)
