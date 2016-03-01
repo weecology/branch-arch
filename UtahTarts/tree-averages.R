@@ -44,7 +44,7 @@ for (i in 1:15){
     subout[j, 15] = round(mean(light_ind$extinction[9:16]), 3)
     subout[j, 16] = round(mean(sugar_ind$sugar, na.rm=T), 2)
     subout[j, 17] = round(mean(sugar_ind$sugar[1:4], na.rm=T), 2)
-    subout[j, 18] = round((subout[j,15] - sugar_ind$sugar[5]) / subout[j,15],3)
+    subout[j, 18] = round((subout[j,17] - sugar_ind$sugar[5]) / subout[j,17],3)
   }
   
   if (exists('averages'))
