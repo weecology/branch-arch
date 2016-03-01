@@ -1,81 +1,8 @@
 ### This code generates the analysis for Utah Co tarts at the GROWER level
-library(dplyr)
+
 library(ggplot2)
 source("multiplot.R")
-
-tree_averages <- read.csv('tree-averages-all.csv')
-tree_averages_light <- read.csv('tree-averages-light.csv')
-tree_volumes <- read.csv('canopy-size.csv')
-block_info <- read.csv('block.csv')
-
-scaffold <- read.csv('scaffold.csv')
-block_id <- distinct(select(scaffold, grower, block, id, light_id))
-block_code <- mutate(block_id, block_code = paste(grower, 0, block, sep=''))
-block_code[37, ]$block_code <- 'SS10'
-block_code[38, ]$block_code <- 'SS12'
-
-avg_block_code <- inner_join(tree_averages, block_code, by = c('block' = 'id'))
-avg_vol_tree <- inner_join(avg_block_code, tree_volumes, 
-                           by = c('block_code' = 'block', 'tree'))
-avg_vol <- summarize(group_by(avg_vol_tree, block),
-                     block_code = unique(block_code),
-                     grower = unique(grower),
-                     TCSA = mean(TCSA_cm2),
-                     cum_BCSA = mean(cum_BCSA),
-                     no_scaffolds = mean(no_scaffolds),
-                     scaffold_l = mean(avg_scaffold_l),
-                     scaffold_l_sd = mean(sd_scaffold_l),
-                     scaffold_d = mean(avg_scaffold_d),
-                     scaffold_d_sd = mean(sd_scaffold_d),
-                     angles = mean(avg_angle),
-                     angles_sd = mean(sd_angle),
-                     height = mean(height),
-                     spread = mean(spread),
-                     volume = mean(frustum),
-                     top_size = mean(top_frust),
-                     top_cone = mean(top_cone))
-
-avg_vol <- inner_join(avg_vol, block_info, by = 'block_code')
-
-tree_light_sugar <- read.csv('light-sugar.csv')
-avg_l_block_code <- inner_join(tree_averages_light, block_code, by = c('block' = 'light_id'))
-avg_vol_light_tree <- inner_join(avg_l_block_code, tree_volumes, 
-                                 by = c('block_code' = 'block', 'tree'))
-
-avg_vol_light <- summarize(group_by(avg_vol_light_tree, block),
-                           block_code = unique(block_code),
-                           grower = unique(grower),
-                           TCSA = mean(TCSA_cm2),
-                           no_scaffolds = mean(no_scaffolds),
-                           scaffold_l = mean(avg_scaffold_l),
-                           scaffold_l_sd = mean(sd_scaffold_l),
-                           scaffold_d = mean(avg_scaffold_d),
-                           scaffold_d_sd = mean(sd_scaffold_d),
-                           angles = mean(avg_angle),
-                           angles_sd = mean(sd_angle),
-                           height = mean(height),
-                           spread = mean(spread),
-                           volume = mean(frustum),
-                           top_size = mean(top_frust),
-                           top_cone = mean(top_cone),
-                           sugar = mean(avg_sugar, na.rm=T),
-                           sugar_out = mean(avg_sugar_out, na.rm=T),
-                           sugar_diff = mean(sugar_diff, na.rm=T),
-                           absorbed = mean(avg_absorbed, na.rm=T),
-                           extinction = mean(avg_extinction, na.rm=T))
-
-avg_vol_light_tree_alt <- left_join(avg_vol_light_tree, tree_light_sugar,
-                                    by = c('grower', 'block.y' = 'block', 'tree'))
-avg_vol_light_alt <- summarize(group_by(avg_vol_light_tree_alt, block),
-                               sugar_alt = mean(avg_sugar.y, na.rm=T),
-                               light_alt = mean(avg_light, na.rm=T))
-
-avg_vol_light <- inner_join(avg_vol_light, avg_vol_light_alt)
-avg_vol_light <- inner_join(avg_vol_light, block_info, by = 'block_code')
-
-smalls <- filter(avg_vol, TCSA < 200)
-bigs <- filter(avg_vol, TCSA > 200)
-scaffolds <- filter(scaffold, scaffold!=0)
+source("block-summaries.R")
 
 #Visualize
 png("grower-architecture.png", width = 600, height = 1200) 
@@ -191,4 +118,34 @@ a12 <- ggplot(avg_vol_light, aes(x=spread/TCSA, y=sugar_out)) +
   theme(axis.title=element_text(size=36), legend.position=c(0.7,0.1),
         legend.direction = "horizontal")
 multiplot(a11, a12, cols=1)
+dev.off()
+
+avg_vol_zero <- filter(avg_vol, planting_year > 0)
+png("grower-age.png", width = 600, height = 1200)
+a13 <- ggplot(avg_vol_zero, aes(x=(2014-planting_year), y=TCSA)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color = 'black', size = 2) +
+  geom_point(aes(color=grower.x), size=10) +
+  labs(x="Age", y="TCSA [cm2]", 
+       color = "", title = "A") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+a14 <- ggplot(avg_vol_zero, aes(x=(2014-planting_year), y=spread)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color = 'black', size = 2) +
+  geom_point(aes(color=grower.x), size=10) +
+  labs(x="Age", y="Canopy Spread [cm]", 
+       color = "", title = "B") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+a15 <- ggplot(avg_vol_zero, aes(x=(2014-planting_year), y=volume)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color = 'black', size = 2) +
+  geom_point(aes(color=grower.x), size=10) +
+  labs(x="Age", y="Canopy Volume [m3]", 
+       color = "", title = "C") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position=c(0.7,0.1),
+        legend.direction = "horizontal")
+multiplot(a13, a14, a15, cols=1)
 dev.off()
