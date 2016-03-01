@@ -96,17 +96,17 @@ avg_vol_light <- summarize(group_by(avg_vol_light_tree, block),
                            volume = mean(frustum),
                            top_size = mean(top_frust),
                            top_cone = mean(top_cone),
-                           sugar = mean(avg_sugar),
-                           sugar_out = mean(avg_sugar_out),
-                           sugar_diff = mean(sugar_diff),
-                           absorbed = mean(avg_absorbed),
+                           sugar = mean(avg_sugar, na.rm=T),
+                           sugar_out = mean(avg_sugar_out, na.rm=T),
+                           sugar_diff = mean(sugar_diff, na.rm=T),
+                           absorbed = mean(avg_absorbed, na.rm=T),
                            extinction = mean(avg_extinction))
 
 avg_vol_light_tree_alt <- left_join(avg_vol_light_tree, tree_light_sugar,
                                     by = c('grower', 'block.y' = 'block', 'tree'))
 avg_vol_light_alt <- summarize(group_by(avg_vol_light_tree_alt, block),
-                               sugar_alt = mean(avg_sugar.y),
-                               light_alt = mean(avg_light))
+                               sugar_alt = mean(avg_sugar.y, na.rm=T),
+                               light_alt = mean(avg_light, na.rm=T))
 
 avg_vol_light <- inner_join(avg_vol_light, avg_vol_light_alt)
 avg_vol_light <- inner_join(avg_vol_light, block_info, by = 'block_code')
@@ -270,6 +270,8 @@ plot(young$grower.x, young$spread, ylab="Canopy Spread", main = "Young (<15 yrs)
 plot(old$grower.x, old$spread, ylab="Canopy Spread", main = "Old (> 15 yrs)")
 plot(young_light$grower.x, young_light$sugar_out, ylab="Sugar Content", main = "Young (<15 yrs)")
 plot(old_light$grower.x, old_light$sugar_out, ylab="Sugar Content", main = "Old (> 15 yrs)")
+plot(young_light$grower.x, young_light$sugar_diff, ylab="Sugar Difference", main = "Young (<15 yrs)")
+plot(old_light$grower.x, old_light$sugar_diff, ylab="Sugar Sugar Difference", main = "Old (> 15 yrs)")
 plot(young_light$grower.x, young_light$sugar_out/young_light$TCSA, 
      ylab="Sugar Content / TCSA", main = "Young (<15 yrs)")
 plot(old_light$grower.x, old_light$sugar_out/old_light$TCSA, 
