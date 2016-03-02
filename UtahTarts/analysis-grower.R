@@ -36,7 +36,7 @@ multiplot(a1, a2, a3, cols=1)
 dev.off()
 
 png("grower-canopy.png", width = 600, height = 1200) 
-a4 <- ggplot(avg_vol, aes(x=TCSA, y=height)) +
+b1 <- ggplot(avg_vol, aes(x=TCSA, y=height)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size = 2) +
   geom_point(aes(shape=grower.x), size=10, bg="black") +
@@ -45,7 +45,7 @@ a4 <- ggplot(avg_vol, aes(x=TCSA, y=height)) +
        shape = "", title = "A") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
-a5 <- ggplot(avg_vol, aes(x=TCSA, y=spread)) +
+b2 <- ggplot(avg_vol, aes(x=TCSA, y=spread)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size = 2) +
   geom_point(aes(shape=grower.x), size=10, bg="black") +
@@ -54,7 +54,7 @@ a5 <- ggplot(avg_vol, aes(x=TCSA, y=spread)) +
        shape = "", title = "B") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
-a6 <- ggplot(avg_vol, aes(x=TCSA, y=volume)) +
+b3 <- ggplot(avg_vol, aes(x=TCSA, y=volume)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size = 2) +
   geom_point(aes(shape=grower.x), size=10, bg="black") +
@@ -64,11 +64,11 @@ a6 <- ggplot(avg_vol, aes(x=TCSA, y=volume)) +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position=c(0.7,0.1),
         legend.direction = "horizontal")
-multiplot(a4, a5, a6, cols=1)
+multiplot(b1, b2, b3, cols=1)
 dev.off()
 
 png("grower-sugar.png", width = 1200, height = 900) 
-a7 <- ggplot(avg_vol_light, aes(x=TCSA, y=sugar_out)) +
+c1 <- ggplot(avg_vol_light, aes(x=TCSA, y=sugar_out)) +
   geom_smooth(method = "lm", formula = y ~ x,
               fill='white', color = 'black', size = 2) +
   geom_point(aes(shape=grower.x), size=10, bg="black") +
@@ -77,7 +77,7 @@ a7 <- ggplot(avg_vol_light, aes(x=TCSA, y=sugar_out)) +
        shape = "", title = "A") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
-a8 <- ggplot(avg_vol_light, aes(x=height, y=sugar_out)) +
+c2 <- ggplot(avg_vol_light, aes(x=height, y=sugar_out)) +
   geom_smooth(method = "lm", formula = y ~ x,
               fill='white', color = 'black', size = 2) +
   geom_point(aes(shape=grower.x), size=10, bg="black") +
@@ -87,7 +87,7 @@ a8 <- ggplot(avg_vol_light, aes(x=height, y=sugar_out)) +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position=c(0.7,0.9),
         legend.direction = "horizontal")
-a9 <- ggplot(avg_vol_light, aes(x=spread, y=sugar_out)) +
+c3 <- ggplot(avg_vol_light, aes(x=spread, y=sugar_out)) +
   geom_smooth(method = "lm", formula = y ~ x,
               fill='white', color = 'black', size = 2) +
   geom_point(aes(shape=grower.x), size=10, bg="black") +
@@ -96,7 +96,7 @@ a9 <- ggplot(avg_vol_light, aes(x=spread, y=sugar_out)) +
        color = "", title = "C") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
-a10 <- ggplot(avg_vol_light, aes(x=volume, y=sugar_out)) +
+c4 <- ggplot(avg_vol_light, aes(x=volume, y=sugar_out)) +
   geom_smooth(method = "lm", formula = y ~ x,
               fill='white', color = 'black', size = 2) +
   geom_point(aes(shape=grower.x), size=10, bg="black") +
@@ -105,12 +105,12 @@ a10 <- ggplot(avg_vol_light, aes(x=volume, y=sugar_out)) +
        shape = "", title = "D") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
-multiplot(a7, a9, a8, a10, cols=2)
+multiplot(c1, c3, c2, c4, cols=2)
 dev.off()
 
 #Visualize
-png("grower-sugar-byTCSA.png", width = 600, height = 900) 
-a11 <- ggplot(avg_vol_light, aes(x=height/TCSA, y=sugar_out)) +
+png("grower-sugar-byTCSA.png", width = 600, height = 1200) 
+d1 <- ggplot(avg_vol_light, aes(x=height/TCSA, y=sugar_out)) +
   geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
   geom_point(aes(shape=grower.x), size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
@@ -118,7 +118,7 @@ a11 <- ggplot(avg_vol_light, aes(x=height/TCSA, y=sugar_out)) +
        shape = "", title = "A") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
-a12 <- ggplot(avg_vol_light, aes(x=spread/TCSA, y=sugar_out)) +
+d2 <- ggplot(avg_vol_light, aes(x=spread/TCSA, y=sugar_out)) +
   geom_smooth(method = "lm", formula = y ~ x,
               fill='white', color = 'black', size = 2) +
   geom_point(aes(shape=grower.x), size=10, bg="black") +
@@ -126,9 +126,18 @@ a12 <- ggplot(avg_vol_light, aes(x=spread/TCSA, y=sugar_out)) +
   labs(x="Canopy Spread : TCSA", y="Sugar Content [Brix]", 
        shape = "", title = "B") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
-  theme(axis.title=element_text(size=36), legend.position=c(0.7,0.1),
+  theme(axis.title=element_text(size=36), legend.position="none")
+d3 <- ggplot(avg_vol_light, aes(x=volume/TCSA, y=sugar_out)) +
+  geom_smooth(method = "lm", formula = y ~ x,
+              fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape=grower.x), size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="Canopy Volume : TCSA", y="Sugar Content [Brix]", 
+       shape = "", title = "C") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position=c(0.3,0.1),
         legend.direction = "horizontal")
-multiplot(a11, a12, cols=1)
+multiplot(d1, d2, d3, cols=1)
 dev.off()
 
 avg_vol_zero <- filter(avg_vol, planting_year > 0)
@@ -165,25 +174,25 @@ multiplot(a13, a14, a15, cols=1)
 dev.off()
 
 png("grower-yield.png", width = 1200, height = 900) 
-a16 <- ggplot(avg_vol, aes(x=TCSA, y=tree_yield_2014)) +
-  geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
-  geom_point(aes(shape=grower.x), size=10, bg="black") +
+a16 <- ggplot(avg_vol, aes(x=TCSA, y=tree_yield_2014, shape=grower.x)) +
+  geom_smooth(method = "lm", fill='grey', color='black', size = 2) +
+  geom_point(size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
   labs(x="TCSA [cm2]", y="Yield / tree [lbs]", 
        shape="", title="A") +
-  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme_classic(base_size=24, base_family="Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
-a17 <- ggplot(avg_vol, aes(x=volume, y=tree_yield_2014)) +
-  geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
-  geom_point(aes(shape=grower.x), size=10, bg="black") +
+a17 <- ggplot(avg_vol, aes(x=volume, y=tree_yield_2014, shape=grower.x)) +
+  geom_smooth(method="lm", fill='grey', color='black', size=2) +
+  geom_point(size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
   labs(x="Canopy Volume [m3]", y="Yield / tree [lbs]", 
        shape="", title="B") +
-  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme_classic(base_size=24, base_family="Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
-a18 <- ggplot(avg_vol, aes(x=tree_acre, y=tree_yield_2014)) +
-  geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
-  geom_point(aes(shape=grower.x), size=10, bg="black") +
+a18 <- ggplot(avg_vol, aes(x=tree_acre, y=tree_yield_2014, shape=grower.x)) +
+  geom_smooth(method = "lm", fill='grey', color = 'black', size = 2) +
+  geom_point(size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
   scale_x_continuous(limits = c(125, 210)) +
   labs(x="Trees / Acre", y="Yield / Tree [lbs]", 
@@ -201,3 +210,42 @@ a19 <- ggplot(avg_vol_light, aes(x=sugar_out, y=tree_yield_2014)) +
         legend.direction = "horizontal")
 multiplot(a16, a18, a17, a19, cols=2)
 dev.off()
+
+### Extra
+ggplot(avg_vol_light, aes(x=volume*tree_acre, y=sugar_out)) +
+  geom_smooth(method = "lm", formula = y ~ x,
+              fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape=grower.x), size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="Canopy Volume / Acre", y="Sugar Content [Brix]", 
+       shape = "", title = "D") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+
+ggplot(avg_vol, aes(x=volume/TCSA, y=tree_yield_2014, shape=grower.x)) +
+  geom_smooth(method="lm", fill='grey', color='black', size=2) +
+  geom_point(size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="Canopy Volume / TCSA", y="Yield / tree [lbs]", 
+       shape="", title="B") +
+  theme_classic(base_size=24, base_family="Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+
+ggplot(avg_vol, aes(x=TCSA/(2014-planting_year), y=tree_yield_2014, shape=grower.x)) +
+  geom_smooth(method = "lm", fill='grey', color='black', size = 2) +
+  geom_point(size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="TCSA / Age", y="Yield / tree [lbs]", 
+       shape="", title="A") +
+  theme_classic(base_size=24, base_family="Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+
+ggplot(avg_vol_light, aes(x=sugar_out, y=tree_yield_2014/volume)) +
+  geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape=grower.x), size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="Sugar Content [Brix]", y="Yield / tree / Canopy Volume", 
+       shape="", title="D") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position=c(0.4,0.1),
+        legend.direction = "horizontal")
