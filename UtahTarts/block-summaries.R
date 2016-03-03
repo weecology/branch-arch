@@ -34,7 +34,8 @@ avg_vol <- summarize(group_by(avg_vol_tree, block),
                      top_cone = mean(top_cone))
 
 avg_vol <- inner_join(avg_vol, block_info, by = 'block_code')
-avg_vol <- mutate(avg_vol, grid_size = spacing_x * spacing_y, 
+avg_vol <- mutate(avg_vol, age = (2014-planting_year),
+                  grid_size = spacing_x * spacing_y, 
                   tree_acre = round(sqrt(43560)/spacing_x * 
                                     sqrt(43560)/spacing_y, 0),
                   tree_hect = round(100 / (spacing_x*0.3048) * 
@@ -75,7 +76,8 @@ avg_vol_light_alt <- summarize(group_by(avg_vol_light_tree_alt, block),
 
 avg_vol_light <- inner_join(avg_vol_light, avg_vol_light_alt)
 avg_vol_light <- inner_join(avg_vol_light, block_info, by = 'block_code')
-avg_vol_light <- mutate(avg_vol_light, grid_size = spacing_x * spacing_y, 
+avg_vol_light <- mutate(avg_vol_light, age = (2014-planting_year),
+                        grid_size = spacing_x * spacing_y, 
                         tree_acre = round(sqrt(43560)/spacing_x * 
                                             sqrt(43560)/spacing_y, 0),
                         tree_hect = round(100 / (spacing_x*0.3048) * 
