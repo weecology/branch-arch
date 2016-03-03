@@ -1,4 +1,4 @@
-### multiplot function
+### plotting functions
 
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   library(grid)
@@ -34,4 +34,11 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
                                       layout.pos.col = matchidx$col))
     }
   }
+}
+
+lm_eqn <- function(formula, df = avg_vol){
+  m <- lm(formula, data = df)
+  eq <- substitute(~~italic(r)^2~"="~r2,
+                   list(r2 = format(summary(m)$r.squared, digits = 3)))
+  return(as.character(as.expression(eq)))
 }
