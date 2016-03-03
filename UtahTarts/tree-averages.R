@@ -7,7 +7,21 @@ sugar <- read.csv('sugars.csv', sep=',', head=T)
 absorbed <- round((light_raw$light_sun - light_raw$light) / light_raw$light_sun, 3)
 extinction <- round(log(light_raw$light_sun / light_raw$light), 3)
 
-light <- cbind(light_raw, absorbed, extinction)
+low_light <- c()
+for (i in 1:length(light_raw[,1])){
+  if (light_raw$light_sun[i] < 1000) {
+    absorption <- round((light_raw$light_sun[i] - light_raw$light[i]) / light_raw$light_sun[i], 3)
+    if (absorption > 0){
+      low_light <- c(low_light, absorption)
+    } else {
+      low_light <- c(low_light, NA)
+    }
+  } else {
+    low_light <- c(low_light, NA)
+  }
+}
+                   
+light <- cbind(light_raw, absorbed, extinction, low_light)
 
 #Tree-level averages table
 for (i in 1:15){
@@ -16,7 +30,7 @@ for (i in 1:15){
   sugar_block <- sugar[sugar$id==i,]
   scaffold_block <- subset(scaffold, light_id==i)
   
-  subout <- matrix(ncol= 20, nrow = 5)
+  subout <- matrix(ncol= 19, nrow = 5)
   
   for (j in 1:5){
     
@@ -38,15 +52,14 @@ for (i in 1:15){
     subout[j, 9] = round(sd(scaffolds$diameter), 3)
     subout[j, 10] = round(mean(scaffolds$declination), 0)
     subout[j, 11] = round(sd(scaffolds$declination), 3)
-    subout[j, 12] = min(light_pos$light_sun)
-    subout[j, 13] = length(unique(light_pos$light_sun))
-    subout[j, 14] = round(mean(light_pos$absorbed[1:8]), 3)
-    subout[j, 15] = round(mean(light_pos$extinction), 3)
-    subout[j, 16] = round(mean(light_ind$extinction[1:8]), 3)
-    subout[j, 17] = round(mean(light_ind$extinction[9:16]), 3)
-    subout[j, 18] = round(mean(sugar_ind$sugar, na.rm=T), 2)
-    subout[j, 19] = round(mean(sugar_ind$sugar[1:4], na.rm=T), 2)
-    subout[j, 20] = round((subout[j,17] - sugar_ind$sugar[5]) / subout[j,17],3)
+    subout[j, 12] = round(mean(light_ind$low_light), 3)
+    subout[j, 13] = round(mean(light_pos$absorbed[1:8]), 3)
+    subout[j, 14] = round(mean(light_pos$extinction), 3)
+    subout[j, 15] = round(mean(light_ind$extinction[1:8]), 3)
+    subout[j, 16] = round(mean(light_ind$extinction[9:16]), 3)
+    subout[j, 17] = round(mean(sugar_ind$sugar, na.rm=T), 2)
+    subout[j, 18] = round(mean(sugar_ind$sugar[1:4], na.rm=T), 2)
+    subout[j, 19] = round((subout[j,17] - sugar_ind$sugar[5]) / subout[j,17],3)
   }
   
   if (exists('averages'))
@@ -57,7 +70,7 @@ for (i in 1:15){
     colnames(averages) = c('block', 'tree', 'trunk_mm', 'TCSA_cm2', 'no_scaffolds', 
                            'avg_scaffold_l', 'sd_scaffold_l',
                            'avg_scaffold_d', 'sd_scaffold_d',
-                           'avg_angle', 'sd_angle', 'full_sun', 'no_full_sun',
+                           'avg_angle', 'sd_angle', 'low_light',
                            'avg_absorbed', 'avg_extinction', 'avg_extinction_low', 
                            'avg_extinction_high', 'avg_sugar', 'avg_sugar_out', 
                            'sugar_diff') 
