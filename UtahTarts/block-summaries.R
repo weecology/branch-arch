@@ -65,6 +65,7 @@ avg_vol_light <- summarize(group_by(avg_vol_light_tree, block),
                            sugar = mean(avg_sugar, na.rm=T),
                            sugar_out = mean(avg_sugar_out, na.rm=T),
                            sugar_diff = mean(sugar_diff, na.rm=T),
+                           absorbed_low = mean(low_light, na.rm=T),
                            absorbed = mean(avg_absorbed, na.rm=T),
                            extinction = mean(avg_extinction))
 
