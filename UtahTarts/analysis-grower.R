@@ -5,13 +5,6 @@ library(ggplot2)
 source("multiplot.R")
 source("block-summaries.R")
 
-lm_eqn <- function(formula, df = avg_vol){
-  m <- lm(formula, data = df)
-  eq <- substitute(~~italic(r)^2~"="~r2,
-          list(r2 = format(summary(m)$r.squared, digits = 3)))
-  return(as.character(as.expression(eq)))
-}
-
 age_zero <- filter(avg_vol, !is.na(age))
 
 png("grower-age.png", width = 1200, height = 900)
@@ -373,6 +366,31 @@ ggplot(avg_vol_light, aes(x=sugar_out, y=tree_yield_2014/volume)) +
   scale_shape_manual(values=c(21:25)) +
   labs(x="Sugar Content [Brix]", y="Yield / tree / Canopy Volume", 
        shape="", title="D") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position=c(0.4,0.1),
+        legend.direction = "horizontal")
+
+ggplot(avg_vol_light, aes(x=absorbed_low, y=sugar_out)) +
+  geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape=grower.x), size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  annotate("text", x=0.7, y=8.5, size=18, 
+           label = lm_eqn(sugar_out~absorbed_low, df=avg_vol_light), 
+           parse = TRUE) +
+  labs(x="Light", y="Sugar Content [Brix]", 
+       shape="", title="D") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position=c(0.4,0.1),
+        legend.direction = "horizontal")
+
+ggplot(avg_vol_light, aes(x=volume, y=absorbed_low)) +
+  geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape=grower.x), size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  annotate("text", x=20, y=0.85, size=18, 
+           label = lm_eqn(absorbed_low~volume/TCSA, df=avg_vol_light), 
+           parse = TRUE) +
+  labs(x="Volume", y="Light", shape="", title="D") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position=c(0.4,0.1),
         legend.direction = "horizontal")
