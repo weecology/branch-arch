@@ -42,6 +42,10 @@ avg_vol <- mutate(avg_vol, age = (2014-planting_year),
                   tree_hect = round(100 / (spacing_x*0.3048) * 
                                    100 / (spacing_y*0.3048), 0))
 
+grower_conv <- data.frame(grower.x=levels(avg_vol$grower.x), 
+                          grower=as.factor(seq_along(levels(avg_vol$grower.x))))
+avg_vol <- left_join(avg_vol, grower_conv)
+                          
 tree_light_sugar <- read.csv('light-sugar.csv')
 avg_l_block_code <- inner_join(tree_averages_light, block_code, by = c('block' = 'light_id'))
 avg_vol_light_tree <- inner_join(avg_l_block_code, tree_volumes, 
@@ -85,6 +89,7 @@ avg_vol_light <- mutate(avg_vol_light, age = (2014-planting_year),
                                             sqrt(43560)/spacing_y, 0),
                         tree_hect = round(100 / (spacing_x*0.3048) * 
                           100 / (spacing_y*0.3048), 0))
+avg_vol_light <- left_join(avg_vol_light, grower_conv)
 
 smalls <- filter(avg_vol, TCSA < 200)
 bigs <- filter(avg_vol, TCSA > 200)
