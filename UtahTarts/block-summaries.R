@@ -1,6 +1,13 @@
 ### Summarize tree-averages and block level data
 library(dplyr)
 
+biennial_index <- function(yield1, yield2, yield3, yield4){
+  a <- abs(yield1 - yield2) / (yield1 + yield2)
+  b <- abs(yield2 - yield3) / (yield2 + yield3)
+  c <- abs(yield3 - yield4) / (yield3 + yield4)
+  return(mean(c(a, b, c), na.rm=T))
+}
+
 tree_averages <- read.csv('tree-averages-all.csv')
 tree_averages_light <- read.csv('tree-averages-light.csv')
 tree_volumes <- read.csv('canopy-size.csv')
@@ -41,6 +48,11 @@ avg_vol <- mutate(avg_vol, age = (2014-planting_year),
                                     sqrt(43560)/spacing_y, 0),
                   tree_hect = round(100 / (spacing_x*0.3048) * 
                                    100 / (spacing_y*0.3048), 0))
+
+avg_vol <- avg_vol %>%
+  rowwise() %>% 
+  mutate(biennial = biennial_index(tree_yield_2012, tree_yield_2013,
+                                   tree_yield_2014, tree_yield_2015))
 
 grower_conv <- data.frame(grower.x=levels(avg_vol$grower.x), 
                           grower=as.factor(seq_along(levels(avg_vol$grower.x))))
@@ -90,6 +102,11 @@ avg_vol_light <- mutate(avg_vol_light, age = (2014-planting_year),
                         tree_hect = round(100 / (spacing_x*0.3048) * 
                           100 / (spacing_y*0.3048), 0))
 avg_vol_light <- left_join(avg_vol_light, grower_conv)
+
+avg_vol_light <- avg_vol_light %>%
+  rowwise() %>% 
+  mutate(biennial = biennial_index(tree_yield_2012, tree_yield_2013,
+                                   tree_yield_2014, tree_yield_2015))
 
 smalls <- filter(avg_vol, TCSA < 200)
 bigs <- filter(avg_vol, TCSA > 200)
