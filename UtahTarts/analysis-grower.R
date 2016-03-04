@@ -232,7 +232,7 @@ b1 <- ggplot(avg_vol, aes(x=TCSA, y=tree_yield_2014, shape=grower.x)) +
   geom_abline(slope=1) +
   geom_abline(slope=0.5) +
   geom_abline(slope=0.25) +
-  labs(x="TCSA [cm2]", y="Yield / tree [lbs]", 
+  labs(x="TCSA [cm2]", y="Yield / Tree [lbs]", 
        shape="", title="A") +
   theme_classic(base_size=24, base_family="Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
@@ -240,7 +240,7 @@ b2 <- ggplot(avg_vol, aes(x=volume, y=tree_yield_2014, shape=grower.x)) +
   geom_smooth(method="lm", fill='grey', color='black', size=2) +
   geom_point(size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
-  labs(x="Canopy Volume [m3]", y="Yield / tree [lbs]", 
+  labs(x="Canopy Volume [m3]", y="Yield / Tree [lbs]", 
        shape="", title="B") +
   theme_classic(base_size=24, base_family="Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
@@ -257,7 +257,7 @@ b4 <- ggplot(avg_vol, aes(x=volume/TCSA, y=tree_yield_2014, shape=grower.x)) +
   geom_smooth(method="lm", fill='grey', color='black', size=2) +
   geom_point(size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
-  labs(x="Canopy Volume / TCSA", y="Yield / tree [lbs]", 
+  labs(x="Canopy Volume / TCSA", y="Yield / Tree [lbs]", 
        shape="", title="D") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position=c(0.7,0.1),
@@ -318,7 +318,37 @@ c4 <- ggplot(avg_vol_light, aes(x=volume, y=sugar_out)) +
 multiplot(c1, c3, c2, c4, cols=2)
 dev.off()
 
-
+png("yield-year.png", width = 600, height = 900)
+d1 <- ggplot(avg_vol, aes(x=tree_yield_2013, y=tree_yield_2014, shape=grower.x)) +
+  geom_smooth(method = "lm", fill='grey', color='black', size = 2) +
+  geom_point(size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  scale_x_continuous(limits = c(0,200)) +
+  scale_y_continuous(limits = c(0,200)) +
+  geom_abline(slope=1) +
+  labs(x="Yield 2013", y="Yield 2014", 
+       shape="", title="A") +
+  annotate("text", x=75, y=20, size=18, 
+           label = lm_eqn(tree_yield_2014~tree_yield_2013), 
+           parse = TRUE) +
+  theme_classic(base_size=24, base_family="Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+d2 <- ggplot(avg_vol, aes(x=tree_yield_2014, y=tree_yield_2015, shape=grower.x)) +
+  geom_smooth(method = "lm", fill='grey', color='black', size = 2) +
+  geom_point(size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  scale_x_continuous(limits = c(0,200)) +
+  scale_y_continuous(limits = c(0,200)) +
+  geom_abline(slope=1) +
+  labs(x="Yield 2014", y="Yield 2015", 
+       shape="", title="B") +
+  annotate("text", x=75, y=20, size=18, 
+           label = lm_eqn(tree_yield_2015~tree_yield_2014), 
+           parse = TRUE) +
+  theme_classic(base_size=24, base_family="Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+multiplot(d1, d2, cols = 1)
+dev.off()
 
 ### Extra
 
@@ -369,6 +399,15 @@ ggplot(avg_vol, aes(x=mass+tree_yield_2014, y=tree_yield_2014, shape=grower.x)) 
   geom_abline(slope=1) +
   geom_abline(slope=0.5) +
   geom_abline(slope=0.25) +
+  theme_classic(base_size=24, base_family="Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+
+ggplot(avg_vol, aes(x=age, y=tree_yield_2014/(mass+tree_yield_2014), shape=grower.x)) +
+  geom_smooth(method="lm", fill='grey', color='black', size=2) +
+  geom_point(size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="Age", y="Harvest Index", 
+       shape="", title="B") +
   theme_classic(base_size=24, base_family="Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
 
