@@ -351,6 +351,27 @@ ggplot(avg_vol, aes(x=volume/TCSA, y=tree_yield_2014, shape=grower.x)) +
   theme_classic(base_size=24, base_family="Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
 
+ggplot(avg_vol, aes(x=mass, y=tree_yield_2014, shape=grower.x)) +
+  geom_smooth(method="lm", fill='grey', color='black', size=2) +
+  geom_point(size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="mass", y="Yield / tree [lbs]", 
+       shape="", title="B") +
+  theme_classic(base_size=24, base_family="Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+
+ggplot(avg_vol, aes(x=mass+tree_yield_2014, y=tree_yield_2014, shape=grower.x)) +
+  geom_smooth(method="lm", fill='grey', color='black', size=2) +
+  geom_point(size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="Total Mass", y="Fruit Mass", 
+       shape="", title="B") +
+  geom_abline(slope=1) +
+  geom_abline(slope=0.5) +
+  geom_abline(slope=0.25) +
+  theme_classic(base_size=24, base_family="Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+
 ggplot(avg_vol, aes(x=TCSA/age, y=tree_yield_2014, shape=grower.x)) +
   geom_smooth(method = "lm", fill='grey', color='black', size = 2) +
   geom_point(size=10, bg="black") +
