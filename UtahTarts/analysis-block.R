@@ -154,7 +154,7 @@ dev.off()
 ### Other regressions
 
 ##Age
-avg_vol_zero <- filter(avg_vol, planting_year > 0)
+avg_vol_zero <- filter(avg_vol, !is.na(age))
 gen_plot_poly((2014-avg_vol_zero$planting_year), avg_vol_zero$TCSA,
               'Age', 'TCSA',
               expression(r^2 == 0.825), 'bottomright', 'C')
@@ -180,43 +180,50 @@ gen_plot(avg_vol_light$TCSA/(2014-avg_vol_light$planting_year), avg_vol_light$su
          expression(R^2 == 0.435), 'topright', 'A')
 
 ##Grower by Age
-young <- filter(avg_vol_zero, 2014-avg_vol_zero$planting_year <= 17) 
-young_light <- filter(avg_vol_light, 2014-avg_vol_light$planting_year <= 15)
-old <- filter(avg_vol_zero, 2014-avg_vol_zero$planting_year > 17) 
-old_light <- filter(avg_vol_light, 2014-avg_vol_light$planting_year > 17)
+young <- filter(avg_vol, age <= 15) 
+young_light <- filter(avg_vol_light, age <= 15)
+old <- filter(avg_vol, age > 15) 
+old_light <- filter(avg_vol_light, age > 15)
 
-pdf(file="grower_age.pdf", width=7.5, height=5.5, family="Helvetica", 
-    pointsize=12)
-par(mfrow = c(1,2))
-plot(young$grower.x, young$TCSA, ylab="TCSA", main = "Young (<15 yrs)")
-plot(old$grower.x, old$TCSA, ylab="TCSA", main = "Old (> 15 yrs)")
-plot(young$grower.x, young$height, ylab="Height", main = "Young (<15 yrs)")
-plot(old$grower.x, old$height, ylab="Height", main = "Old (> 15 yrs)")
-plot(young$grower.x, young$no_scaffold, ylab="No. of Scaffolds", main = "Young (<15 yrs)")
-plot(old$grower.x, old$no_scaffold, ylab="No. of Scaffolds", main = "Old (> 15 yrs)")
-plot(young$grower.x, young$angles, ylab="Branch Angle", ylim=c(40,70), main = "Young (<15 yrs)")
-plot(old$grower.x, old$angles, ylab="Branch Angle", ylim=c(40,70), main = "Old (> 15 yrs)")
-plot(young$grower.x, young$spread, ylab="Canopy Spread", main = "Young (<15 yrs)")
-plot(old$grower.x, old$spread, ylab="Canopy Spread", main = "Old (> 15 yrs)")
-plot(young$grower.y, young$tree_acre, ylab="Tree / Acre", main = "Young (<15 yrs)")
-plot(old$grower.y, old$tree_acre, ylab="Tree / Acre", main = "Old (> 15 yrs)")
-plot(young$grower.y, young$tree_yield_2014, ylab="Yield / Tree", main = "Young (<15 yrs)")
-plot(old$grower.y, old$tree_yield_2014, ylab="Yield / Tree", main = "Old (> 15 yrs)")
-plot(young_light$grower.x, young_light$sugar_out, ylab="Sugar Content", main = "Young (<15 yrs)")
-plot(old_light$grower.x, old_light$sugar_out, ylab="Sugar Content", main = "Old (> 15 yrs)")
-plot(young_light$grower.x, young_light$sugar_diff, ylab="Sugar Difference", main = "Young (<15 yrs)")
-plot(old_light$grower.x, old_light$sugar_diff, ylab="Sugar Sugar Difference", main = "Old (> 15 yrs)")
-plot(young_light$grower.x, young_light$sugar_out/young_light$TCSA, 
-     ylab="Sugar Content / TCSA", main = "Young (<15 yrs)")
-plot(old_light$grower.x, old_light$sugar_out/old_light$TCSA, 
-     ylab="Sugar Content / TCSA", main = "Old (> 15 yrs)")
+pdf(file="grower_age.pdf", width=6, height=9, family="Helvetica", 
+    pointsize=14)
+par(mfrow = c(3,2), mar=c(4,4,3,1))
+plot(young$grower, young$TCSA, ylab="TCSA", main = "Young (<15 yrs)")
+plot(old$grower, old$TCSA, ylab="TCSA", main = "Old (> 15 yrs)")
+plot(young$grower, young$height, ylab="Height")
+plot(old$grower, old$height, ylab="Height")
+plot(young$grower, young$no_scaffold, ylab="No. of Scaffolds", xlab = "Grower")
+plot(old$grower, old$no_scaffold, ylab="No. of Scaffolds", xlab = "Grower")
+plot(young$grower, young$angles, ylab="Branch Angle", ylim=c(40,70), main = "Young (<15 yrs)")
+plot(old$grower, old$angles, ylab="Branch Angle", ylim=c(40,70), main = "Old (> 15 yrs)")
+plot(young$grower, young$spread, ylab="Canopy Spread")
+plot(old$grower, old$spread, ylab="Canopy Spread")
+plot(young$grower, young$tree_acre, ylab="Tree / Acre", xlab = "Grower")
+plot(old$grower, old$tree_acre, ylab="Tree / Acre", xlab = "Grower")
+plot(young$grower, young$tree_yield_2014, ylab="Yield / Tree", main = "Young (<15 yrs)")
+plot(old$grower, old$tree_yield_2014, ylab="Yield / Tree", main = "Old (> 15 yrs)")
+plot(young$grower, young$tree_yield_2014*young$tree_acre, ylab="Yield / Acre")
+plot(old$grower, old$tree_yield_2014*old$tree_acre, ylab="Yield / Acre")
+plot(young$grower, young$tree_yield_2014/young$TCSA, 
+     ylab="Yield Efficiency", xlab = "Grower")
+plot(old$grower, old$tree_yield_2014/old$TCSA, 
+     ylab="Yield Efficiency", xlab = "Grower")
+plot(young$grower, young$biennial, ylab="Biennial Index", main = "Young (<15 yrs)")
+plot(old$grower, old$biennial, ylab="Biennial Index", main = "Old (> 15 yrs)")
+plot(young_light$grower, young_light$sugar_out, ylab="Sugar Content")
+plot(old_light$grower, old_light$sugar_out, ylab="Sugar Content")
+plot(young_light$grower, young_light$sugar_out/young_light$TCSA, 
+     ylab="Sugar Content / TCSA", xlab = "Grower")
+plot(old_light$grower, old_light$sugar_out/old_light$TCSA, 
+     ylab="Sugar Content / TCSA", xlab = "Grower")
+dev.off()
+
 plot(young_light$grower.x, young_light$absorbed, ylab="Light Absorption", main = "Young (<15 yrs)")
 plot(old_light$grower.x, old_light$absorbed, ylab="Light Absorption", main = "Old (> 15 yrs)")
 plot(young_light$grower.x, young_light$absorbed/young_light$TCSA, 
      ylab="Light Absorption / TCSA", main = "Young (<15 yrs)")
 plot(old_light$grower.x, old_light$absorbed/old_light$TCSA, 
      ylab="Light Absorption / TCSA", main = "Old (> 15 yrs)")
-dev.off()
 
 ##Spacing
 hist(avg_vol$tree_hect)
