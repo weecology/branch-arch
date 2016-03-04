@@ -405,7 +405,7 @@ e4 <- ggplot(avg_vol, aes(x=TCSA, y=tree_yield_2014*tree_acre)) +
   scale_shape_manual(values=c(21:25)) +
   annotate("text", x=150, y=5000, size=18, 
            label = lm_eqn(tree_yield_2014*tree_acre~TCSA), parse = TRUE) +
-  labs(x="TCSA [cm2]", y="Yield/Acre", 
+  labs(x="TCSA [cm2]", y="Yield / Acre", 
        shape="", title="C") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
@@ -424,13 +424,13 @@ f1 <- ggplot(avg_vol, aes(x=angles, y=spread)) +
        shape = "", title = "A") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
-f2 <- ggplot(avg_vol, aes(x=volume, y=tree_acre)) +
+f2 <- ggplot(avg_vol, aes(y=volume, x=tree_acre)) +
   geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
   geom_point(aes(shape=grower), size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
-  annotate("text", x=20, y=220, size=18, 
+  annotate("text", y=8, x=215, size=18, 
            label = lm_eqn(tree_acre~volume), parse = TRUE) +
-  labs(x="Canopy Volume", y="Tree / Acre", 
+  labs(y="Canopy Volume", x="Tree / Acre", 
        shape="", title="B") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
