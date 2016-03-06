@@ -109,22 +109,25 @@ C1 <- ggplot(avg_vol, aes(x=TCSA, y=tree_yield_2014)) +
   theme_classic(base_size=24, base_family="Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
 C2 <- ggplot(avg_vol_light, aes(x=TCSA, y=sugar_out)) +
-  geom_smooth(method = "lm", formula = y ~ x,
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size = 2) +
   geom_point(aes(shape=grower), size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
   labs(x="TCSA [cm2]", y="Sugar Content [Brix]", 
        shape="", title="B") +
   annotate("text", x=310, y=14, size=18, 
-           label = lm_eqn(sugar_out~TCSA, df=avg_vol_light), parse = TRUE) +
+           label = lm_eqn(sugar_out~poly(TCSA, 2, raw=T), df=avg_vol_light), 
+           parse = TRUE) +
   theme_classic(base_size=24, base_family="Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
 C3 <- ggplot(avg_vol, aes(x=TCSA/age, y=tree_yield_2014)) +
-  geom_smooth(method = "lm", fill='white', color='black', size = 2) +
+  geom_smooth(method = "lm", formula = y ~ x,
+              fill='white', color='black', size = 2) +
   geom_point(aes(shape=grower), size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
   annotate("text", x=17, y=25, size=18, 
-           label = lm_eqn(tree_yield_2014~TCSA/age), parse = TRUE) +
+           label = lm_eqn(tree_yield_2014~TCSA/age), 
+                          parse = TRUE) +
   labs(x="TCSA / Age", y="Yield / tree [lbs]", 
        shape="", title="C") +
   theme_classic(base_size=24, base_family="Helvetica") +
@@ -185,7 +188,7 @@ D4 <- ggplot(avg_vol_light, aes(x=volume/TCSA, y=sugar_out)) +
   geom_point(aes(shape=grower), size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
   labs(x="Canopy Volume : TCSA", y="Sugar Content [Brix]", 
-       shape = "", title = "C") +
+       shape = "", title = "D") +
   annotate("text", x=0.150, y=12.5, size=18, 
            label = lm_eqn(sugar_out~volume/TCSA, df=avg_vol_light), 
            parse = TRUE) +
@@ -469,7 +472,16 @@ ggplot(avg_vol, aes(x=volume/TCSA, y=tree_yield_2014, shape=grower)) +
   theme_classic(base_size=24, base_family="Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
 
-ggplot(avg_vol, aes(x=mass, y=tree_yield_2014, shape=grower)) +
+ggplot(avg_vol, aes(x=age, y=tree_yield_2014, shape=grower)) +
+  geom_smooth(method="lm", fill='grey', color='black', size=2) +
+  geom_point(size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="Age", y="Yield / tree [lbs]", 
+       shape="", title="B") +
+  theme_classic(base_size=24, base_family="Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+
+ggplot(avg_vol, aes(x=age, y=tree_yield_2014, shape=grower)) +
   geom_smooth(method="lm", fill='grey', color='black', size=2) +
   geom_point(size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
@@ -536,14 +548,14 @@ ggplot(avg_vol_light, aes(x=volume, y=absorbed_low)) +
   geom_point(aes(shape=grower), size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
   annotate("text", x=20, y=0.85, size=18, 
-           label = lm_eqn(absorbed_low~volume/TCSA, df=avg_vol_light), 
+           label = lm_eqn(absorbed_low~volume, df=avg_vol_light), 
            parse = TRUE) +
   labs(x="Volume", y="Light", shape="", title="D") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position=c(0.4,0.1),
         legend.direction = "horizontal")
 
-ggplot(avg_vol, aes(x=volume, y=absorbed_low)) +
+ggplot(avg_vol_light, aes(x=volume, y=absorbed_low)) +
   geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
   geom_point(aes(shape=grower), size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
@@ -553,4 +565,46 @@ ggplot(avg_vol, aes(x=volume, y=absorbed_low)) +
   labs(x="Volume", y="Light", shape="", title="D") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position=c(0.4,0.1),
+        legend.direction = "horizontal")
+
+ggplot(avg_vol_light, aes(x=volume, y=sugar_out)) +
+  geom_smooth(method = "lm", formula = y ~ x,
+              fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape=grower), size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  annotate("text", x=1.1, y=9.75, size=18, 
+           label = lm_eqn(sugar_out~poly(volume, 2, raw=T), df=avg_vol_light), 
+           parse = TRUE) +
+  labs(x="Volume", y="Sugar Content [Brix]", 
+       shape = "", title = "B") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position=c(0.7,0.9),
+        legend.direction = "horizontal")
+
+ggplot(avg_vol_light, aes(x=(height*spread), y=sugar_out)) +
+  geom_smooth(method = "lm", formula = y ~ x,
+              fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape=grower), size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  annotate("text", x=1.1, y=9.75, size=18, 
+           label = lm_eqn(sugar_out~height*spread, df=avg_vol_light), 
+           parse = TRUE) +
+  labs(x="Height  Spread", y="Sugar Content [Brix]", 
+       shape = "", title = "B") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position=c(0.7,0.9),
+        legend.direction = "horizontal")
+
+ggplot(avg_vol, aes(x=(height/100)*(spread/100), y=volume)) +
+  geom_smooth(method = "lm", formula = y ~ x,
+              fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape=grower), size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  annotate("text", x=25, y=12, size=18, 
+           label = lm_eqn(volume~height*spread, df=avg_vol), 
+           parse = TRUE) +
+  labs(x="Height*Spread", y="Volume", 
+       shape = "", title = "B") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position=c(0.7,0.1),
         legend.direction = "horizontal")
