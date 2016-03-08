@@ -141,7 +141,8 @@ test <- sma(log10((tot_stem_m + tot_twig_m + stump_wgt_kg)) ~ log10(cum_yield), 
 png("allometries.png", width = 1500, height = 450)  # FIG 1
 a1 <- ggplot(tree_yield, aes(x=log10(TCSA), y=log10(tot_mass_kg))) +
   geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
-  geom_point(aes(shape=new_root_names), size=10) +
+  geom_point(aes(shape=new_root_names), size=10, bg="black") +
+  scale_shape_manual(values=c(20:25)) +
   labs(x="Log( TCSA )", y="Log( Stem Biomass )", 
        shape = "Rootstock", title = "A") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
@@ -149,7 +150,8 @@ a1 <- ggplot(tree_yield, aes(x=log10(TCSA), y=log10(tot_mass_kg))) +
 
 a2 <- ggplot(tree_yield, aes(x = log10(tot_mass_kg), y = log10(cum_yield))) +
   geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
-  geom_point(aes(shape = new_root_names), size = 10) +
+  geom_point(aes(shape=new_root_names), size=10, bg="black") +
+  scale_shape_manual(values=c(20:25)) +
   labs(x = "Log( Stem Biomass )", y = "Log( Cumulative Yield )",
        shape = "Rootstock", title="B") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
@@ -157,10 +159,12 @@ a2 <- ggplot(tree_yield, aes(x = log10(tot_mass_kg), y = log10(cum_yield))) +
 
 a3 <- ggplot(tree_yield, aes(x = log10(TCSA), y = log10(cum_yield))) +
   geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
-  geom_point(aes(shape = new_root_names), size = 10) +
+  geom_point(aes(shape=new_root_names), size=10, bg="black") +
+  scale_shape_manual(values=c(20:25)) +
   labs(x = "Log( TCSA )", y = "Log( Cumulative Yield )",
        shape = "Rootstock", title="C") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
+  guides(shape=guide_legend(ncol=2)) +
   theme(axis.title=element_text(size=36), 
         legend.justification=c(1,0), legend.position=c(1, 0))
 multiplot(a1, a2, a3, cols=3)
