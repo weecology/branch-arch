@@ -220,14 +220,16 @@ index_graph <- dplyr::filter(index_graph,
 
 png("index_comp.png", width = 1500, height = 450)
 ggplot(index_graph) +
-  geom_point(aes(y=harvest_index, x=value, shape = new_root_names), size = 10) +
+  geom_point(aes(y=harvest_index, x=value, shape = new_root_names), 
+             size = 10, bg="black") +
+  scale_shape_manual(values=c(20:25)) +
   facet_grid(. ~ index_labels, scales="free_x") +
-  labs(x = "    Yield efficiency               Modeled HI                Yield : Height        Yield : Canopy Area", 
+  labs(x = "      Yield efficiency                   Modeled HI                     Yield : Height              Yield : Canopy Area", 
        y = "Harvest Index", shape = "Rootstock") +
-  geom_smooth(aes(y=harvest_index, x=value)) +
+  #geom_smooth(aes(y=harvest_index, x=value), method="lm") +
   theme_bw(base_size = 28, base_family = "Helvetica") +
   theme(axis.title=element_text(size=32), 
         strip.background = element_rect(color='white', fill='white')) +
   theme(panel.margin = unit(1.5, "lines"), legend.key = element_blank(),
-        axis.title.x = element_text(hjust=0))
+        axis.title.x = element_text(hjust=0), legend.position=c(0.93, 0.31))
 dev.off()
