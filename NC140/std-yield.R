@@ -172,6 +172,9 @@ rootstock_names <- data.frame(old_root_names = c("Bud.9", "CG.3041", "CG.6210",
                                                  "M.26", "JM.8", "PiAu.5683"),
                               new_root_names = c("B.9", "G.41", "G.210",
                                                  "M.26", "JM.8", "Pi-AU 56-83"))
+
+tree_yield <- left_join(tree_yield, rootstock_names, 
+                        by = c("rootstock" = "old_root_names"))
 yield_index <- left_join(yield_index, rootstock_names, 
                         by = c("rootstock" = "old_root_names"))
 yield_index$new_root_names <- factor(yield_index$new_root_names, 
@@ -232,4 +235,34 @@ ggplot(index_graph) +
         strip.background = element_rect(color='white', fill='white')) +
   theme(panel.margin = unit(1.5, "lines"), legend.key = element_blank(),
         axis.title.x = element_text(hjust=0), legend.position=c(0.93, 0.31))
+dev.off()
+
+png("harvest_index.png", width = 700, height = 600)
+ggplot(tree_yield) +
+  geom_point(aes(y=cum_yield, x=cum_yield+tot_mass_kg, shape = new_root_names), 
+             size = 10, bg="black") +
+  scale_shape_manual(values=c(20:25)) +
+  geom_abline(slope=1) + geom_abline(slope=0.9) + geom_abline(slope=0.8) +
+  labs(x = "Total Mass [Kg]", y = "Fruit Mass [Kg]", shape = "Rootstock") +
+  guides(shape=guide_legend(nrow=2)) +
+  theme_classic(base_size = 28, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=32), 
+        strip.background = element_rect(color='white', fill='white')) +
+  theme(panel.margin = unit(1.5, "lines"), legend.key = element_blank(),
+        legend.position=c(0.7, 0.1))
+dev.off()
+
+png("yield_efficiency.png", width = 700, height = 600)
+ggplot(tree_yield) +
+  geom_point(aes(y=cum_yield, x=TCSA, shape = new_root_names), 
+             size = 10, bg="black") +
+  scale_shape_manual(values=c(20:25)) +
+  geom_abline(slope=4) + geom_abline(slope=3) + geom_abline(slope=1) +
+  labs(x = "TCSA [cm2]", y = "Fruit Mass [Kg]", shape = "Rootstock") +
+  guides(shape=guide_legend(nrow=2)) +
+  theme_classic(base_size = 28, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=32), 
+        strip.background = element_rect(color='white', fill='white')) +
+  theme(panel.margin = unit(1.5, "lines"), legend.key = element_blank(),
+        legend.position=c(0.7, 0.1))
 dev.off()
