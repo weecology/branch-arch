@@ -193,6 +193,7 @@ yield_index_root <- dplyr::summarize(dplyr::group_by(yield_index, rootstock),
                                      avg_YCA = mean(yield_canopy_area),
                                      avg_YCV = mean(yield_canopy_volume))
 
+test <- lm(yield_index$harvest_index ~ tree_yield$TCSA)
 test <- lm(harvest_index ~ yield_eff, data = yield_index)
 test <- lm(harvest_index ~ poly(yield_eff, 2, raw=T), data = yield_index)
 test <- lm(harvest_index ~ modeled_HI, data = yield_index)
