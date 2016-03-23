@@ -172,6 +172,9 @@ rootstock_names <- data.frame(old_root_names = c("Bud.9", "CG.3041", "CG.6210",
                                                  "M.26", "JM.8", "PiAu.5683"),
                               new_root_names = c("B.9", "G.41", "G.210",
                                                  "M.26", "JM.8", "Pi-AU 56-83"))
+tree_yield$new_root_names <- factor(tree_yield$new_root_names, 
+                                     levels = c("B.9", "G.41", "G.210",
+                                                "M.26", "JM.8", "Pi-AU 56-83"))
 
 tree_yield <- left_join(tree_yield, rootstock_names, 
                         by = c("rootstock" = "old_root_names"))
@@ -266,4 +269,50 @@ ggplot(tree_yield) +
         strip.background = element_rect(color='white', fill='white')) +
   theme(panel.margin = unit(1.5, "lines"), legend.key = element_blank(),
         legend.position=c(0.7, 0.1))
+dev.off()
+
+png("harvest_index_color.png", width = 700, height = 600)
+ggplot(tree_yield) +
+  geom_point(aes(y=cum_yield, x=cum_yield+tot_mass_kg, color=new_root_names), 
+             size = 12) +
+  scale_color_brewer(palette="BrBG") +
+  geom_abline(slope=1) + geom_abline(slope=0.9) + geom_abline(slope=0.8) +
+  labs(x = "Total Mass [Kg]", y = "Fruit Mass [Kg]", color = "Rootstock") +
+  guides(color=guide_legend(nrow=2)) +
+  theme_classic(base_size = 28, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=32), 
+        strip.background = element_rect(color='white', fill='white')) +
+  theme(panel.margin = unit(1.5, "lines"), legend.key = element_blank(),
+        legend.position=c(0.7, 0.1))
+dev.off()
+
+png("yield_efficiency_color.png", width = 700, height = 600)
+ggplot(tree_yield) +
+  geom_point(aes(y=cum_yield, x=TCSA, color = new_root_names), 
+             size = 12, bg="black") +
+  scale_color_brewer(palette="BrBG") +
+  geom_abline(slope=4) + geom_abline(slope=3) + geom_abline(slope=1) +
+  labs(x = "TCSA [cm2]", y = "Fruit Mass [Kg]", color="Rootstock") +
+  guides(color=guide_legend(nrow=2)) +
+  theme_classic(base_size = 28, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=32), 
+        strip.background = element_rect(color='white', fill='white')) +
+  theme(panel.margin = unit(1.5, "lines"), legend.key = element_blank(),
+        legend.position=c(0.7, 0.1))
+dev.off()
+
+png("index_comp_color.png", width = 1500, height = 450)
+ggplot(index_graph) +
+  geom_point(aes(y=harvest_index, x=value, color = new_root_names), 
+             size = 12) +
+  scale_color_brewer(palette="BrBG") +
+  facet_grid(. ~ index_labels, scales="free_x") +
+  labs(x = "      Yield efficiency                   Modeled HI                     Yield : Height              Yield : Canopy Area", 
+       y = "Harvest Index", color = "Rootstock") +
+  #geom_smooth(aes(y=harvest_index, x=value), method="lm") +
+  theme_bw(base_size = 28, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=32), 
+        strip.background = element_rect(color='white', fill='white')) +
+  theme(panel.margin = unit(1.5, "lines"), legend.key = element_blank(),
+        axis.title.x = element_text(hjust=0), legend.position=c(0.93, 0.31))
 dev.off()
