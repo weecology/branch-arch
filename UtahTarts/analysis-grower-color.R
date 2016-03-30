@@ -15,12 +15,13 @@ A1 <- ggplot(avg_vol, aes(x=age, y=TCSA)) +
               fill='white', color = 'black', size = 2) +
   geom_point(aes(fill=grower), shape=21, size=12, stroke=3) +
   scale_fill_brewer(palette="BuPu") +
+  guides(fill = guide_legend(reverse = TRUE)) +
   annotate("text", x=25, y=100, size=18, 
            label=lm_eqn(TCSA~poly(age, 2, raw=T), df=age_zero), parse = TRUE) +
   labs(x="Age", y="TCSA [cm2]", 
-       color = "", title = "A") +
+       fill = "Grower", title = "A") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
-  theme(axis.title=element_text(size=36), legend.position="none")
+  theme(axis.title=element_text(size=36), legend.position="right")
 A2 <- ggplot(avg_vol, aes(x=age, y=spread)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size = 2) +
