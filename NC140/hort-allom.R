@@ -29,49 +29,17 @@ tree_yield$new_root_names <- factor(tree_yield$new_root_names,
                                                 "M.26", "JM.8", "Pi-AU 56-83"))
 sma <- read.csv("SMAResults.csv")
 
-multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-  library(grid)
-  
-  # Make a list from the ... arguments and plotlist
-  plots <- c(list(...), plotlist)
-  
-  numPlots = length(plots)
-  
-  # If layout is NULL, then use 'cols' to determine layout
-  if (is.null(layout)) {
-    # Make the panel
-    # ncol: Number of columns of plots
-    # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
-                     ncol = cols, nrow = ceiling(numPlots/cols))
-  }
-  
-  if (numPlots==1) {
-    print(plots[[1]])
-    
-  } else {
-    # Set up the page
-    grid.newpage()
-    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
-    
-    # Make each plot, in the correct location
-    for (i in 1:numPlots) {
-      # Get the i,j matrix positions of the regions that contain this subplot
-      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-      
-      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
-                                      layout.pos.col = matchidx$col))
-    }
-  }
-}
+source("../UtahTarts/multiplot.R")
+
 ### Individual Level
 
 test <- sma(log10((tot_stem_m + tot_twig_m)) ~ log10(TCSA), data = tree_yield)
 test <- sma(log10(height) ~ log10(TCSA), data = tree_yield)
 test <- sma(log10((tot_stem_m + tot_twig_m)) ~ log10(height), data = tree_yield)
-test <- sma(log10((tot_stem_m + tot_twig_m)) ~ log10(tot_volume), data = tree_yield)
 test <- sma(log10((tot_volume)) ~ log10(TCSA), data = tree_yield)
+test <- sma(log10((tot_stem_m + tot_twig_m)) ~ log10(tot_volume), data = tree_yield)
 test <- sma(log10(cum_yield) ~ log10(TCSA), data = tree_yield)
+
 
 test <- sma(log10(tot_stem_m + tot_twig_m) ~ log10(pi*(canopy_spread/2)^2), data = tree_yield)
 test <- sma(log10(tot_stem_m + tot_twig_m) ~ log10(canopy_volume), data = tree_yield)
