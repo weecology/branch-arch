@@ -155,7 +155,7 @@ D1 <- ggplot(avg_vol_light, aes(y=sugar_out, x=tree_yield_2014/TCSA)) +
   annotate("text", x=1.3, y=9.5, size=18, 
            label = lm_eqn(sugar_out~tree_yield_2014/TCSA, df=avg_vol_light), 
            parse = TRUE) +
-  labs(y="Sugar Content [Brix]", x="Yield Efficiency [lbs / cm2]", 
+  labs(y="Sugar Content [Brix]", x="Crop Load [lbs / cm2]", 
        shape="", title="A") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
