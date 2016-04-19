@@ -229,7 +229,8 @@ plot(old_light$grower.x, old_light$absorbed/old_light$TCSA,
 hist(avg_vol$tree_hect)
 hist(avg_vol$tree_acre)
 
-abs(median(spacing$spacing_x)*0.3048)) * abs(100 / (median(avg_vol$spacing_y)*0.3048))
+median(round(100 / (avg_vol$spacing_x*0.3048) * 100 / (avg_vol$spacing_y*0.3048), 0))
+100 / (median(avg_vol$spacing_x)*0.3048) * 100 / (median(avg_vol$spacing_y)*0.3048)
 abs(100 / (min(avg_vol$spacing_x)*0.3048)) * abs(100 / (min(avg_vol$spacing_y)*0.3048))
 
 gen_plot(avg_vol_light$spacing_x, avg_vol_light$sugar_out, 
