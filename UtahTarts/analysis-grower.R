@@ -440,6 +440,35 @@ f2 <- ggplot(avg_vol, aes(y=volume, x=tree_acre)) +
 multiplot(f1, f2, cols=1)
 dev.off()
 
+png("spread-acre.png", width = 1200, height = 450)
+g1 <- ggplot(avg_vol, aes(x=spread*tree_acre, y=tree_yield_2014)) +
+  geom_smooth(method = "lm", formula = y ~ x,
+              fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape=grower), size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  annotate("text", x=65000, y=20, size=18, 
+           label = lm_eqn(tree_yield_2014~spread*tree_acre, df=avg_vol), 
+           parse = TRUE) +
+  labs(x="Canopy Spread / Acre [cm]", y="Yield / Tree [lbs]", 
+       shape = "", title = "A") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+g2 <- ggplot(avg_vol_light, aes(x=spread*tree_acre, y=sugar_out)) +
+  geom_smooth(method = "lm", formula = y ~ x,
+              fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape=grower), size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="Canopy Spread / Acre [cm]", y="Sugar Content [Brix]", 
+       shape = "", title = "B") +
+  annotate("text", x=55000, y=9.5, size=18, 
+           label = lm_eqn(sugar_out~spread*tree_acre, df=avg_vol_light), 
+           parse = TRUE) +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position=c(0.3,0.1),
+        legend.direction = "horizontal")
+multiplot(g1, g2, cols=2)
+dev.off()
+
 
 ### Extra
 
