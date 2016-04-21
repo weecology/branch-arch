@@ -125,12 +125,14 @@ a2 <- ggplot(tree_yield, aes(x = log10(tot_mass_kg), y = log10(cum_yield))) +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
 
+YE <- function(x) {log10(3) + x}  # simplified from log10(4 * 10^x)
 a3 <- ggplot(tree_yield, aes(x = log10(TCSA), y = log10(cum_yield))) +
   geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
   geom_point(aes(shape=new_root_names), size=10, bg="black") +
   scale_shape_manual(values=c(20:25)) +
   labs(x = "Log( TCSA )", y = "Log( Cumulative Yield )",
        shape = "Rootstock", title="C") +
+  stat_function(size=2, linetype=2, fun=YE) +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   guides(shape=guide_legend(ncol=2)) +
   theme(axis.title=element_text(size=36), 
