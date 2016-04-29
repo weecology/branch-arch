@@ -8,6 +8,15 @@ biennial_index <- function(yield1, yield2, yield3, yield4){
   return(mean(c(a, b, c), na.rm=T))
 }
 
+young_old <- function(age){
+  if (!is.na(age)){
+    if (age <= 15){ return("young") }
+    else { return("old") }
+  } else {
+    return("NA")  # character class to avoid 'incompatible types' error
+  }
+}
+
 tree_averages <- read.csv('tree-averages-all.csv')
 tree_averages_light <- read.csv('tree-averages-light.csv')
 tree_volumes <- read.csv('canopy-size.csv')
@@ -52,7 +61,8 @@ avg_vol <- mutate(avg_vol, age = (2014-planting_year),
 avg_vol <- avg_vol %>%
   rowwise() %>% 
   mutate(biennial = biennial_index(tree_yield_2012, tree_yield_2013,
-                                   tree_yield_2014, tree_yield_2015))
+                                   tree_yield_2014, tree_yield_2015),
+         age_class = young_old(age))
 
 grower_conv <- data.frame(grower.x=levels(avg_vol$grower.x), 
                           grower=as.factor(seq_along(levels(avg_vol$grower.x))))
@@ -106,7 +116,8 @@ avg_vol_light <- left_join(avg_vol_light, grower_conv)
 avg_vol_light <- avg_vol_light %>%
   rowwise() %>% 
   mutate(biennial = biennial_index(tree_yield_2012, tree_yield_2013,
-                                   tree_yield_2014, tree_yield_2015))
+                                   tree_yield_2014, tree_yield_2015),
+         age_class = young_old(age))
 
 smalls <- filter(avg_vol, TCSA < 200)
 bigs <- filter(avg_vol, TCSA > 200)
