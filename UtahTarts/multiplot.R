@@ -36,9 +36,16 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   }
 }
 
-lm_eqn <- function(formula, df = avg_vol){
+lm_eqn <- function(formula, df = avg_vol, params=FALSE){
   m <- lm(formula, data = df)
-  eq <- substitute(~~italic(r)^2~"="~r2,
-                   list(r2 = format(summary(m)$r.squared, digits = 3)))
+  if (params==FALSE) {
+    eq <- substitute(~~italic(r)^2~"="~r2,
+                     list(r2 = format(summary(m)$r.squared, digits = 3)))
+  } else { 
+    eq <- substitute(~~italic(r)^2~"="~r2 ~~italic(a)~"="~a1 ~~italic(b)~"="~b1,
+                     list(r2 = format(summary(m)$r.squared, digits = 3),
+                          a1 = format(summary(m)$coef[2,1], digits = 3),
+                          b1 = format(summary(m)$coef[1,1], digits = 3)))
+  }
   return(as.character(as.expression(eq)))
 }
