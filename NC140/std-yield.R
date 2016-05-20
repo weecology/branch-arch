@@ -232,7 +232,7 @@ ggplot(index_graph) +
   scale_shape_manual(values=c(20:25)) +
   facet_grid(. ~ index_labels, scales="free_x") +
   labs(x = "      Yield efficiency                   Modeled HI                     Yield : Height              Yield : Canopy Area", 
-       y = "Harvest Index", shape = "Rootstock") +
+       y = "Observed HI", shape = "Rootstock") +
   #geom_smooth(aes(y=harvest_index, x=value), method="lm") +
   theme_bw(base_size = 28, base_family = "Helvetica") +
   theme(axis.title=element_text(size=32), 
