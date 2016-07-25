@@ -98,16 +98,16 @@ multiplot(B1, B2, B3, cols=1)
 dev.off()
 
 png("grower-sugar-yield-color.png", width = 1200, height = 900)
-C1 <- ggplot(avg_vol, aes(x=TCSA, y=tree_yield_2014)) +
+C1 <- ggplot(avg_vol, aes(x=TCSA, y=tree_yield_2014*0.454)) +
   geom_smooth(method="lm", fill='white', color='black', size = 2) +
   geom_point(aes(fill=grower), shape=21, size=12, stroke=3) +
   scale_fill_brewer(palette="BuPu") +
-  annotate("text", x=250, y=20, size=18, 
+  annotate("text", x=250, y=7, size=18, 
            label = lm_eqn(tree_yield_2014~TCSA), parse = TRUE) +
-  geom_abline(slope=1) +
   geom_abline(slope=0.5) +
   geom_abline(slope=0.25) +
-  labs(x="TCSA [cm2]", y="Yield / tree [lbs]", 
+  geom_abline(slope=0.125) +
+  labs(x="TCSA [cm2]", y="Yield / Tree [kg]", 
        shape="", title="A") +
   theme_classic(base_size=24, base_family="Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
@@ -151,14 +151,14 @@ multiplot(C1, C3, C2, C4, cols=2)
 dev.off()
 
 png("grower-sugar-byTCSA-color.png", width = 1200, height = 900)
-D1 <- ggplot(avg_vol_light, aes(y=sugar_out, x=tree_yield_2014/TCSA)) +
+D1 <- ggplot(avg_vol_light, aes(y=sugar_out, x=tree_yield_2014*0.454/TCSA)) +
   geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
   geom_point(aes(fill=grower), shape=21, size=12, stroke=3) +
   scale_fill_brewer(palette="BuPu") +
-  annotate("text", x=1.3, y=9.5, size=18, 
+  annotate("text", x=0.6, y=9.5, size=18, 
            label = lm_eqn(sugar_out~tree_yield_2014/TCSA, df=avg_vol_light), 
            parse = TRUE) +
-  labs(y="Sugar Content [Brix]", x="Yield Efficiency [lbs / cm2]", 
+  labs(y="Sugar Content [Brix]", x="Crop Load [kg / cm2]", 
        shape="", title="A") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
