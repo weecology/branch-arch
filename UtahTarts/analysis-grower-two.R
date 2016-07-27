@@ -39,7 +39,7 @@ A1 <- ggplot(two_growers_b, aes(x=TCSA, y=spread, group=grower)) +
        shape = "", title = "A") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
-A2 <- ggplot(two_growers_b, aes(x=spacing_x*30.5, y=spread, group=grower)) +
+A2 <- ggplot(two_growers_b, aes(x=tree_hect, y=spread, group=grower)) +
   geom_smooth(method="lm", formula = y ~ poly(x, 2),
               fill='grey', color='black', size=2) +
   geom_point(aes(fill=grower), shape=21, size=12, stroke=3) +
@@ -47,7 +47,7 @@ A2 <- ggplot(two_growers_b, aes(x=spacing_x*30.5, y=spread, group=grower)) +
 # annotate("text", x=350, y=225, size=18, 
 #          label = lm_eqn(spread~poly(TCSA, 2, raw=T)), 
 #          df=two_growers_b, parse = TRUE) +
-  labs(x="Spacing [cm]", y="Canopy Spread [cm]", 
+  labs(x="Trees / Hectare", y="Canopy Spread [cm]", 
        shape = "", title = "B") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
