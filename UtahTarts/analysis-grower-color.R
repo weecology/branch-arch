@@ -9,6 +9,9 @@ avg_vol$grower <- factor(avg_vol$grower, levels = c(5, 4, 1, 2, 3))
 avg_vol_light$grower <- factor(avg_vol_light$grower, levels = c(5, 4, 1, 2, 3))
 age_zero <- filter(avg_vol, !is.na(age))
 
+young <- filter(avg_vol, age_class=="young")
+old <- filter(avg_vol, age_class=="old")
+
 png("grower-age-color.png", width = 1200, height = 900)
 A1 <- ggplot(avg_vol, aes(x=age, y=TCSA)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
@@ -18,15 +21,14 @@ A1 <- ggplot(avg_vol, aes(x=age, y=TCSA)) +
   guides(fill = guide_legend(reverse = TRUE)) +
   annotate("text", x=25, y=100, size=18, 
            label=lm_eqn(TCSA~poly(age, 2, raw=T), df=age_zero), parse = TRUE) +
-  labs(x="Age", y="TCSA [cm2]", 
-       fill = "Grower", title = "A") +
+  labs(x="Age", y="TCSA [cm2]", title = "A") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
-  theme(axis.title=element_text(size=36), legend.position="right")
+  theme(axis.title=element_text(size=36), legend.position="none")
 A2 <- ggplot(avg_vol, aes(x=age, y=spread)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size = 2) +
-  geom_point(aes(shape=grower), size=10, bg="black") +
-  scale_shape_manual(values=c(21:25)) +
+  geom_point(aes(fill=grower), shape=21, size=12, stroke=3) +
+  scale_fill_brewer(palette="BuPu") +
   annotate("text", x=25, y=270, size=18, 
            label=lm_eqn(spread~poly(age, 2, raw=T), df=age_zero), parse = TRUE) +
   labs(x="Age", y="Canopy Spread [cm]", 
@@ -36,8 +38,8 @@ A2 <- ggplot(avg_vol, aes(x=age, y=spread)) +
 A3 <- ggplot(avg_vol, aes(x=age, y=height)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size = 2) +
-  geom_point(aes(shape=grower), size=10, bg="black") +
-  scale_shape_manual(values=c(21:25)) +
+  geom_point(aes(fill=grower), shape=21, size=12, stroke=3) +
+  scale_fill_brewer(palette="BuPu") +
   annotate("text", x=25, y=355, size=18, 
            label=lm_eqn(height~poly(age, 2, raw=T), df=age_zero), parse = TRUE) +
   labs(x="Age", y="Height [cm]", 
@@ -47,12 +49,12 @@ A3 <- ggplot(avg_vol, aes(x=age, y=height)) +
 A4 <- ggplot(avg_vol, aes(x=age, y=volume)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size = 2) +
-  geom_point(aes(shape=grower), size=10, bg="black") +
-  scale_shape_manual(values=c(21:25)) +
+  geom_point(aes(fill=grower), shape=21, size=12, stroke=3) +
+  scale_fill_brewer(palette="BuPu") +
   annotate("text", x=25, y=18, size=18, 
            label=lm_eqn(volume~poly(age, 2, raw=T), df=age_zero), parse = TRUE) +
   labs(x="Age", y="Canopy Volume [m3]", 
-       shape = "", title = "D") +
+       fill = "Grower", title = "D") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position=c(0.7,0.1),
         legend.direction = "horizontal")
@@ -200,7 +202,58 @@ D4 <- ggplot(avg_vol_light, aes(x=volume/TCSA, y=sugar_out)) +
 multiplot(D1, D3, D2, D4, cols=2)
 dev.off()
 
-
+png("grower-age-class-color.png", width = 1200, height = 900)
+Z1 <- ggplot(age_zero, aes(x=age, y=TCSA, group=age_class)) +
+  geom_smooth(method = "lm", fill='grey', color='black', size = 2) +
+  geom_point(aes(fill=grower), shape=21, size=12, stroke=3) +
+  scale_fill_brewer(palette="BuPu") +
+  annotate("text", x=17, y=100, size=10, 
+           label=lm_eqn(TCSA~age, df=young, params=T), parse = T) +
+  annotate("text", x=23, y=200, size=10, 
+           label=lm_eqn(TCSA~age, df=old, params=T), parse = T) +
+  labs(x="Age", y="TCSA [cm2]", 
+       shape = "", title = "A") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+Z2 <- ggplot(age_zero, aes(x=age, y=spread, group=age_class)) +
+  geom_smooth(method = "lm", fill='grey', color='black', size = 2) +
+  geom_point(aes(fill=grower), shape=21, size=12, stroke=3) +
+  scale_fill_brewer(palette="BuPu") +
+  annotate("text", x=15, y=275, size=10, 
+           label=lm_eqn(spread~age, df=young, params=T), parse = T) +
+  annotate("text", x=21, y=350, size=10, 
+           label=lm_eqn(spread~age, df=old, params=T), parse = T) +
+  labs(x="Age", y="Canopy Spread [cm]", 
+       shape = "", title = "C") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+Z3 <- ggplot(age_zero, aes(x=age, y=height, group=age_class)) +
+  geom_smooth(method = "lm", fill='grey', color='black', size = 2) +
+  geom_point(aes(fill=grower), shape=21, size=12, stroke=3) +
+  scale_fill_brewer(palette="BuPu") +
+  annotate("text", x=17, y=350, size=10, 
+           label=lm_eqn(height~age, df=young, params=T), parse = T) +
+  annotate("text", x=21, y=425, size=10, 
+           label=lm_eqn(height~age, df=old, params=T), parse = T) +
+  labs(x="Age", y="Height [cm]", 
+       shape = "", title = "B") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+Z4 <- ggplot(age_zero, aes(x=age, y=volume, group=age_class)) +
+  geom_smooth(method = "lm", fill='grey', color='black', size = 2) +
+  geom_point(aes(fill=grower), shape=21, size=12, stroke=3) +
+  scale_fill_brewer(palette="BuPu") +
+  annotate("text", x=17, y=15, size=10, 
+           label=lm_eqn(volume~age, df=young, params=T), parse = T) +
+  annotate("text", x=21, y=20, size=10, 
+           label=lm_eqn(volume~age, df=old, params=T), parse = T) +
+  labs(x="Age", y="Canopy Volume [m3]", 
+       fill = "Grower", title = "D") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position=c(0.7,0.075),
+        legend.direction = "horizontal")
+multiplot(Z1, Z2, Z3, Z4, cols=2)
+dev.off()
 
 ### Appendix
 png("grower-architecture.png", width = 600, height = 900) 
