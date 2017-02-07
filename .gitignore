@@ -1,5 +1,7 @@
 *.Rapp_history
+*.Rapp.history
 *.Rhistory
+*.DS_store
 *.pdf
 *.html
 *.png
