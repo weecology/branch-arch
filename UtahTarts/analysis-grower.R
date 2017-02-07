@@ -473,6 +473,7 @@ dev.off()
 ### Growth Stages
 young <- filter(avg_vol, age_class=="young")
 old <- filter(avg_vol, age_class=="old")
+age_zero <- filter(avg_vol, !is.na(age))
 
 png("grower-age-class.png", width = 1200, height = 900)
 Z1 <- ggplot(age_zero, aes(x=age, y=TCSA, group=age_class)) +
