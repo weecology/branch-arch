@@ -69,3 +69,11 @@ plot(log10(branches$diameter), log10(branches$length))
 # # # # 16 is directly over trunk. 16 should be 17 to match light position  [1-8, 16]
 # # # Sugar - average sugar content for 5 representative fruit gathered within arms reach of 'Position' in degrees brix,
 # # # #  roughly percent surgar content, using a handheld refractometer. [float]
+
+### ANALYSIS
+
+## block-summaries.R - data manipulation to group data by block and grower
+## analysis-grower.R - data vis for dissertation by grower
+## analysis-grower-two.R - data vis for diss appendix for two growers
+## analysis-color.R - data vis for ASHS presentation
+## pub-figures.R - data vis for HortScience publication
