@@ -49,3 +49,16 @@ lm_eqn <- function(formula, df = avg_vol, params=FALSE){
   }
   return(as.character(as.expression(eq)))
 }
+
+lm_intercept <- function(formula, df1 = old, df2 = young){
+  m1 <- lm(formula, data = df1)
+  a1 <- summary(m1)$coef[2,1]
+  b1 <- summary(m1)$coef[1,1]
+  
+  m2 <- lm(formula, data = df2)
+  a2 <- summary(m2)$coef[2,1]
+  b2 <- summary(m2)$coef[1,1]
+  
+  x_intercept <- (b2 - b1) / (a1 - a2)
+  return(round(x_intercept, 2))
+}
