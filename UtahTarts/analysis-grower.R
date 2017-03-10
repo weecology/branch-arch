@@ -531,6 +531,19 @@ dev.off()
 
 ### Extra
 
+ggplot(avg_vol, aes(x=age, y=spread/(30.48*spacing_x))) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape=grower), size=10, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  annotate("text", x=25, y=0.6, size=12, 
+           label=lm_eqn(spread/(30.48*spacing_x)~poly(age, 2, raw=T), 
+                        df=age_zero), parse = TRUE) +
+  labs(x="Age", y="% Space Filling", 
+       shape = "", title = "100% space at 11.3 years") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+
 ggplot(avg_vol, aes(x=scaffold_d, y=scaffold_l)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size = 2) +
