@@ -41,8 +41,12 @@ get_canopy_volume <- function(ind_canopy_points, heights) {
   high_frustum <- get_V_frustum(rank_2, rank_3)
   high_cone <- get_V_cone(mean(rank_3$distance_cm/100), 
                          mean(rank_3$height_cm/100) - max(heights$height_cm/100))
+  
+  depth_trunk <- heights$height_cm[2]-heights$height_cm[1]
+  depth_mid <- rank_3$height_cm - rank_1$height_cm
+  
   return(c(low_cone, low_frustum, high_frustum, high_cone, 
-           max(heights$height_cm)))
+           max(heights$height_cm), depth_trunk, depth_mid))
 }
 
 volume <- read.csv('volume.csv', sep = ',', header = T)
@@ -107,7 +111,9 @@ for (b in unique(volume$block)) {
                             bottom_frust=bottom_frust, top_frust=top_frust, 
                             bot_cone=round(volumes[1], 2), 
                             top_cone=round(volumes[4], 2),
-                            height=volumes[5])
+                            height=volumes[5],
+                            depth_trunk=volumes[6],
+                            depth_mid=volumes[7])
     frustum_volumes <- rbind(frustum_volumes, frust_set) 
   }
 }
