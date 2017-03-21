@@ -48,7 +48,9 @@ avg_vol <- summarize(group_by(avg_vol_tree, block),
                      spread = mean(spread),
                      volume = mean(frustum),
                      top_size = mean(top_frust),
-                     top_cone = mean(top_cone))
+                     top_cone = mean(top_cone),
+                     depth_trunk = mean(depth_trunk),
+                     depth_mid = mean(depth_mid))
 
 avg_vol <- inner_join(avg_vol, block_info, by = 'block_code')
 avg_vol <- mutate(avg_vol, age = (2014-planting_year),
@@ -90,6 +92,8 @@ avg_vol_light <- summarize(group_by(avg_vol_light_tree, block),
                            volume = mean(frustum),
                            top_size = mean(top_frust),
                            top_cone = mean(top_cone),
+                           depth_trunk = mean(depth_trunk),
+                           depth_mid = mean(depth_mid),
                            sugar = mean(avg_sugar, na.rm=T),
                            sugar_out = mean(avg_sugar_out, na.rm=T),
                            sugar_diff = mean(sugar_diff, na.rm=T),
