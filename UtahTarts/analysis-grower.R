@@ -283,19 +283,7 @@ C4 <- ggplot(avg_vol, aes(x=TCSA, y=tree_yield_2014*tree_hect*0.454)) +
        shape="", title="D") +
   theme_classic(base_size=14, base_family="Helvetica") +
   theme(axis.title=element_text(size=20), legend.position="none")
-C5 <- ggplot(avg_vol_light, aes(x=TCSA, y=sugar_out)) +
-  geom_smooth(method="lm", formula=y ~ poly(x, 2),
-              fill='white', color = 'black', size=1.5) +
-  geom_point(aes(shape=grower), size=5, bg="black") +
-  scale_shape_manual(values=c(21:25)) +
-  labs(x="TCSA [cm2]", y="Sugar Content [Brix]", 
-       shape="", title="E") +
-  annotate("text", x=310, y=14, size=10, 
-           label = lm_eqn(sugar_out~poly(TCSA, 2, raw=T), df=avg_vol_light), 
-           parse = TRUE) +
-  theme_classic(base_size=14, base_family="Helvetica") +
-  theme(axis.title=element_text(size=20), legend.position="none")
-C6 <- ggplot(avg_vol_light, aes(x=age, y=sugar_out)) +
+C5 <- ggplot(avg_vol_light, aes(x=age, y=sugar_out)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size=1.5) +
   geom_point(aes(shape=grower), size=5, bg="black") +
@@ -304,7 +292,19 @@ C6 <- ggplot(avg_vol_light, aes(x=age, y=sugar_out)) +
            label = lm_eqn(sugar_out~poly(age, 2, raw=T), df=avg_vol_light), 
            parse = TRUE) +
   labs(x="Age", y="Sugar Content [Brix]", 
+       shape="", title="E") +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+C6 <- ggplot(avg_vol_light, aes(x=TCSA, y=sugar_out)) +
+  geom_smooth(method="lm", formula=y ~ poly(x, 2),
+              fill='white', color = 'black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="TCSA [cm2]", y="Sugar Content [Brix]", 
        shape="", title="F") +
+  annotate("text", x=310, y=14, size=10, 
+           label = lm_eqn(sugar_out~poly(TCSA, 2, raw=T), df=avg_vol_light), 
+           parse = TRUE) +
   theme_classic(base_size=14, base_family="Helvetica") +
   theme(axis.title=element_text(size=20), legend.position="none")
 multiplot(C1, C3, C5, C2, C4, C6, cols=2)
