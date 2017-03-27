@@ -460,6 +460,88 @@ E4 <- ggplot(avg_vol, aes(x=TCSA, y=(pi*(spread/200)^2*tree_hect)/100)) +
 multiplot(E1, E3, E2, E4, cols=2)
 dev.off()
 
+### Yield by Grower
+
+AR <- filter(avg_vol, grower.x=="AR")
+CH <- filter(avg_vol, grower.x=="CH")
+OV <- filter(avg_vol, grower.x=="OV")
+SS <- filter(avg_vol, grower.x=="SS")
+SR <- filter(avg_vol, grower.x=="SR")
+
+pdf("yield-grower-split.pdf", width = 10, height = 8)
+C1 <- ggplot(AR, aes(x=age, y=tree_yield_2014*tree_hect*0.454)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color='black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  lims(y = c(1000, 40000), x = c(3, 33)) +
+  scale_shape_manual(values=c(21)) +
+  annotate("text", x=17, y=5000, size=10, 
+           label = lm_eqn(tree_yield_2014*tree_hect~poly(age, 2, raw=T),
+                          df = AR), 
+           parse = TRUE) +
+  labs(x="Age", y="Yield / ha [kg]", 
+       shape="", title="AR") +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+C2 <- ggplot(CH, aes(x=age, y=tree_yield_2014*tree_hect*0.454)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color='black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  lims(y = c(1000, 40000), x = c(3, 33)) +
+  scale_shape_manual(values=c(22)) +
+  annotate("text", x=17, y=5000, size=10, 
+           label = lm_eqn(tree_yield_2014*tree_hect~poly(age, 2, raw=T),
+                          df = CH), 
+           parse = TRUE) +
+  labs(x="Age", y="Yield / ha [kg]", 
+       shape="", title="CH") +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+C3 <- ggplot(OV, aes(x=age, y=tree_yield_2014*tree_hect*0.454)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color='black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  lims(y = c(1000, 40000), x = c(3, 33)) +
+  scale_shape_manual(values=c(23)) +
+  annotate("text", x=17, y=5000, size=10, 
+           label = lm_eqn(tree_yield_2014*tree_hect~poly(age, 2, raw=T),
+                          df = OV), 
+           parse = TRUE) +
+  labs(x="Age", y="Yield / ha [kg]", 
+       shape="", title="OV") +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+C4 <- ggplot(SR, aes(x=age, y=tree_yield_2014*tree_hect*0.454)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color='black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  lims(y = c(1000, 40000), x = c(3, 33)) +
+  scale_shape_manual(values=c(24)) +
+  annotate("text", x=17, y=5000, size=10, 
+           label = lm_eqn(tree_yield_2014*tree_hect~poly(age, 2, raw=T),
+                          df = SR), 
+           parse = TRUE) +
+  labs(x="Age", y="Yield / ha [kg]", 
+       shape="", title="SR") +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+C5 <- ggplot(SS, aes(x=age, y=tree_yield_2014*tree_hect*0.454)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color='black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  lims(y = c(1000, 40000), x = c(3, 33)) +
+  scale_shape_manual(values=c(25)) +
+  annotate("text", x=17, y=5000, size=10, 
+           label = lm_eqn(tree_yield_2014*tree_hect~poly(age, 2, raw=T),
+                          df = SS), 
+           parse = TRUE) +
+  labs(x="Age", y="Yield / ha [kg]", 
+       shape="", title="SS") +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+multiplot(C1, C2, C3, C4, C5, cols=2)
+dev.off()
+
 ### Appendix
   
   png("grower-sugar-byTCSA.png", width = 1200, height = 900)
