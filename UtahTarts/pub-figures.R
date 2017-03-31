@@ -16,7 +16,7 @@ Z1 <- ggplot(age_zero, aes(x=age, y=TCSA, group=age_class)) +
   geom_point(aes(shape=grower), size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
   ylim(NA, max(age_zero$TCSA)) +
-  geom_segment(aes(x=16, y=175, xend=14.5, yend=240), size=1.25,
+  geom_segment(aes(x=16, y=175, xend=15.5, yend=240), size=1.25,
                arrow=arrow(length=unit(0.08, "npc"))) +
   annotate("text", x=16, y=150, size=10, label=lm_intercept(TCSA~age)) +
   labs(x="Age", y="TCSA [cm2]", shape = "", title = "A") +
@@ -33,14 +33,14 @@ Z2 <- ggplot(age_zero, aes(x=age, y=spread, group=age_class)) +
   labs(x="Age", y="Canopy Spread [cm]", shape = "", title = "C") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
-Z3 <- ggplot(age_zero, aes(x=age, y=height, group=age_class)) +
+Z3 <- ggplot(age_zero, aes(x=age, y=height/100, group=age_class)) +
   geom_smooth(method = "lm", alpha=0, color='black', size = 2, fullrange=T) +
   geom_point(aes(shape=grower), size=10, bg="black") +
   scale_shape_manual(values=c(21:25)) +
-  ylim(NA, max(age_zero$height)) +
-  geom_segment(aes(x=14.5, y=425, xend=13.5, yend=475), size=1.25,
+  ylim(NA, max(age_zero$height/100)) +
+  geom_segment(aes(x=14.5, y=4.25, xend=13, yend=4.75), size=1.25,
                arrow=arrow(length=unit(0.08, "npc"))) +
-  annotate("text", x=15, y=400, size=10, label=lm_intercept(height~age)) +
+  annotate("text", x=15, y=4, size=10, label=lm_intercept(height~age)) +
   labs(x="Age", y="Height [cm]", shape="", title="B") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
