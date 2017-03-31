@@ -460,7 +460,7 @@ E4 <- ggplot(avg_vol, aes(x=TCSA, y=(pi*(spread/200)^2*tree_hect)/100)) +
 multiplot(E1, E3, E2, E4, cols=2)
 dev.off()
 
-### Yield by Grower
+### Grower Split
 
 AR <- filter(avg_vol, grower.x=="AR")
 CH <- filter(avg_vol, grower.x=="CH")
@@ -468,78 +468,171 @@ OV <- filter(avg_vol, grower.x=="OV")
 SS <- filter(avg_vol, grower.x=="SS")
 SR <- filter(avg_vol, grower.x=="SR")
 
+
+grower_list <- c("AR", "CH", "OV", "SS", "SR")
+pdf("height-age-split.pdf", width = 10, height = 8)
+plots <- list()
+for (code in grower_list){
+  grower <- filter(avg_vol, grower.x==code)
+  shape_value <- 20 + match(code, grower_list)
+  plots[[code]] <- ggplot(grower, aes(x=TCSA, y=height)) +
+    geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+                fill='white', color='black', size=1.5) +
+    geom_point(shape=shape_value, size=5, bg="black") +
+    lims(y = c(300, 650), x = c(50, 450)) +
+    annotate("text", x=350, y=350, size=10, 
+             label = lm_eqn(height~poly(TCSA, 2, raw=T),
+                            df = grower), 
+             parse = TRUE) +
+    labs(x="TCSA [cm2]", y="Height [cm]", 
+         shape="", title=code) +
+    theme_classic(base_size=14, base_family="Helvetica") +
+    theme(axis.title=element_text(size=20), legend.position="none")
+}
+AR <- plots[["AR"]]
+CH <- plots[["CH"]]
+OV <- plots[["OV"]]
+SS <- plots[["SS"]]
+SR <- plots[["SR"]]
+multiplot(AR, CH, OV, SS, SR, cols=2)
+dev.off()
+
+pdf("height-age-split.pdf", width = 10, height = 8)
+plots <- list()
+for (code in grower_list){
+  grower <- filter(avg_vol, grower.x==code)
+  shape_value <- 20 + match(code, grower_list)
+  plots[[code]] <- ggplot(grower, aes(x=age, y=height)) +
+    geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+                fill='white', color='black', size=1.5) +
+    geom_point(shape=shape_value, size=5, bg="black") +
+    lims(y = c(300, 650), x = c(5, 30)) +
+    annotate("text", x=23, y=350, size=10, 
+             label = lm_eqn(height~poly(age, 2, raw=T),
+                            df = grower), 
+             parse = TRUE) +
+    labs(x="Age", y="Height [cm]", 
+         shape="", title=code) +
+    theme_classic(base_size=14, base_family="Helvetica") +
+    theme(axis.title=element_text(size=20), legend.position="none")
+}
+AR <- plots[["AR"]]
+CH <- plots[["CH"]]
+OV <- plots[["OV"]]
+SS <- plots[["SS"]]
+SR <- plots[["SR"]]
+multiplot(AR, CH, OV, SS, SR, cols=2)
+dev.off()
+
+pdf("filling-age-split.pdf", width = 10, height = 8)
+plots <- list()
+for (code in grower_list){
+  grower <- filter(avg_vol, grower.x==code)
+  shape_value <- 20 + match(code, grower_list)
+  plots[[code]] <- ggplot(grower, aes(x=age, y=100*spread/(30.48*spacing_x))) +
+    geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+                fill='white', color='black', size=1.5) +
+    geom_point(shape=shape_value, size=5, bg="black") +
+    lims(y = c(45, 150), x = c(5, 30)) +
+    annotate("text", x=23, y=55, size=10, 
+             label = lm_eqn(spread/(30.48*spacing_x)~poly(age, 2, raw=T),
+                            df = grower), 
+             parse = TRUE) +
+    labs(x="Age", y="In-row spread [%]", 
+         shape="", title=code) +
+    theme_classic(base_size=14, base_family="Helvetica") +
+    theme(axis.title=element_text(size=20), legend.position="none")
+}
+AR <- plots[["AR"]]
+CH <- plots[["CH"]]
+OV <- plots[["OV"]]
+SS <- plots[["SS"]]
+SR <- plots[["SR"]]
+multiplot(AR, CH, OV, SS, SR, cols=2)
+dev.off()
+
 pdf("yield-grower-split.pdf", width = 10, height = 8)
-C1 <- ggplot(AR, aes(x=age, y=tree_yield_2014*tree_hect*0.454)) +
-  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
-              fill='white', color='black', size=1.5) +
-  geom_point(aes(shape=grower), size=5, bg="black") +
-  lims(y = c(1000, 40000), x = c(3, 33)) +
-  scale_shape_manual(values=c(21)) +
-  annotate("text", x=17, y=5000, size=10, 
-           label = lm_eqn(tree_yield_2014*tree_hect~poly(age, 2, raw=T),
-                          df = AR), 
-           parse = TRUE) +
-  labs(x="Age", y="Yield / ha [kg]", 
-       shape="", title="AR") +
-  theme_classic(base_size=14, base_family="Helvetica") +
-  theme(axis.title=element_text(size=20), legend.position="none")
-C2 <- ggplot(CH, aes(x=age, y=tree_yield_2014*tree_hect*0.454)) +
-  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
-              fill='white', color='black', size=1.5) +
-  geom_point(aes(shape=grower), size=5, bg="black") +
-  lims(y = c(1000, 40000), x = c(3, 33)) +
-  scale_shape_manual(values=c(22)) +
-  annotate("text", x=17, y=5000, size=10, 
-           label = lm_eqn(tree_yield_2014*tree_hect~poly(age, 2, raw=T),
-                          df = CH), 
-           parse = TRUE) +
-  labs(x="Age", y="Yield / ha [kg]", 
-       shape="", title="CH") +
-  theme_classic(base_size=14, base_family="Helvetica") +
-  theme(axis.title=element_text(size=20), legend.position="none")
-C3 <- ggplot(OV, aes(x=age, y=tree_yield_2014*tree_hect*0.454)) +
-  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
-              fill='white', color='black', size=1.5) +
-  geom_point(aes(shape=grower), size=5, bg="black") +
-  lims(y = c(1000, 40000), x = c(3, 33)) +
-  scale_shape_manual(values=c(23)) +
-  annotate("text", x=17, y=5000, size=10, 
-           label = lm_eqn(tree_yield_2014*tree_hect~poly(age, 2, raw=T),
-                          df = OV), 
-           parse = TRUE) +
-  labs(x="Age", y="Yield / ha [kg]", 
-       shape="", title="OV") +
-  theme_classic(base_size=14, base_family="Helvetica") +
-  theme(axis.title=element_text(size=20), legend.position="none")
-C4 <- ggplot(SR, aes(x=age, y=tree_yield_2014*tree_hect*0.454)) +
-  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
-              fill='white', color='black', size=1.5) +
-  geom_point(aes(shape=grower), size=5, bg="black") +
-  lims(y = c(1000, 40000), x = c(3, 33)) +
-  scale_shape_manual(values=c(24)) +
-  annotate("text", x=17, y=5000, size=10, 
-           label = lm_eqn(tree_yield_2014*tree_hect~poly(age, 2, raw=T),
-                          df = SR), 
-           parse = TRUE) +
-  labs(x="Age", y="Yield / ha [kg]", 
-       shape="", title="SR") +
-  theme_classic(base_size=14, base_family="Helvetica") +
-  theme(axis.title=element_text(size=20), legend.position="none")
-C5 <- ggplot(SS, aes(x=age, y=tree_yield_2014*tree_hect*0.454)) +
-  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
-              fill='white', color='black', size=1.5) +
-  geom_point(aes(shape=grower), size=5, bg="black") +
-  lims(y = c(1000, 40000), x = c(3, 33)) +
-  scale_shape_manual(values=c(25)) +
-  annotate("text", x=17, y=5000, size=10, 
-           label = lm_eqn(tree_yield_2014*tree_hect~poly(age, 2, raw=T),
-                          df = SS), 
-           parse = TRUE) +
-  labs(x="Age", y="Yield / ha [kg]", 
-       shape="", title="SS") +
-  theme_classic(base_size=14, base_family="Helvetica") +
-  theme(axis.title=element_text(size=20), legend.position="none")
-multiplot(C1, C2, C3, C4, C5, cols=2)
+plots <- list()
+for (code in grower_list){
+  grower <- filter(avg_vol, grower.x==code)
+  shape_value <- 20 + match(code, grower_list)
+  plots[[code]] <- ggplot(grower, aes(x=age, y=tree_yield_2014*tree_hect*0.454)) +
+    geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+                fill='white', color='black', size=1.5) +
+    geom_point(shape=shape_value, size=5, bg="black") +
+    lims(y = c(1000, 40000), x = c(3, 33)) +
+    #scale_shape_manual(values=c(21:25)) +
+    annotate("text", x=17, y=5000, size=10, 
+             label = lm_eqn(tree_yield_2014*tree_hect~poly(age, 2, raw=T),
+                            df = grower), 
+             parse = TRUE) +
+    labs(x="Age", y="Yield / ha [kg]", 
+         shape="", title=code) +
+    theme_classic(base_size=14, base_family="Helvetica") +
+    theme(axis.title=element_text(size=20), legend.position="none")
+}
+AR <- plots[["AR"]]
+CH <- plots[["CH"]]
+OV <- plots[["OV"]]
+SS <- plots[["SS"]]
+SR <- plots[["SR"]]
+multiplot(AR, CH, OV, SS, SR, cols=2)
+dev.off()
+
+pdf("yield-area-split.pdf", width = 10, height = 8)
+plots <- list()
+for (code in grower_list){
+  grower <- filter(avg_vol, grower.x==code)
+  shape_value <- 20 + match(code, grower_list)
+  plots[[code]] <- ggplot(grower, aes(x=spread*pi*tree_hect/100, 
+                                      y=tree_yield_2014*tree_hect*0.454)) +
+    geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+                fill='white', color='black', size=1.5) +
+    geom_point(shape=shape_value, size=5, bg="black") +
+    lims(y = c(1000, 40000), x = c(2500, 8500)) +
+    annotate("text", x=7000, y=5000, size=10, 
+             label = lm_eqn(tree_yield_2014~poly(spread, 2, raw=T),
+                            df = grower), 
+             parse = TRUE) +
+    labs(x="Canopy Area [m2/ha]", y="Yield / ha [kg]", 
+         shape="", title=code) +
+    theme_classic(base_size=14, base_family="Helvetica") +
+    theme(axis.title=element_text(size=20), legend.position="none")
+}
+AR <- plots[["AR"]]
+CH <- plots[["CH"]]
+OV <- plots[["OV"]]
+SS <- plots[["SS"]]
+SR <- plots[["SR"]]
+multiplot(AR, CH, OV, SS, SR, cols=2)
+dev.off()
+
+pdf("yield-volume-split.pdf", width = 10, height = 8)
+plots <- list()
+for (code in grower_list){
+  grower <- filter(avg_vol, grower.x==code)
+  shape_value <- 20 + match(code, grower_list)
+  plots[[code]] <- ggplot(grower, aes(x=volume*tree_hect, 
+                                      y=tree_yield_2014*tree_hect*0.454)) +
+    geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+                fill='white', color='black', size=1.5) +
+    geom_point(shape=shape_value, size=5, bg="black") +
+    lims(y = c(1000, 40000), x = c(2000, 30000)) +
+    annotate("text", x=10000, y=5000, size=10, 
+             label = lm_eqn(tree_yield_2014~poly(volume, 2, raw=T),
+                            df = grower), 
+             parse = TRUE) +
+    labs(x="Canopy Volume [m3/ha]", y="Yield / ha [kg]", 
+         shape="", title=code) +
+    theme_classic(base_size=14, base_family="Helvetica") +
+    theme(axis.title=element_text(size=20), legend.position="none")
+}
+AR <- plots[["AR"]]
+CH <- plots[["CH"]]
+OV <- plots[["OV"]]
+SS <- plots[["SS"]]
+SR <- plots[["SR"]]
+multiplot(AR, CH, OV, SS, SR, cols=2)
 dev.off()
 
 ### Appendix
