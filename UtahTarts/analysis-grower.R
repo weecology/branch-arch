@@ -6,6 +6,9 @@ source("multiplot.R")
 source("block-summaries.R")
 
 age_zero <- filter(avg_vol, !is.na(age))
+drop_gap <- filter(avg_vol, tree_yield_2014>10)
+
+### TREE SIZE
 
 pdf("age-tcsa.pdf", width = 6, height = 5)
 ggplot(avg_vol, aes(x=age, y=TCSA)) +
@@ -22,14 +25,14 @@ ggplot(avg_vol, aes(x=age, y=TCSA)) +
 dev.off()
 
 pdf("size-age-tcsa.pdf", width = 10, height = 12)
-A1 <- ggplot(avg_vol, aes(x=age, y=height)) +
+A1 <- ggplot(avg_vol, aes(x=age, y=height/100)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size=1.5) +
   geom_point(aes(shape=grower), size=5, bg="black") +
   scale_shape_manual(values=c(21:25)) +
-  annotate("text", x=23, y=355, size=10, 
+  annotate("text", x=23, y=3.5, size=10, 
            label=lm_eqn(height~poly(age, 2, raw=T), df=age_zero), parse = TRUE) +
-  labs(x="Age", y="Height [cm]", 
+  labs(x="Age", y="Height [m]", 
        shape = "", title = "A") +
   theme_classic(base_size=14, base_family = "Helvetica") +
   theme(axis.title=element_text(size=20), legend.position="none")
@@ -55,14 +58,14 @@ A3 <- ggplot(avg_vol, aes(x=age, y=volume)) +
        shape = "", title = "E") +
   theme_classic(base_size=14, base_family = "Helvetica") +
   theme(axis.title=element_text(size=20), legend.position="none")
-B1 <- ggplot(avg_vol, aes(x=TCSA, y=height)) +
+B1 <- ggplot(avg_vol, aes(x=TCSA, y=height/100)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size=1.5) +
   geom_point(aes(shape=grower), size=5, bg="black") +
   scale_shape_manual(values=c(21:25)) +
-  labs(x="TCSA [cm2]", y="Height [cm]", 
+  labs(x="TCSA [cm2]", y="Height [m]", 
        shape = "", title = "B") +
-  annotate("text", x=350, y=315, size=10, 
+  annotate("text", x=350, y=3.5, size=10, 
            label = lm_eqn(height~poly(TCSA, 2, raw=T)), parse = TRUE) +
   theme_classic(base_size=14, base_family="Helvetica") +
   theme(axis.title=element_text(size=20), legend.position="none")
@@ -235,6 +238,83 @@ B2 <- ggplot(avg_vol, aes(x=TCSA, y=depth_mid/depth_trunk*100)) +
 multiplot(A1, A2, B1, B2, cols=2)
 dev.off()
 
+pdf("space-filling.pdf", width = 10, height = 12)
+E1 <- ggplot(avg_vol, aes(x=age, y=spread/(30.48*spacing_x))) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color = 'black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  annotate("text", x=25, y=0.6, size=10, 
+           label=lm_eqn(spread/(30.48*spacing_x)~poly(age, 2, raw=T), 
+                        df=age_zero), parse = TRUE) +
+  labs(x="Age", y="Canopy Spread / Row Spacing", 
+       shape = "", title = "A") +
+  theme_classic(base_size = 14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+E2 <- ggplot(avg_vol, aes(x=TCSA, y=spread/(30.48*spacing_x))) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color = 'black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  annotate("text", x=300, y=0.6, size=10, 
+           label=lm_eqn(spread/(30.48*spacing_x)~poly(TCSA, 2, raw=T), 
+                        df=age_zero), parse = TRUE) +
+  labs(x="TCSA [cm2]", y="Canopy Spread / Row Spacing", 
+       shape = "", title = "B") +
+  theme_classic(base_size = 14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+E3 <- ggplot(avg_vol, aes(x=age, y=(pi*(spread/200)^2*tree_hect/10000))) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color = 'black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  annotate("text", x=25, y=0.25, size=10, 
+           label=lm_eqn(((spread/200)^2*tree_hect)~poly(age, 2, raw=T), 
+                        df=age_zero), parse = TRUE) +
+  labs(x="Age", y="Canopy Area / Land Area", 
+       shape = "", title = "C") +
+  theme_classic(base_size = 14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+E4 <- ggplot(avg_vol, aes(x=TCSA, y=(pi*(spread/200)^2*tree_hect/10000))) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color = 'black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  annotate("text", x=300, y=0.25, size=10, 
+           label=lm_eqn(((spread/200)^2*tree_hect)~poly(TCSA, 2, raw=T), 
+                        df=age_zero), parse = TRUE) +
+  labs(x="TCSA [cm2]", y="Canopy Area /Land Area", 
+       shape = "", title = "D") +
+  theme_classic(base_size = 14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+E5 <- ggplot(avg_vol, aes(x=age, y=volume*tree_hect/10000)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color = 'black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  annotate("text", x=23, y=0.1, size=10, 
+           label=lm_eqn(tree_hect*volume~poly(age, 2, raw=T), df=age_zero), parse = TRUE) +
+  labs(x="Age", y="Canopy Depth / Land Area [m]", 
+       shape = "", title = "E") +
+  theme_classic(base_size=14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+E6 <- ggplot(avg_vol, aes(x=TCSA, y=volume*tree_hect/10000)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color = 'black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="TCSA [cm2]", y="Canopy Depth / Land Area [m]", 
+       shape = "", title = "F") +
+  annotate("text", x=350, y=0.1, size=10, 
+           label = lm_eqn(tree_hect*volume~poly(TCSA, 2, raw=T)), parse = TRUE) +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+multiplot(E1, E3, E5, E2, E4, E6, cols=2)
+dev.off()
+
+
+### YIELD
+
 pdf("yield-sugar.pdf", width = 10, height = 12)
 C1 <- ggplot(avg_vol, aes(x=age, y=tree_yield_2014*0.454)) +
   geom_smooth(method = "lm", formula = y ~ x,
@@ -244,7 +324,7 @@ C1 <- ggplot(avg_vol, aes(x=age, y=tree_yield_2014*0.454)) +
   annotate("text", x=17, y=15, size=10, 
            label = lm_eqn(tree_yield_2014~age), 
            parse = TRUE) +
-  labs(x="Age", y="Yield / tree [kg]", 
+  labs(x="Age", y="Yield [kg/tree]", 
        shape="", title="A") +
   theme_classic(base_size=14, base_family="Helvetica") +
   theme(axis.title=element_text(size=20), legend.position="none")
@@ -257,7 +337,7 @@ C2 <- ggplot(avg_vol, aes(x=TCSA, y=tree_yield_2014*0.454)) +
   geom_abline(slope=1) +
   geom_abline(slope=0.5) +
   geom_abline(slope=0.25) +
-  labs(x="TCSA [cm2]", y="Yield / tree [kg]", 
+  labs(x="TCSA [cm2]", y="Yield [kg/tree]", 
        shape="", title="B") +
   theme_classic(base_size=14, base_family="Helvetica") +
   theme(axis.title=element_text(size=20), legend.position="none")
@@ -269,7 +349,7 @@ C3 <- ggplot(avg_vol, aes(x=age, y=tree_yield_2014*tree_hect*0.454)) +
   annotate("text", x=17, y=3000, size=10, 
            label = lm_eqn(tree_yield_2014*tree_hect~age), 
            parse = TRUE) +
-  labs(x="Age", y="Yield / ha [kg]", 
+  labs(x="Age", y="Yield [kg/ha]", 
        shape="", title="C") +
   theme_classic(base_size=14, base_family="Helvetica") +
   theme(axis.title=element_text(size=20), legend.position="none")
@@ -279,7 +359,7 @@ C4 <- ggplot(avg_vol, aes(x=TCSA, y=tree_yield_2014*tree_hect*0.454)) +
   scale_shape_manual(values=c(21:25)) +
   annotate("text", x=250, y=3000, size=10, 
            label = lm_eqn(tree_yield_2014*tree_hect~TCSA), parse = TRUE) +
-  labs(x="TCSA [cm2]", y="Yield / ha [kg]", 
+  labs(x="TCSA [cm2]", y="Yield [kg/ha]", 
        shape="", title="D") +
   theme_classic(base_size=14, base_family="Helvetica") +
   theme(axis.title=element_text(size=20), legend.position="none")
@@ -291,7 +371,7 @@ C5 <- ggplot(avg_vol_light, aes(x=age, y=sugar_out)) +
   annotate("text", x=15, y=14, size=10, 
            label = lm_eqn(sugar_out~poly(age, 2, raw=T), df=avg_vol_light), 
            parse = TRUE) +
-  labs(x="Age", y="Sugar Content [Brix]", 
+  labs(x="Age", y="Sugar Content [%]", 
        shape="", title="E") +
   theme_classic(base_size=14, base_family="Helvetica") +
   theme(axis.title=element_text(size=20), legend.position="none")
@@ -300,7 +380,7 @@ C6 <- ggplot(avg_vol_light, aes(x=TCSA, y=sugar_out)) +
               fill='white', color = 'black', size=1.5) +
   geom_point(aes(shape=grower), size=5, bg="black") +
   scale_shape_manual(values=c(21:25)) +
-  labs(x="TCSA [cm2]", y="Sugar Content [Brix]", 
+  labs(x="TCSA [cm2]", y="Sugar Content [%]", 
        shape="", title="F") +
   annotate("text", x=310, y=14, size=10, 
            label = lm_eqn(sugar_out~poly(TCSA, 2, raw=T), df=avg_vol_light), 
@@ -408,94 +488,144 @@ C6 <- ggplot(avg_vol_light, aes(x=volume*tree_hect, y=sugar_out)) +
 multiplot(C3, C5, C4, C6, cols=2)
 dev.off()
 
-pdf("space-filling.pdf", width = 10, height = 8)
-E1 <- ggplot(avg_vol, aes(x=age, y=100*spread/(30.48*spacing_x))) +
+pdf("age-biennial.pdf", width = 6, height = 5)
+ggplot(avg_vol, aes(x=age, y=biennial, group=grower)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
-              fill='white', color = 'black', size=1.5) +
-  geom_point(aes(shape=grower), size=5, bg="black") +
+              fill=NA, color='black', size=1) +
+  geom_point(aes(shape=grower), size=3, bg="black") +
   scale_shape_manual(values=c(21:25)) +
-  annotate("text", x=25, y=60, size=10, 
-           label=lm_eqn(spread/(30.48*spacing_x)~poly(age, 2, raw=T), 
-                        df=age_zero), parse = TRUE) +
-  labs(x="Age", y="In-row spread [%]", 
+  annotate("text", x=23, y=0.05, size=10, 
+           label=lm_eqn(biennial~poly(age, 2, raw=T), df=age_zero), parse = TRUE) +
+  labs(x="Age", y="Biennial Bearing Index", 
+       shape = "", title = "A") +
+  theme_classic(base_size=14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+dev.off()
+
+### GROWER SPLIT
+
+pdf("size-split.pdf", width = 10, height = 12)
+A1 <- ggplot(avg_vol, aes(x=age, y=height/100, group=grower)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill=NA, color = 'black', size=1) +
+  geom_point(aes(shape=grower), size=3, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="Age", y="Height [m]", 
+       shape = "", title = "A") +
+  theme_classic(base_size=14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+A2 <- ggplot(avg_vol, aes(x=age, y=spread, group=grower)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill=NA, color = 'black', size=1) +
+  geom_point(aes(shape=grower), size=3, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="Age", y="Canopy Spread [cm/tree]", 
+       shape = "", title = "C") +
+  theme_classic(base_size=14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+A3 <- ggplot(avg_vol, aes(x=age, y=volume, group=grower)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill=NA, color = 'black', size=1) +
+  geom_point(aes(shape=grower), size=3, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="Age", y="Canopy Volume [m3/tree]", 
+       shape = "", title = "E") +
+  theme_classic(base_size=14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+B1 <- ggplot(avg_vol, aes(x=TCSA, y=height/100, group=grower)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill=NA, color = 'black', size=1) +
+  geom_point(aes(shape=grower), size=3, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="TCSA [cm2]", y="Height [m]", 
+       shape = "", title = "B") +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+B2 <- ggplot(avg_vol, aes(x=TCSA, y=spread, group=grower)) +
+  geom_smooth(method="lm", formula = y ~ poly(x, 2),
+              fill=NA, color='black', size=1) +
+  geom_point(aes(shape=grower), size=3, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="TCSA [cm2]", y="Canopy Spread [cm/tree]", 
+       shape = "", title = "D") +
+  theme_classic(base_size=14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+B3 <- ggplot(avg_vol, aes(x=TCSA, y=volume, group=grower)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill=NA, color = 'black', size=1) +
+  geom_point(aes(shape=grower), size=3, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="TCSA [cm2]", y="Canopy Volume [m3/tree]", 
+       shape = "", title = "F") +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+multiplot(A1, A2, A3, B1, B2, B3, cols=2)
+dev.off()
+
+pdf("filling-split.pdf", width = 10, height = 12)
+E1 <- ggplot(avg_vol, aes(x=age, y=spread/(30.48*spacing_x), group=grower)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill=NA, color = 'black', size=1) +
+  geom_point(aes(shape=grower), size=3, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="Age", y="Canopy Spread / Row Spacing", 
        shape = "", title = "A") +
   theme_classic(base_size = 14, base_family = "Helvetica") +
   theme(axis.title=element_text(size=20), legend.position="none")
-E2 <- ggplot(avg_vol, aes(x=TCSA, y=100*spread/(30.48*spacing_x))) +
+E2 <- ggplot(avg_vol, aes(x=TCSA, y=spread/(30.48*spacing_x), group=grower)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
-              fill='white', color = 'black', size=1.5) +
-  geom_point(aes(shape=grower), size=5, bg="black") +
+              fill=NA, color = 'black', size=1) +
+  geom_point(aes(shape=grower), size=3, bg="black") +
   scale_shape_manual(values=c(21:25)) +
-  annotate("text", x=300, y=60, size=10, 
+  annotate("text", x=300, y=0.6, size=10, 
            label=lm_eqn(spread/(30.48*spacing_x)~poly(TCSA, 2, raw=T), 
                         df=age_zero), parse = TRUE) +
-  labs(x="TCSA", y="In-row spread [%]", 
+  labs(x="TCSA [cm2]", y="Canopy Spread / Row Spacing", 
        shape = "", title = "B") +
   theme_classic(base_size = 14, base_family = "Helvetica") +
   theme(axis.title=element_text(size=20), legend.position="none")
-E3 <- ggplot(avg_vol, aes(x=age, y=(pi*(spread/200)^2*tree_hect)/100)) +
+E3 <- ggplot(avg_vol, aes(x=age, y=(pi*(spread/200)^2*tree_hect/10000),
+                          group=grower)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
-              fill='white', color = 'black', size=1.5) +
-  geom_point(aes(shape=grower), size=5, bg="black") +
+              fill=NA, color = 'black', size=1) +
+  geom_point(aes(shape=grower), size=3, bg="black") +
   scale_shape_manual(values=c(21:25)) +
-  annotate("text", x=25, y=25, size=10, 
-           label=lm_eqn(((spread/200)^2*tree_hect)~poly(age, 2, raw=T), 
-                        df=age_zero), parse = TRUE) +
-  labs(x="Age", y="Canopy/Land Area [%]", 
+  labs(x="Age", y="Canopy Area / Land Area", 
        shape = "", title = "C") +
   theme_classic(base_size = 14, base_family = "Helvetica") +
   theme(axis.title=element_text(size=20), legend.position="none")
-E4 <- ggplot(avg_vol, aes(x=TCSA, y=(pi*(spread/200)^2*tree_hect)/100)) +
+E4 <- ggplot(avg_vol, aes(x=TCSA, y=(pi*(spread/200)^2*tree_hect/10000),
+                          group=grower)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
-              fill='white', color = 'black', size=1.5) +
-  geom_point(aes(shape=grower), size=5, bg="black") +
+              fill=NA, color = 'black', size=1) +
+  geom_point(aes(shape=grower), size=3, bg="black") +
   scale_shape_manual(values=c(21:25)) +
-  annotate("text", x=300, y=25, size=10, 
-           label=lm_eqn(((spread/200)^2*tree_hect)~poly(TCSA, 2, raw=T), 
-                        df=age_zero), parse = TRUE) +
-  labs(x="TCSA", y="Canopy/Land Area [%]", 
+  labs(x="TCSA [cm2]", y="Canopy Area /Land Area", 
        shape = "", title = "D") +
   theme_classic(base_size = 14, base_family = "Helvetica") +
   theme(axis.title=element_text(size=20), legend.position="none")
-multiplot(E1, E3, E2, E4, cols=2)
+E5 <- ggplot(avg_vol, aes(x=age, y=volume*tree_hect/10000, group=grower)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill=NA, color = 'black', size=1) +
+  geom_point(aes(shape=grower), size=3, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="Age", y="Canopy Depth / Land Area [m]", 
+       shape = "", title = "E") +
+  theme_classic(base_size=14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+E6 <- ggplot(avg_vol, aes(x=TCSA, y=volume*tree_hect/10000, group=grower)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill=NA, color = 'black', size=1) +
+  geom_point(aes(shape=grower), size=3, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  labs(x="TCSA [cm2]", y="Canopy Depth / Land Area [m]", 
+       shape = "", title = "F") +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+multiplot(E1, E3, E5, E2, E4, E6, cols=2)
 dev.off()
-
-### Grower Split
-
-AR <- filter(avg_vol, grower.x=="AR")
-CH <- filter(avg_vol, grower.x=="CH")
-OV <- filter(avg_vol, grower.x=="OV")
-SS <- filter(avg_vol, grower.x=="SS")
-SR <- filter(avg_vol, grower.x=="SR")
-
 
 grower_list <- c("AR", "CH", "OV", "SS", "SR")
-pdf("height-age-split.pdf", width = 10, height = 8)
-plots <- list()
-for (code in grower_list){
-  grower <- filter(avg_vol, grower.x==code)
-  shape_value <- 20 + match(code, grower_list)
-  plots[[code]] <- ggplot(grower, aes(x=TCSA, y=height)) +
-    geom_smooth(method = "lm", formula = y ~ poly(x, 2),
-                fill='white', color='black', size=1.5) +
-    geom_point(shape=shape_value, size=5, bg="black") +
-    lims(y = c(300, 650), x = c(50, 450)) +
-    annotate("text", x=350, y=350, size=10, 
-             label = lm_eqn(height~poly(TCSA, 2, raw=T),
-                            df = grower), 
-             parse = TRUE) +
-    labs(x="TCSA [cm2]", y="Height [cm]", 
-         shape="", title=code) +
-    theme_classic(base_size=14, base_family="Helvetica") +
-    theme(axis.title=element_text(size=20), legend.position="none")
-}
-AR <- plots[["AR"]]
-CH <- plots[["CH"]]
-OV <- plots[["OV"]]
-SS <- plots[["SS"]]
-SR <- plots[["SR"]]
-multiplot(AR, CH, OV, SS, SR, cols=2)
-dev.off()
 
 pdf("height-age-split.pdf", width = 10, height = 8)
 plots <- list()
@@ -554,7 +684,7 @@ dev.off()
 pdf("yield-grower-split.pdf", width = 10, height = 8)
 plots <- list()
 for (code in grower_list){
-  grower <- filter(avg_vol, grower.x==code)
+  grower <- filter(drop_gap, grower.x==code)
   shape_value <- 20 + match(code, grower_list)
   plots[[code]] <- ggplot(grower, aes(x=age, y=tree_yield_2014*tree_hect*0.454)) +
     geom_smooth(method = "lm", formula = y ~ poly(x, 2),
@@ -566,7 +696,7 @@ for (code in grower_list){
              label = lm_eqn(tree_yield_2014*tree_hect~poly(age, 2, raw=T),
                             df = grower), 
              parse = TRUE) +
-    labs(x="Age", y="Yield / ha [kg]", 
+    labs(x="Age", y="Yield [kg/ha]", 
          shape="", title=code) +
     theme_classic(base_size=14, base_family="Helvetica") +
     theme(axis.title=element_text(size=20), legend.position="none")
@@ -582,7 +712,7 @@ dev.off()
 pdf("yield-area-split.pdf", width = 10, height = 8)
 plots <- list()
 for (code in grower_list){
-  grower <- filter(avg_vol, grower.x==code)
+  grower <- filter(drop_gap, grower.x==code)
   shape_value <- 20 + match(code, grower_list)
   plots[[code]] <- ggplot(grower, aes(x=spread*pi*tree_hect/100, 
                                       y=tree_yield_2014*tree_hect*0.454)) +
@@ -594,7 +724,7 @@ for (code in grower_list){
              label = lm_eqn(tree_yield_2014~poly(spread, 2, raw=T),
                             df = grower), 
              parse = TRUE) +
-    labs(x="Canopy Area [m2/ha]", y="Yield / ha [kg]", 
+    labs(x="Canopy Area [m2/ha]", y="Yield [kg/ha]", 
          shape="", title=code) +
     theme_classic(base_size=14, base_family="Helvetica") +
     theme(axis.title=element_text(size=20), legend.position="none")
@@ -610,7 +740,7 @@ dev.off()
 pdf("yield-volume-split.pdf", width = 10, height = 8)
 plots <- list()
 for (code in grower_list){
-  grower <- filter(avg_vol, grower.x==code)
+  grower <- filter(drop_gap, grower.x==code)
   shape_value <- 20 + match(code, grower_list)
   plots[[code]] <- ggplot(grower, aes(x=volume*tree_hect, 
                                       y=tree_yield_2014*tree_hect*0.454)) +
@@ -622,7 +752,7 @@ for (code in grower_list){
              label = lm_eqn(tree_yield_2014~poly(volume, 2, raw=T),
                             df = grower), 
              parse = TRUE) +
-    labs(x="Canopy Volume [m3/ha]", y="Yield / ha [kg]", 
+    labs(x="Canopy Volume [m3/ha]", y="Yield [kg/ha]", 
          shape="", title=code) +
     theme_classic(base_size=14, base_family="Helvetica") +
     theme(axis.title=element_text(size=20), legend.position="none")
@@ -635,7 +765,8 @@ SR <- plots[["SR"]]
 multiplot(AR, CH, OV, SS, SR, cols=2)
 dev.off()
 
-### Appendix
+
+### APPENDINX
   
   png("grower-sugar-byTCSA.png", width = 1200, height = 900)
 D1 <- ggplot(avg_vol_light, aes(y=sugar_out, x=tree_yield_2014/TCSA)) +
