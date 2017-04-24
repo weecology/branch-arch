@@ -10,53 +10,64 @@ old <- filter(avg_vol, age_class=="old")
 age_zero <- filter(avg_vol, !is.na(age))
 
 # Fig 1
-png("grower-age-class-pub.png", width = 1200, height = 900)
-Z1 <- ggplot(age_zero, aes(x=age, y=TCSA, group=age_class)) +
-  geom_smooth(method="lm", alpha=0, color='black', size=2, fullrange=T) +
-  geom_point(aes(shape=grower), size=10, bg="black") +
+pdf("Fig1.pdf", width=6, height=5)
+ggplot(age_zero, aes(x=age, y=TCSA, group=age_class)) +
+  geom_smooth(method="lm", fill=NA, color='black', size=1.5, fullrange=T) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
   scale_shape_manual(values=c(21:25)) +
   ylim(NA, max(age_zero$TCSA)) +
-  geom_segment(aes(x=16, y=175, xend=15.5, yend=240), size=1.25,
+  geom_segment(aes(x=16, y=175, xend=15.5, yend=240), size=1,
                arrow=arrow(length=unit(0.08, "npc"))) +
-  annotate("text", x=16, y=150, size=10, label=lm_intercept(TCSA~age)) +
-  labs(x="Age", y="TCSA [cm2]", shape = "", title = "A") +
-  theme_classic(base_size=24, base_family="Helvetica") +
-  theme(axis.title=element_text(size=36), legend.position="none")
-Z2 <- ggplot(age_zero, aes(x=age, y=spread, group=age_class)) +
-  geom_smooth(method="lm", alpha=0, color='black', size=2, fullrange=T) +
-  geom_point(aes(shape=grower), size=10, bg="black") +
+  annotate("text", x=16, y=150, size=8, label=lm_intercept(TCSA~age)) +
+  labs(x="Age", y="TCSA [cm2]", shape = "") +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+dev.off()
+
+# Fig 2
+pdf("Fig2.pdf", width=10, height=5)
+A1 <- ggplot(age_zero, aes(x=age, y=height/100, group=age_class)) +
+  geom_smooth(method = "lm", fill=NA, color='black', size=1.5, fullrange=T) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  ylim(3, 6.5) +
   scale_shape_manual(values=c(21:25)) +
-  ylim(NA, max(age_zero$spread)) +
-  geom_segment(aes(x=16.25, y=425, xend=15.25, yend=475), size=1.25,
+  geom_segment(aes(x=14.5, y=4.25, xend=13, yend=4.75), size=1,
                arrow=arrow(length=unit(0.08, "npc"))) +
-  annotate("text", x=16.25, y=400, size=10, label=lm_intercept(spread~age)) +
-  labs(x="Age", y="Canopy Spread [cm]", shape = "", title = "C") +
-  theme_classic(base_size = 24, base_family = "Helvetica") +
-  theme(axis.title=element_text(size=36), legend.position="none")
-Z3 <- ggplot(age_zero, aes(x=age, y=height/100, group=age_class)) +
-  geom_smooth(method = "lm", alpha=0, color='black', size = 2, fullrange=T) +
-  geom_point(aes(shape=grower), size=10, bg="black") +
+  annotate("text", x=15, y=4, size=8, 
+           label=round(lm_intercept(height~age), 1)) +
+  annotate("text", x=13, y=3.25, size=8, 
+           label=lm_eqn(height/100~age, df=young), parse = T) +
+  annotate("text", x=25, y=3.5, size=8, 
+           label=lm_eqn(height~age, df=old), parse = T) +
+  labs(x="Age", y="Height [m]", shape = "", title = "A") +
+  theme_classic(base_size = 14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+B1 <- ggplot(avg_vol, aes(x=TCSA, y=height/100)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color = 'black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
   scale_shape_manual(values=c(21:25)) +
-  ylim(NA, max(age_zero$height/100)) +
-  geom_segment(aes(x=14.5, y=4.25, xend=13, yend=4.75), size=1.25,
-               arrow=arrow(length=unit(0.08, "npc"))) +
-  annotate("text", x=15, y=4, size=10, label=lm_intercept(height~age)) +
-  labs(x="Age", y="Height [cm]", shape="", title="B") +
-  theme_classic(base_size = 24, base_family = "Helvetica") +
-  theme(axis.title=element_text(size=36), legend.position="none")
-Z4 <- ggplot(age_zero, aes(x=age, y=volume, group=age_class)) +
-  geom_smooth(method="lm", alpha=0, color='black', size=2, fullrange=T) +
-  geom_point(aes(shape=grower), size=10, bg="black") +
+  labs(x="TCSA [cm2]", y="Height [m]", shape = "", title = "B") +
+  annotate("text", x=350, y=3.25, size=8, 
+           label = lm_eqn(height~poly(TCSA, 2, raw=T)), parse = TRUE) +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+multiplot(A1, B1, cols=2)
+dev.off()
+
+# Fig 3
+pdf("Fig3.pdf", width=6, height=5)
+ggplot(avg_vol, aes(x=age, y=spread/(30.48*spacing_x))) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color = 'black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
   scale_shape_manual(values=c(21:25)) +
-  ylim(NA, max(age_zero$volume)) +
-  geom_segment(aes(x=16, y=30, xend=15, yend=40), size=1.25,
-               arrow=arrow(length=unit(0.08, "npc"))) +
-  annotate("text", x=16.5, y=25, size=10, label=lm_intercept(volume~age)) +
-  labs(x="Age", y="Canopy Volume [m3]", shape="", title="D") +
-  theme_classic(base_size = 24, base_family = "Helvetica") +
-  theme(axis.title=element_text(size=36), legend.position=c(0.7,0.075),
-        legend.direction = "horizontal")
-multiplot(Z1, Z2, Z3, Z4, cols=2)
+  annotate("text", x=25, y=0.6, size=8, 
+           label=lm_eqn(spread/(30.48*spacing_x)~poly(age, 2, raw=T), 
+                        df=age_zero), parse = TRUE) +
+  labs(x="Age", y="In-row Space Filling", shape = "") +
+  theme_classic(base_size = 14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
 dev.off()
 
 png("grower-sugar-yield-pub.png", width = 1200, height = 500)
