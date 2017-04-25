@@ -36,7 +36,7 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   }
 }
 
-lm_eqn <- function(formula, df = avg_vol, params=FALSE, round = 3){
+lm_eqn <- function(formula, df=avg_vol, params=FALSE, round = 3){
   m <- lm(formula, data = df)
   if (params==FALSE) {
     eq <- substitute(~~italic(r)^2~"="~r2,
@@ -50,15 +50,38 @@ lm_eqn <- function(formula, df = avg_vol, params=FALSE, round = 3){
   return(as.character(as.expression(eq)))
 }
 
-lm_intercept <- function(formula, df1 = old, df2 = young){
-  m1 <- lm(formula, data = df1)
+lm_intercept <- function(formula, df1=old, df2=young){
+  m1 <- lm(formula, data=df1)
   a1 <- summary(m1)$coef[2,1]
   b1 <- summary(m1)$coef[1,1]
   
-  m2 <- lm(formula, data = df2)
+  m2 <- lm(formula, data=df2)
   a2 <- summary(m2)$coef[2,1]
   b2 <- summary(m2)$coef[1,1]
   
   x_intercept <- (b2 - b1) / (a1 - a2)
-  return(round(x_intercept, 2))
+  return(round(x_intercept, 1))
+}
+
+report_lm <- function(formula, df=avg_vol){
+  m <- lm(formula, data = df)
+  report <- data.frame(params = c("model", "r2", "slope", "intercept"))
+  values <- c(deparse(formula), 
+              format(summary(m)$r.squared, digits = 3), 
+              format(summary(m)$coef[2,1], digits = 3),
+              format(summary(m)$coef[1,1], digits = 3))
+  report <- cbind(report, values)
+  print(report)
+}
+
+report_lm_poly <- function(formula, df=avg_vol){
+  m <- lm(formula, data=df)
+  report <- data.frame(params = c("model", "r2", "poly", "linear", "intercept"))
+  values <- c(deparse(formula), 
+              format(summary(m)$r.squared, digits = 3),
+              format(summary(m)$coef[3,1], digits = 3),
+              format(summary(m)$coef[2,1], digits = 3),
+              format(summary(m)$coef[1,1], digits = 3))
+  report <- cbind(report, values)
+  print(report)
 }
