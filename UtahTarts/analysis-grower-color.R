@@ -204,27 +204,29 @@ dev.off()
 
 png("grower-age-class-color.png", width = 1200, height = 900)
 Z1 <- ggplot(age_zero, aes(x=age, y=TCSA, group=age_class)) +
-  geom_smooth(method = "lm", fill='grey', color='black', size = 2) +
+  geom_smooth(method = "lm", fill=NA, color='black', size=2, fullrange=T) +
   geom_point(aes(fill=grower), shape=21, size=12, stroke=3) +
+  ylim(50, 450) +
   scale_fill_brewer(palette="BuPu") +
-  annotate("text", x=17, y=100, size=10, 
-           label=lm_eqn(TCSA~age, df=young, params=T), parse = T) +
-  annotate("text", x=23, y=200, size=10, 
-           label=lm_eqn(TCSA~age, df=old, params=T), parse = T) +
+  #annotate("text", x=17, y=100, size=10, 
+  #         label=lm_eqn(TCSA~age, df=young, params=T), parse = T) +
+  #annotate("text", x=23, y=200, size=10, 
+  #         label=lm_eqn(TCSA~age, df=old, params=T), parse = T) +
   labs(x="Age", y="TCSA [cm2]", 
        shape = "", title = "A") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
 Z2 <- ggplot(age_zero, aes(x=age, y=spread, group=age_class)) +
-  geom_smooth(method = "lm", fill='grey', color='black', size = 2) +
+  geom_smooth(method = "lm", fill=NA, color='black', size=2, fullrange=T) +
   geom_point(aes(fill=grower), shape=21, size=12, stroke=3) +
+  ylim(200, 600) +
   scale_fill_brewer(palette="BuPu") +
-  annotate("text", x=15, y=275, size=10, 
-           label=lm_eqn(spread~age, df=young, params=T), parse = T) +
-  annotate("text", x=21, y=350, size=10, 
-           label=lm_eqn(spread~age, df=old, params=T), parse = T) +
+  #annotate("text", x=15, y=275, size=10, 
+  #         label=lm_eqn(spread~age, df=young, params=T), parse = T) +
+  #annotate("text", x=21, y=350, size=10, 
+  #         label=lm_eqn(spread~age, df=old, params=T), parse = T) +
   labs(x="Age", y="Canopy Spread [cm]", 
-       shape = "", title = "C") +
+       shape = "", title = "B") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
 Z3 <- ggplot(age_zero, aes(x=age, y=height, group=age_class)) +
@@ -252,7 +254,7 @@ Z4 <- ggplot(age_zero, aes(x=age, y=volume, group=age_class)) +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position=c(0.7,0.075),
         legend.direction = "horizontal")
-multiplot(Z1, Z2, Z3, Z4, cols=2)
+multiplot(Z1, Z3, Z2, Z4, cols=2)
 dev.off()
 
 ### Appendix
