@@ -78,6 +78,13 @@ report_lm(height~age, df=young)
 report_lm(height~age, df=old)
 confint(segmented(lm(height~age, data=avg_vol), seg.Z=~age))
 
+#report_lm(spread~age, df=young)
+#report_lm(spread~age, df=old)
+#report_lm(volume~age, df=young)
+#report_lm(volume~age, df=old)
+#confint(segmented(lm(spread~age, data=avg_vol), seg.Z=~age))
+#confint(segmented(lm(volume~age, data=avg_vol), seg.Z=~age))
+
 report_lm(height~TCSA)
 
 # Fig 3
@@ -146,3 +153,8 @@ E6 <- ggplot(avg_vol, aes(x=TCSA, y=volume*tree_hect/10000)) +
   theme(axis.title=element_text(size=20), legend.position="none")
 multiplot(E3, E5, E4, E6, cols=2)
 dev.off()
+
+report_lm_poly((pi*(spread/200)^2*tree_hect/10000)~poly(age, 2, raw=T))
+report_lm_poly((pi*(spread/200)^2*tree_hect/10000)~poly(TCSA, 2, raw=T))
+report_lm_poly(volume*tree_hect/10000~poly(age, 2, raw=T))
+report_lm_poly(volume*tree_hect/10000~poly(TCSA, 2, raw=T))
