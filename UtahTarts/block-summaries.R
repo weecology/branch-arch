@@ -10,7 +10,7 @@ biennial_index <- function(yield1, yield2, yield3, yield4){
 
 young_old <- function(age){
   if (!is.na(age)){
-    if (age <= 15){ return("young") }
+    if (age <= 13){ return("young") }
     else { return("old") }
   } else {
     return("NA")  # character class to avoid 'incompatible types' error
