@@ -26,7 +26,7 @@ ggplot(age_zero, aes(x=age, y=TCSA, group=age_class)) +
   geom_point(aes(shape=grower), size=5, bg="black") +
   scale_shape_manual(values=c(21:25)) +
   ylim(NA, max(age_zero$TCSA)) +
-  geom_segment(aes(x=16, y=175, xend=15.5, yend=240), size=1,
+  geom_segment(aes(x=16, y=175, xend=14, yend=240), size=1,
                arrow=arrow(length=unit(0.08, "npc"))) +
   annotate("text", x=12, y=80, size=8, 
            label=lm_eqn(TCSA~age, df=young), parse = T) +
