@@ -64,6 +64,11 @@ avg_vol <- avg_vol %>%
   rowwise() %>% 
   mutate(biennial = biennial_index(tree_yield_2012, tree_yield_2013,
                                    tree_yield_2014, tree_yield_2015),
+         avg_yield_4 = sum(tree_yield_2012, tree_yield_2013, tree_yield_2014,
+                         tree_yield_2015)/4,
+         avg_yield_3 = sum(tree_yield_2013, tree_yield_2014, tree_yield_2015)/3,
+         avg_yield_2f = sum(tree_yield_2014, tree_yield_2015)/2,
+         avg_yield_2b = sum(tree_yield_2013, tree_yield_2014)/2,
          age_class = young_old(age))
 
 grower_conv <- data.frame(grower.x=levels(avg_vol$grower.x), 
@@ -121,6 +126,11 @@ avg_vol_light <- avg_vol_light %>%
   rowwise() %>% 
   mutate(biennial = biennial_index(tree_yield_2012, tree_yield_2013,
                                    tree_yield_2014, tree_yield_2015),
+         avg_yield_4 = sum(tree_yield_2012, tree_yield_2013, tree_yield_2014,
+                           tree_yield_2015)/4,
+         avg_yield_3 = sum(tree_yield_2013, tree_yield_2014, tree_yield_2015)/3,
+         avg_yield_2f = sum(tree_yield_2014, tree_yield_2015)/2,
+         avg_yield_2b = sum(tree_yield_2013, tree_yield_2014)/2,
          age_class = young_old(age))
 
 smalls <- filter(avg_vol, TCSA < 200)
