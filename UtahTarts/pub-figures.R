@@ -60,7 +60,8 @@ A1 <- ggplot(age_zero, aes(x=age, y=height/100, group=age_class)) +
            label=lm_eqn(height~age, df=old), parse = T) +
   labs(x="Age", y="Height [m]", shape = "", title = "A") +
   theme_classic(base_size = 14, base_family = "Helvetica") +
-  theme(axis.title=element_text(size=20), legend.position="none")
+  theme(axis.title=element_text(size=20), legend.position="none",
+        plot.margin = unit(c(0.3, 0.3, 0.3, 0.3), "cm"))
 B1 <- ggplot(avg_vol, aes(x=TCSA, y=height/100)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size=1.5) +
@@ -70,7 +71,8 @@ B1 <- ggplot(avg_vol, aes(x=TCSA, y=height/100)) +
   annotate("text", x=350, y=3.25, size=8, 
            label = lm_eqn(height~poly(TCSA, 2, raw=T)), parse = TRUE) +
   theme_classic(base_size=14, base_family="Helvetica") +
-  theme(axis.title=element_text(size=20), legend.position="none")
+  theme(axis.title=element_text(size=20), legend.position="none",
+        plot.margin = unit(c(0.3, 0.3, 0, 0.3), "cm"))
 multiplot(A1, B1, cols=2)
 dev.off()
 
@@ -117,7 +119,8 @@ E3 <- ggplot(avg_vol, aes(x=age, y=(pi*(spread/200)^2*tree_hect/10000))) +
                         df=age_zero), parse = TRUE) +
   labs(x="Age", y=ha_ha, shape = "", title = "A") +
   theme_classic(base_size = 14, base_family = "Helvetica") +
-  theme(axis.title=element_text(size=20), legend.position="none")
+  theme(axis.title=element_text(size=20), legend.position="none",
+        plot.margin = unit(c(0.3, 0.3, 0.3, 0), "cm"))
 E4 <- ggplot(avg_vol, aes(x=TCSA, y=(pi*(spread/200)^2*tree_hect/10000))) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size=1.5) +
@@ -128,7 +131,8 @@ E4 <- ggplot(avg_vol, aes(x=TCSA, y=(pi*(spread/200)^2*tree_hect/10000))) +
                         df=age_zero), parse = TRUE) +
   labs(x=tcsa_lab, y=ha_ha, shape = "", title = "B") +
   theme_classic(base_size = 14, base_family = "Helvetica") +
-  theme(axis.title=element_text(size=20), legend.position="none")
+  theme(axis.title=element_text(size=20), legend.position="none",
+        plot.margin = unit(c(0.3, 0.3, 0, 0), "cm"))
 E5 <- ggplot(avg_vol, aes(x=age, y=volume*tree_hect/10000)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size=1.5) +
@@ -139,7 +143,8 @@ E5 <- ggplot(avg_vol, aes(x=age, y=volume*tree_hect/10000)) +
   labs(x="Age", y="Canopy Depth [m]", 
        shape = "", title = "C") +
   theme_classic(base_size=14, base_family = "Helvetica") +
-  theme(axis.title=element_text(size=20), legend.position="none")
+  theme(axis.title=element_text(size=20), legend.position="none",
+        plot.margin = unit(c(0.3, 0.3, 0.3, 0.9), "cm"))
 E6 <- ggplot(avg_vol, aes(x=TCSA, y=volume*tree_hect/10000)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size=1.5) +
@@ -150,7 +155,8 @@ E6 <- ggplot(avg_vol, aes(x=TCSA, y=volume*tree_hect/10000)) +
   annotate("text", x=350, y=0.1, size=8, 
            label = lm_eqn(tree_hect*volume~poly(TCSA, 2, raw=T)), parse = TRUE) +
   theme_classic(base_size=14, base_family="Helvetica") +
-  theme(axis.title=element_text(size=20), legend.position="none")
+  theme(axis.title=element_text(size=20), legend.position="none",
+        plot.margin = unit(c(0.3, 0.3, 0, 0.9), "cm"))
 multiplot(E3, E5, E4, E6, cols=2)
 dev.off()
 
