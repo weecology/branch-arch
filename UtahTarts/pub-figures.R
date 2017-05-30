@@ -138,7 +138,7 @@ E5 <- ggplot(avg_vol, aes(x=age, y=volume*tree_hect/10000)) +
               fill='white', color = 'black', size=1.5) +
   geom_point(aes(shape=grower), size=5, bg="black") +
   scale_shape_manual(values=c(21:25)) +
-  annotate("text", x=23, y=0.1, size=8, 
+  annotate("text", x=23, y=0.25, size=8, 
            label=lm_eqn(tree_hect*volume~poly(age, 2, raw=T), df=age_zero), parse = TRUE) +
   labs(x="Age", y="Canopy Depth [m]", 
        shape = "", title = "C") +
