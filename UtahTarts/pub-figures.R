@@ -79,14 +79,6 @@ dev.off()
 report_lm(height~age, df=young)
 report_lm(height~age, df=old)
 confint(segmented(lm(height~age, data=avg_vol), seg.Z=~age))
-
-#report_lm(spread~age, df=young)
-#report_lm(spread~age, df=old)
-#report_lm(volume~age, df=young)
-#report_lm(volume~age, df=old)
-#confint(segmented(lm(spread~age, data=avg_vol), seg.Z=~age))
-#confint(segmented(lm(volume~age, data=avg_vol), seg.Z=~age))
-
 report_lm(height~TCSA)
 
 # Fig 3
@@ -160,7 +152,27 @@ E6 <- ggplot(avg_vol, aes(x=TCSA, y=volume*tree_hect/10000)) +
 multiplot(E3, E5, E4, E6, cols=2)
 dev.off()
 
+## Additional curve fitting
+
+report_lm_poly(height~poly(age, 2, raw=T), df=age_zero)
+report_lm_poly(spread~poly(age, 2, raw=T), df=age_zero)
+report_lm_poly(volume~poly(age, 2, raw=T), df=age_zero)
+report_lm(spread~age, df=young)
+report_lm(spread~age, df=old)
+report_lm(volume~age, df=young)
+report_lm(volume~age, df=old)
+confint(segmented(lm(spread~age, data=avg_vol), seg.Z=~age))
+confint(segmented(lm(volume~age, data=avg_vol), seg.Z=~age))
 report_lm_poly((pi*(spread/200)^2*tree_hect/10000)~poly(age, 2, raw=T))
 report_lm_poly((pi*(spread/200)^2*tree_hect/10000)~poly(TCSA, 2, raw=T))
 report_lm_poly(volume*tree_hect/10000~poly(age, 2, raw=T))
 report_lm_poly(volume*tree_hect/10000~poly(TCSA, 2, raw=T))
+
+## Tree density
+
+median(avg_vol$tree_hect)
+quant <- quantile(avg_vol$tree_hect)
+by_dev <- between(avg_vol$tree_hect, 
+                  mean(avg_vol$tree_hect)-sd(avg_vol$tree_hect), 
+                  mean(avg_vol$tree_hect)+sd(avg_vol$tree_hect))
+per_quant <- 100*sum(by_dev)/nrow(avg_vol)
