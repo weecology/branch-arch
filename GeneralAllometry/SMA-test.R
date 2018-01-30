@@ -105,12 +105,12 @@ plus_formulas   <- c(length_cm        ~ diameter_mm,
                      tot_length_plus  ~ tot_area_plus,
                      length_cm        ~ segment_mass,
                      path_length_plus ~ total_mass,
-                     tot_length_plus  ~ segment_mass,
+                     tot_length_plus  ~ total_mass,
                      segment_mass  ~ diameter_mm,
                      total_mass ~ diameter_mm,
-                     total_mass  ~ volume_plus,
+                     segment_mass  ~ volume_plus,
                      NA,
-                     segment_mass ~ tot_volume_plus,
+                     total_mass ~ tot_volume_plus,
                      diameter_ratio ~ parent_diam)
 
 groups <- c("all-tree", "cherry", "apple", "all-branch", "cherry", "apple", "Bud.9", "CG.3041", "CG.6210", "M.26", "JM.8", "PiAu.5683")
