@@ -1,6 +1,6 @@
-### This script runs SMA test and produces a SMAResults table at 
-### tree and branch levels for all, species, rootstocks, and individuals
-### The script DUPLICATES the actions of SMATable.r
+### This script builds a table of SMA predictions (`SMAResults.csv`) at tree and
+### branch levels for all, species, rootstocks, and individual groupings.
+### The analysis is replicated by an earlier version of the code `SMATable.r`.
 
 treesum <- read.csv("TreeSummary.csv", sep = ",", head=T)
 branch_size <- read.csv("BranchSegments.csv", sep = ',', header = T)
@@ -241,4 +241,4 @@ SMA_test_out <- rbind(
                     output[19:21,], output[10,], output[22:24,], output[40,], output[25:26,], 
                     output[41,], output[12,], output[27:28,], output[42,], output[29,], 
                     output[13,], output[30:32,], output[43,])
-#write.csv(SMA_test_out, "SMAResultsNEW.csv")
+#write.csv(SMA_test_out, "SMAResults.csv")
