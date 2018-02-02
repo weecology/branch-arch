@@ -91,4 +91,28 @@ avg_mass_ratio - average ratio of daughter / parent branch mass [float]
 
 ## Analysis
 
-`SMA-test.R
+`SMA-test.R` builds a table of SMA predictions (`SMAResults.csv`) at tree and
+branch levels for all, species, rootstocks, and individual groupings.
+
+`FitTable.R` builds a table of Linear and polynomial fits for all, species, and rootstock level.
+
+## Results
+
+`Ch1-Fig2.R` builds a summary figure of allometric exponents at a species
+level for the relationships investigates in this study. The figure appears 
+as Fig 2 in the manuscript.
+
+`Ch1-FigS1.R` builds a figure to visualize the linear vs poly fits against R2 and sample size. The figure appears as Fig S1 in the manuscript.
+
+`Ch1-FigS2.R` generates multiple figures that detail the results for all of the 
+groupings for each allometric relationship investigated in `SMA-test.R` and 
+reported in `SMAResults.csv`. The figures appear as Fig S2 in the manuscript.
+
+`Ch1-FigS3.R` generates multiple figures that report the raw data for each of 
+the relationships investigated for each individual tree. Data is reported at 
+branch segment and subtree levels. The figures appear as Fig S3 in the 
+manuscript.
+
+`Ch1-FigS4.R` generates multiple figures that report the raw data for each of
+the relationships investigated. All data is grouped for each branch segment
+and subtree sampled. The figures appear as Fig S4 in the manuscript.
