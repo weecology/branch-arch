@@ -16,6 +16,8 @@ cerasus Montmorency, P. mahaleb) from one block and 19 8 year old apples (Malus
 domestica "Golden Delicious") from one block with various rootstocks were
 sampled.
 
+### Branch Segments 
+
 `BranchSegments.csv` contains raw and calculated data for all trees
 sampled at a branch-level.
 
@@ -104,6 +106,8 @@ opp_length_cm - length of horizontal traverse of branch as if branch is hypotenu
 declination - angle from horizontal of branch [0 (horizontal) - 90 (vertical)]
 
 root_dia - daimeter at rootstock juncture for trunk segments in millimeters [float]
+
+### Tree Summary
 
 `TreeSummary.csv` contains calculated data for all trees sampled at a individual 
 tree-level as calculated by `TreeLevelSummary.R`.
