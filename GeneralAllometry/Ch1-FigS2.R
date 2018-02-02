@@ -1,4 +1,7 @@
-# This script generates figures from the SMAResults.csv for Figure S2 of Chapter 1.
+### This script generates multiple figures that detail the results for all of 
+### the groupings for each allometric relationship investigated in `SMA-test.R` 
+### and reported in `SMAResults.csv`. The figures appear as Fig S2 in the 
+### manuscript.
 
 sma <- read.csv("SMAResults.csv", sep=",", head=T)
 

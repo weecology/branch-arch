@@ -1,6 +1,6 @@
-### Modifies Chapter1Figs.R to generate panel for all individuals
-
-### Modifies Chapter1Figs.R to remove path level.
+### This script generates multiple figures that report the raw data for each of
+### the relationships investigated. All data is grouped for each branch segment
+### and subtree sampled. The figures appear as Fig S4 in the manuscript.
 
 branch_size <- read.csv("BranchSegments.csv", sep = ',', header = T)
 library('smatr')

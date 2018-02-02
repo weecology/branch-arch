@@ -1,4 +1,8 @@
-### Modifies Chapter1Figs.R to remove path level.
+### This script generates multiple figures that report the raw data for each of 
+### the relationships investigated for each individual tree. Data is reported at
+### branch segment and subtree levels. The figures appear as Fig S3 in the 
+### manuscript.
+ 
 
 branch_size <- read.csv("BranchSegments.csv", sep = ',', header = T)
 library('smatr')

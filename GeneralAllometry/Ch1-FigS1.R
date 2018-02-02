@@ -1,4 +1,5 @@
-### Generates the linear vs poly fits against R2 and sample size figure for Ch1 Fig S2.
+### This script builds a figure to visualize the linear vs poly fits against R2 
+### and sample size. The figure appears as Fig S1 in the manuscript.
 
 fits <- read.csv('Fits_for_fig.csv', sep=',', head=T)
 

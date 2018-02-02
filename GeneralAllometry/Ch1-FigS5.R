@@ -1,4 +1,5 @@
-###This script builds the exponent covariation figures###
+### This script builds exponent covariation figures not reported in the 
+### manuscript.
 
 library('smatr')
 

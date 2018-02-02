@@ -1,4 +1,7 @@
-### Modifies Chapter1Figs.R to remove path scale and "both" group.
+### This script builds a summary figure of allometric exponents at a species
+### level for the relationships investigates in this study. The figure appears 
+### as Fig 2 in the manuscript. The script is modified from `Chapter1Figs.R` to 
+### remove path scale and "both" group.
 
 sma <- read.csv("SMAResults.csv", sep=",", head=T)
 
