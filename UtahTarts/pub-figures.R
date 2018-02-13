@@ -176,3 +176,17 @@ by_dev <- between(avg_vol$tree_hect,
                   mean(avg_vol$tree_hect)-sd(avg_vol$tree_hect), 
                   mean(avg_vol$tree_hect)+sd(avg_vol$tree_hect))
 per_quant <- 100*sum(by_dev)/nrow(avg_vol)
+
+## HortSci Review
+mid <- filter(avg_vol, age>10 & age<15)
+mid_high <- filter(avg_vol, age>15 & age<24)
+
+fit <- aov((pi*(spread/2)^2*tree_hect)~grower, data=mid) #p=0.115
+fit <- aov((pi*(spread/2)^2*tree_hect)~management, data=mid) #p=0.0551
+fit <- aov((pi*(spread/2)^2*tree_hect)~grower, data=mid_high) #p=0.191
+fit <- aov((pi*(spread/2)^2*tree_hect)~management, data=mid_high) #p=0.825
+
+fit <- aov((tree_hect*volume)~grower, data=mid) #p=0.0754
+fit <- aov((tree_hect*volume)~management, data=mid) #p=0.125
+fit <- aov((tree_hect*volume)~grower, data=mid_high) #p=0.208
+fit <- aov((tree_hect*volume)~management, data=mid_high) #p=0.785
