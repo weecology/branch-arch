@@ -1,7 +1,7 @@
 This file describes the data and analysis files that contribute to the results
 reported in "Process-based allometry describes the influence of management on
 orchard tree aboveground architecture" coauthored by Zachary Brym and
-Morgan Ernest. 
+Morgan Ernest. The authors license this work under a Creative Commons Attribution 3.0 Unported License (CC BY 3.0).
 
 NB: Additional files remain in the repository that are not reported in the 
 paper, but have contributed to the data management and analysis process. Many of
