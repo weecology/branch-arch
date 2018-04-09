@@ -1,4 +1,4 @@
-### This script builds a figure to visualize the linear vs poly fits against R2 
+### This script builds a figure to visualize the linear vs poly fits against r2 
 ### and sample size. The figure appears as Fig S1 in the manuscript.
 
 fits <- read.csv('Fits_for_fig.csv', sep=',', head=T)
@@ -28,7 +28,7 @@ for (i in 1:22){
 multi_plot_r <- function(col_list){
   for (i in col_list){
     plot(r_vals[,i], fit_vals[,i], main = labels[i], pch=21, lwd=2.5, cex=1.75, 
-         ylim=c(0,3), xlim=c(0,1), ylab = 'Fit Value', xlab='R2',  yaxt='n')
+         ylim=c(0,3), xlim=c(0,1), ylab = 'Fit Value', xlab='r2',  yaxt='n')
     axis(2, at = c(0,1,3), labels = c("Poly", "NS", "Linear"))
   }
 }
