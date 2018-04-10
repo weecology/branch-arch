@@ -226,7 +226,7 @@ for (m in 1:2){
 tots_out = data.frame(tree = branch$tree, branch = branch$branch, path_length = paths_out$path_length, tot_length = lengths_out$tot_length, 
                       area = lengths_out$area, path_area = paths_out$path_area, tot_area = lengths_out$tot_area, 
                       volume = lengths_out$volume, path_volume = paths_out$path_volume,
-                      tot_volume = lengths_out$tot_volume, path_mass_m = paths_out$path_mass, tot_stem_m = masses_out$mass, 
+                      tot_volume = lengths_out$tot_volume, path_stem_m = paths_out$path_mass, tot_stem_m = masses_out$mass, 
                       tot_no_twigs = no_twig_out$tot_no_twigs, tot_twig_m = twig_m_out$tot_twig_m,
                       path_plus = paths_out_plus$path_plus, tot_length_plus = lengths_out_plus$tot_length_plus, 
                       area_plus = lengths_out_plus$area_plus, tot_area_plus = lengths_out_plus$tot_area_plus, 

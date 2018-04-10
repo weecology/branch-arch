@@ -1,4 +1,4 @@
-"","tree","branch","path_length","tot_length","area","path_area","tot_area","volume","path_volume","tot_volume","path_mass_m","tot_stem_m","tot_no_twigs","tot_twig_m","path_plus","tot_length_plus","area_plus","tot_area_plus","volume_plus","tot_volume_plus"
+"","tree","branch","path_length","tot_length","area","path_area","tot_area","volume","path_volume","tot_volume","path_stem_m","tot_stem_m","tot_no_twigs","tot_twig_m","path_plus","tot_length_plus","area_plus","tot_area_plus","volume_plus","tot_volume_plus"
 "1",1,1,385,2104.9,26389.4,67290.8,197259.7,692721.2,1213665.1,2175104.4,8390.3,13373.8,248,2705.8,385,2104.9,26389.4,197259.7,692721.2,2175104.4
 "2",1,2,169,338,3044.2,17106.1,27102.6,38813.6,159036.1,209234,996.7,1339.7,34,425,169,338,3044.2,27102.6,38813.6,209234
 "3",1,3,66,66,801.1,2802.3,2802.3,3004.1,9508,9508,69.6,69.6,10,72.1,66,66,801.1,2802.3,3004.1,9508
