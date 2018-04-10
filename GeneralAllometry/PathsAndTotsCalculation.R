@@ -89,18 +89,21 @@ for (m in 1:2){
       if (length(daughters[,1]) > 0){
         max_daughter <- daughters[daughters$path_length==max(daughters$path_length, na.rm = TRUE),]
         tree$path_length[j] = tree$length_cm[j] + max_daughter$path_length[1]
+        tree$path_mass[j] = tree$stem_m[j] + max_daughter$path_mass[1]
         tree$path_area[j] = round(2 * pi * (tree$diameter_mm[j]/2) * tree$length_cm[j],1) + max_daughter$path_area[1]
         tree$path_volume[j] = round(pi * (tree$diameter_mm[j]/2)^2 * tree$length_cm[j],1) + max_daughter$path_volume[1]
       }
       else{
         tree$path_length[j] = tree$length_cm[j]
+        tree$path_mass[j] = tree$stem_m[j]
         tree$path_area[j] = round(2 * pi * (tree$diameter_mm[j]/2) * tree$length_cm[j],1)
         tree$path_volume[j] = round(pi * (tree$diameter_mm[j]/2)^2 * tree$length_cm[j],1)
       }
     }
     
     tree_path = data.frame(tree = tree$tree, branch = tree$branch, path_length = tree$path_length, 
-                           path_area = tree$path_area, path_volume = tree$path_volume)
+                           path_mass=tree$path_mass, path_area = tree$path_area, 
+                           path_volume = tree$path_volume)
     
     if (exists('paths_out'))
       paths_out = rbind(paths_out, tree_path)
