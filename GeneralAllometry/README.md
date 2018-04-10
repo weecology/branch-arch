@@ -77,6 +77,8 @@ no_scars - number of pruning scars on branch (i.e., locations of removed branchi
 
 stem_m - mass of stem in grams [float]
 
+path_stem_m - mass of longest branch path by `PathsAndTotsCalculation.R`
+
 tot_stem_m - subtree stem mass calculated by `PathsAndTotsCalculation.R`
 
 twig_m - bulk mass of twigs in grams [float]
