@@ -171,7 +171,7 @@ branch levels for all, species, rootstocks, and individual groupings.
 ## Results
 
 `SMA-allometries.R` builds the table of apple and cherry allometries for the
-length~diameter relationship and mass~diameter relationship. The table appears
+length\~diameter relationship and mass\~diameter relationship. The table appears
 as Table 2 in the manuscript.
 
 `Ch1-Fig2.R` builds a summary figure of allometric exponents at a species
