@@ -1,7 +1,10 @@
-This file describes the data and analysis files that contribute to the results
-reported in "Process-based allometry describes the influence of management on
-orchard tree aboveground architecture" coauthored by Zachary Brym and
-Morgan Ernest. The authors license this work under a Creative Commons Attribution 3.0 Unported License (CC BY 3.0).
+This directory contains the data and analysis files that contribute to the
+results reported in "Process-based allometry describes the influence of
+management on orchard tree aboveground architecture" coauthored by Zachary Brym
+and Morgan Ernest. Files contributing to the data, analysis, and results are
+described below. Supplemental figures for this work can be found [here](https://github.com/weecology/branch-arch/blob/master/GeneralAllometry/BrymErnest-PeerJ-Supplemental.pdf).
+The authors license this work under a Creative Commons Attribution 3.0 Unported
+License (CC BY 3.0).
 
 NB: Additional files remain in the repository that are not reported in the 
 paper, but have contributed to the data management and analysis process. Many of
@@ -167,13 +170,17 @@ branch levels for all, species, rootstocks, and individual groupings.
 
 ## Results
 
-`SMA-allometries` builds the table of apple and cherry allometries for the
+`SMA-allometries.R` builds the table of apple and cherry allometries for the
 length~diameter relationship and mass~diameter relationship. The table appears
 as Table 2 in the manuscript.
 
 `Ch1-Fig2.R` builds a summary figure of allometric exponents at a species
 level for the relationships investigates in this study. The figure appears 
 as Fig 2 in the manuscript.
+
+### Supplemental
+
+Supplemental figures are available in [`BrymErnest-PeerJ-Supplemental.pdf`](https://github.com/weecology/branch-arch/blob/master/GeneralAllometry/BrymErnest-PeerJ-Supplemental.pdf). 
 
 `Ch1-FigS1.R` builds a figure to visualize the linear vs poly fits against R2 and sample size. The figure appears as Fig S1 in the manuscript.
 
