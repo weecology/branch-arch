@@ -4,18 +4,21 @@
 
 library(dplyr)
 library(segmented)
+library(agricolae)
 library(ggplot2)
 source("multiplot.R")
 source("block-summaries.R")
 
 # Data Subsets
 young <- filter(avg_vol, age_class=="young")
+young_plus <- filter(avg_vol, age <= 15) 
 old <- filter(avg_vol, age_class=="old")
 age_zero <- filter(avg_vol, !is.na(age))
 
 # Label Expressions
 tcsa_lab <- expression("TCSA [cm"^2*"]")
 ha_ha <- expression("Canopy Area [ha"%.%"ha"^-1*"]")
+per_ha <- expression("Tree Density [ha"^-1*"]")
 
 ## Figure Generation
 
@@ -190,3 +193,50 @@ fit <- aov((tree_hect*volume)~grower, data=mid) #p=0.0754
 fit <- aov((tree_hect*volume)~management, data=mid) #p=0.125
 fit <- aov((tree_hect*volume)~grower, data=mid_high) #p=0.208
 fit <- aov((tree_hect*volume)~management, data=mid_high) #p=0.785
+
+
+# Management Differences
+fit <- aov(tree_hect~grower, data = avg_vol)
+summary(fit)  # p < 0.001
+HSD.test(fit, "grower")$groups
+tree_hectVgrower <- data.frame(grower = c(1:5), 
+                               HSD = c("a", "ab", "b", "a", "a"))
+
+fit <- aov(no_scaffolds~grower, data = avg_vol)
+summary(fit)  # p < 0.001
+HSD.test(fit, "grower")$groups
+no_scaffoldsVgrower <- data.frame(grower = c(1:5), 
+                               HSD = c("a", "b", "a", "ab", "ab"))
+
+# Fig 5
+pdf("Fig5.pdf", width=10, height=5)
+F1 <- ggplot(avg_vol, aes(x=grower, y=tree_hect)) + 
+  geom_boxplot() +
+  geom_text(data = tree_hectVgrower, aes(label = HSD, y = 550), size=6) +
+  labs(x="Grower", y=per_ha, title = "A") +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+F2 <- ggplot(avg_vol, aes(x=grower, y=no_scaffolds)) + 
+  geom_boxplot() +
+  geom_text(data = no_scaffoldsVgrower, aes(label = HSD, y = 4.15), size=6) +
+  labs(x="Grower", y="Scaffold Count", title = "B") +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+multiplot(F1, F2, cols=2)
+dev.off()
+
+# Fig 6
+source("growth-model.R")
+pdf("Fig6.pdf", width=6, height=5)
+ggplot(pred_fig, aes(x = parameter, y = mean, shape = grower)) +
+  geom_errorbar(aes(ymin=mean-CI+0.003, ymax=mean+CI-0.003), width=0, position = position_dodge(0.1)) +
+  geom_point(size=5, bg="black") +
+  geom_point(aes(y=mean-CI), position = position_dodge(0.1)) +
+  geom_point(aes(y=mean+CI), position = position_dodge(0.1)) +
+  geom_line(aes(group = grower)) +
+  scale_shape_manual(values=c(21:25)) +
+  scale_x_discrete(labels=c("10","11","12","13")) +
+  labs(x="Age [years]", y="Predicted Space Filling", shape = "") +
+  theme_classic(base_size=14, base_family="Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none")
+dev.off()
