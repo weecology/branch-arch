@@ -246,10 +246,14 @@ ggplot(tree_yield) +
   geom_point(aes(y=cum_yield, x=cum_yield+tot_mass_kg, shape = new_root_names), 
              size = 10, bg="black") +
   scale_shape_manual(values=c(20:25)) +
+  scale_x_continuous(limits = c(75, 500)) +
+  scale_y_continuous(limits = c(75, 500)) +
   geom_abline(slope=1) + geom_abline(slope=0.9) + geom_abline(slope=0.8) +
+  geom_abline(slope=0.7) +
+
   labs(x = "Total Mass [Kg]", y = "Fruit Mass [Kg]", shape = "Rootstock") +
   guides(shape=guide_legend(nrow=2)) +
-  theme_classic(base_size = 28, base_family = "Helvetica") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=32), 
         strip.background = element_rect(color='white', fill='white')) +
   theme(panel.margin = unit(1.5, "lines"), legend.key = element_blank(),
@@ -261,10 +265,13 @@ ggplot(tree_yield) +
   geom_point(aes(y=cum_yield, x=TCSA, shape = new_root_names), 
              size = 10, bg="black") +
   scale_shape_manual(values=c(20:25)) +
-  geom_abline(slope=4) + geom_abline(slope=3) + geom_abline(slope=1) +
+  scale_x_continuous(limits = c(20, 400)) +
+  scale_y_continuous(limits = c(20, 400)) +
+  geom_abline(slope=4) + geom_abline(slope=3) + geom_abline(slope=2) + 
+  geom_abline(slope=1) +
   labs(x = "TCSA [cm2]", y = "Fruit Mass [Kg]", shape = "Rootstock") +
   guides(shape=guide_legend(nrow=2)) +
-  theme_classic(base_size = 28, base_family = "Helvetica") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=32), 
         strip.background = element_rect(color='white', fill='white')) +
   theme(panel.margin = unit(1.5, "lines"), legend.key = element_blank(),
