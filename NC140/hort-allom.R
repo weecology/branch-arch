@@ -33,6 +33,8 @@ source("../UtahTarts/multiplot.R")
 
 ### Individual Level
 
+test <- lm((tot_stem_m + tot_twig_m) ~ poly(TCSA, 2), data = tree_yield)
+test <- sma((tot_stem_m + tot_twig_m) ~ TCSA, data = tree_yield)
 test <- sma(log10((tot_stem_m + tot_twig_m)) ~ log10(TCSA), data = tree_yield)
 test <- sma(log10(height) ~ log10(TCSA), data = tree_yield)
 test <- sma(log10((tot_stem_m + tot_twig_m)) ~ log10(height), data = tree_yield)
@@ -106,6 +108,33 @@ test <- sma(log10((tot_stem_m + tot_twig_m + stump_wgt_kg)) ~ log10(cum_yield), 
 
 ### Visualize
 
+#### New Fig 1
+
+png("allometry-compare.png", width = 1000, height = 450)  # FIG 1
+a1 <- ggplot(tree_yield, aes(x=TCSA, y=tot_mass_kg)) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2), fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape=new_root_names), size=10, bg="black") +
+  scale_shape_manual(values=c(20:25)) +
+  labs(x="TCSA", y="Stem Biomass", 
+       shape = "Rootstock", title = "A") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=36), legend.position="none")
+
+a2 <- ggplot(tree_yield, aes(x = log10(TCSA), y = log10(tot_mass_kg))) +
+  geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
+  geom_point(aes(shape=new_root_names), size=10, bg="black") +
+  scale_shape_manual(values=c(20:25)) +
+  labs(x = "Log( TCSA )", y = "Log( Stem Biomass )",
+       shape = "Rootstock", title="B") +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  guides(shape=guide_legend(ncol=2)) +
+  theme(axis.title=element_text(size=36), 
+        legend.justification=c(1,0), legend.position=c(1, 0))
+
+multiplot(a1, a2, cols=2)
+dev.off()
+
+#### Old Fig 1
 png("allometries.png", width = 1500, height = 450)  # FIG 1
 a1 <- ggplot(tree_yield, aes(x=log10(TCSA), y=log10(tot_mass_kg))) +
   geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
