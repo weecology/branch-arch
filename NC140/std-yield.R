@@ -57,6 +57,11 @@ summary_YE <- summary(model)
 test  <- duncan.test(model, "as.factor(tree_yield$rootstock)")
 duncan_YE  <- test$groups
 
+model <- aov((tree_yield$cum_yield/tree_yield$tot_mass_kg) ~ as.factor(tree_yield$rootstock))
+summary_YB <- summary(model)
+test  <- duncan.test(model, "as.factor(tree_yield$rootstock)")
+duncan_YB  <- test$groups
+
 model <- aov((cum_yield/height) ~ rootstock, tree_yield)
 summary_YH <- summary(model)
 test  <- duncan.test(model, "rootstock")
@@ -123,6 +128,12 @@ summary_YI_a <- summary(model)
 test  <- duncan.test(model, "as.factor(tree_yield$rootstock)")
 duncan_YI_a  <- test$groups
 
+model <- aov(1000*tree_yield$cum_yield / mass  ~ 
+               as.factor(tree_yield$rootstock))
+summary_YB_a <- summary(model)
+test  <- duncan.test(model, "as.factor(tree_yield$rootstock)")
+duncan_YB_a  <- test$groups
+
 model <- aov(1000*tree_yield$cum_yield / (1000*tree_yield$cum_yield + mass)  ~ 
                as.factor(tree_yield$rootstock))
 summary_HI_a <- summary(model)
@@ -154,6 +165,9 @@ for (morph in tree_yield[c(-1,-2)]) {
 morph_harvest_index <- cbind(names(tree_yield[c(-1,-2)]), morph_harvest_index)
 
 ## Visualize
+
+tcsa_lab <- expression("TCSA [cm"^2*"]")
+shape_list <- c(0,1,5,12,10,9)
 
 yield_index <- dplyr::transmute(tree_yield, tree, rootstock,
                                 harvest_index = cum_yield / 
@@ -250,7 +264,6 @@ ggplot(tree_yield) +
   scale_y_continuous(limits = c(75, 500)) +
   geom_abline(slope=1) + geom_abline(slope=0.9) + geom_abline(slope=0.8) +
   geom_abline(slope=0.7) +
-
   labs(x = "Total Mass [Kg]", y = "Fruit Mass [Kg]", shape = "Rootstock") +
   guides(shape=guide_legend(nrow=2)) +
   theme_classic(base_size = 24, base_family = "Helvetica") +
@@ -263,13 +276,49 @@ dev.off()
 png("yield_efficiency.png", width = 700, height = 600)
 ggplot(tree_yield) +
   geom_point(aes(y=cum_yield, x=TCSA, shape = new_root_names), 
-             size = 10, bg="black") +
-  scale_shape_manual(values=c(20:25)) +
-  scale_x_continuous(limits = c(20, 400)) +
-  scale_y_continuous(limits = c(20, 400)) +
+             size = 10, stroke=2) +
+  scale_shape_manual(values=shape_list) +
+  #scale_x_continuous(limits = c(20, 320)) +
+  #scale_y_continuous(limits = c(20, 400)) +
   geom_abline(slope=4) + geom_abline(slope=3) + geom_abline(slope=2) + 
   geom_abline(slope=1) +
-  labs(x = "TCSA [cm2]", y = "Fruit Mass [Kg]", shape = "Rootstock") +
+  labs(x = tcsa_lab, y = "Fruit Mass [Kg]", shape = "Rootstock") +
+  guides(shape=guide_legend(nrow=2)) +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=32), 
+        strip.background = element_rect(color='white', fill='white')) +
+  theme(panel.margin = unit(1.5, "lines"), legend.key = element_blank(),
+        legend.position=c(0.7, 0.1))
+dev.off()
+
+png("yield_efficiency_mass.png", width = 700, height = 600)
+ggplot(tree_yield) +
+  geom_point(aes(y=cum_yield, x=tot_mass_kg, shape = new_root_names), 
+             size = 10, stroke=2) +
+  scale_shape_manual(values=shape_list) +
+  #scale_x_continuous(limits = c(0, 100)) +
+  #scale_y_continuous(limits = c(75, 400)) +
+  geom_abline(slope=7) + geom_abline(slope=14) + geom_abline(slope=21) +
+  geom_abline(slope=28) +
+  labs(x = "Total Mass [Kg]", y = "Fruit Mass [Kg]", shape = "Rootstock") +
+  guides(shape=guide_legend(nrow=2)) +
+  theme_classic(base_size = 24, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=32), 
+        strip.background = element_rect(color='white', fill='white')) +
+  theme(panel.margin = unit(1.5, "lines"), legend.key = element_blank(),
+        legend.position=c(0.7, 0.1))
+dev.off()
+
+png("yield_efficiency_length.png", width = 700, height = 600)
+ggplot(tree_yield) +
+  geom_point(aes(y=cum_yield, x=tot_length_m, shape = new_root_names), 
+             size = 10, stroke=2) +
+  scale_shape_manual(values=shape_list) +
+  #scale_x_continuous(limits = c(0, 35)) +
+  #scale_y_continuous(limits = c(75, 300)) +
+  #geom_abline(slope=7) + geom_abline(slope=14) + geom_abline(slope=21) +
+  #geom_abline(slope=28) +
+  labs(x = "Total Length [m]", y = "Fruit Mass [Kg]", shape = "Rootstock") +
   guides(shape=guide_legend(nrow=2)) +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=32), 
