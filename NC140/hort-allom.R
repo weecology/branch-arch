@@ -110,20 +110,23 @@ test <- sma(log10((tot_stem_m + tot_twig_m + stump_wgt_kg)) ~ log10(cum_yield), 
 
 #### New Fig 1
 
+tcsa_lab <- expression("TCSA [cm"^2*"]")
+shape_list <- c(0,1,5,12,10,9)
+
 png("allometry-compare.png", width = 1000, height = 450)  # FIG 1
 a1 <- ggplot(tree_yield, aes(x=TCSA, y=tot_mass_kg)) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2), fill='white', color = 'black', size = 2) +
-  geom_point(aes(shape=new_root_names), size=10, bg="black") +
-  scale_shape_manual(values=c(20:25)) +
-  labs(x="TCSA", y="Stem Biomass", 
+  geom_point(aes(shape=new_root_names), size=10, stroke = 2) +
+  scale_shape_manual(values=shape_list) +
+  labs(x=tcsa_lab, y="Stem Biomass [kg]", 
        shape = "Rootstock", title = "A") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
   theme(axis.title=element_text(size=36), legend.position="none")
 
 a2 <- ggplot(tree_yield, aes(x = log10(TCSA), y = log10(tot_mass_kg))) +
   geom_smooth(method = "lm", fill='white', color = 'black', size = 2) +
-  geom_point(aes(shape=new_root_names), size=10, bg="black") +
-  scale_shape_manual(values=c(20:25)) +
+  geom_point(aes(shape=new_root_names), size=10, stroke = 2) +
+  scale_shape_manual(values=shape_list) +
   labs(x = "Log( TCSA )", y = "Log( Stem Biomass )",
        shape = "Rootstock", title="B") +
   theme_classic(base_size = 24, base_family = "Helvetica") +
