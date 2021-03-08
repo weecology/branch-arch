@@ -11,7 +11,8 @@ source("block-summaries.R")
 
 # Data Subsets
 young <- filter(avg_vol, age_class=="young")
-young_plus <- filter(avg_vol, age <= 15) 
+young_plus <- filter(avg_vol, age <= 15)
+prime <- filter(avg_vol, age >= 11 & age<=22)
 old <- filter(avg_vol, age_class=="old")
 age_zero <- filter(avg_vol, !is.na(age))
 
@@ -103,7 +104,39 @@ dev.off()
 report_lm_poly(spread/(30.48*spacing_x)~poly(age, 2, raw=T))
 
 # Fig 4
-pdf("Fig4.pdf", width=10, height=8)
+pdf("Fig4.pdf", width=10, height=5)
+E3 <- ggplot(prime, aes(x=age, y=(pi*(spread/200)^2*tree_hect/10000))) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color = 'black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  annotate("text", x=17, y=0.25, size=8, 
+           label=lm_eqn(((spread/200)^2*tree_hect)~age, 
+                        df=prime), parse = TRUE) +
+  labs(x="Age", y=ha_ha, shape = "", title = "A") +
+  theme_classic(base_size = 14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none",
+        plot.margin = unit(c(0.3, 0.3, 0.3, 0), "cm"))
+E4 <- ggplot(prime, aes(x=TCSA, y=(pi*(spread/200)^2*tree_hect/10000))) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),
+              fill='white', color = 'black', size=1.5) +
+  geom_point(aes(shape=grower), size=5, bg="black") +
+  scale_shape_manual(values=c(21:25)) +
+  annotate("text", x=300, y=0.25, size=8, 
+           label=lm_eqn(((spread/200)^2*tree_hect)~poly(TCSA, 2, raw=T), 
+                        df=prime), parse = TRUE) +
+  labs(x=tcsa_lab, y=ha_ha, shape = "", title = "B") +
+  theme_classic(base_size = 14, base_family = "Helvetica") +
+  theme(axis.title=element_text(size=20), legend.position="none",
+        plot.margin = unit(c(0.3, 0.3, 0, 0), "cm"))
+multiplot(E3, E4, cols=2)
+dev.off()
+
+report_lm_poly(((spread/200)^2*tree_hect)~poly(age, 2, raw=T), df=prime)
+report_lm(((spread/200)^2*tree_hect)~age, df=prime)
+
+# Fig 4
+pdf("Fig4-extra.pdf", width=10, height=8)
 E3 <- ggplot(avg_vol, aes(x=age, y=(pi*(spread/200)^2*tree_hect/10000))) +
   geom_smooth(method = "lm", formula = y ~ poly(x, 2),
               fill='white', color = 'black', size=1.5) +
