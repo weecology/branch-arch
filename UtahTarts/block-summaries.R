@@ -71,8 +71,8 @@ avg_vol <- avg_vol %>%
          avg_yield_2b = sum(tree_yield_2013, tree_yield_2014)/2,
          age_class = young_old(age))
 
-grower_conv <- data.frame(grower.x=levels(avg_vol$grower.x), 
-                          grower=as.factor(seq_along(levels(avg_vol$grower.x))))
+grower_conv <- data.frame(grower.x=c("AR", "CH", "OV", "SR", "SS"),
+                          grower=as.factor(c("A", "C", "O", "R", "S")))
 avg_vol <- left_join(avg_vol, grower_conv)
                           
 tree_light_sugar <- read.csv('light-sugar.csv')
