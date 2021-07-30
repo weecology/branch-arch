@@ -45,8 +45,8 @@ B1 <- ggplot(avg_vol, aes(x=age, y=(pi*(spread/200)^2*tree_hect/10000))) +
   geom_point(aes(shape=grower), size=5, bg="black") +
   scale_shape_manual(values=c(21:25)) +
   annotate("text", x=25, y=0.25, size=8, 
-           label=lm_eqn(((spread/200)^2*tree_hect)~poly(age, 2, raw=T), 
-                        df=age_zero), parse = TRUE) +
+           label=lm_eqn((pi*(spread/200)^2*tree_hect/10000)~poly(age, 2, raw=T), 
+                        df=avg_vol), parse = TRUE) +
   labs(x="Age", y=ha_ha, shape = "") +
   geom_text(aes(x=min(age), y=max(pi*(spread/200)^2*tree_hect/10000), 
                 label = "B"), vjust = "inward", hjust = "inward", size = 12) +
@@ -57,7 +57,7 @@ multiplot(A1, B1, cols=2)
 dev.off()
 
 report_lm_poly(spread/(30.48*spacing_x)~poly(age, 2, raw=T), df=avg_vol)
-report_lm_poly(((spread/200)^2*tree_hect)~poly(age, 2, raw=T), df=avg_vol)
+report_lm_poly((pi*(spread/200)^2*tree_hect/10000)~poly(age, 2, raw=T), df=avg_vol)
 
 
 # Fig 2
@@ -91,7 +91,7 @@ ggplot(avg_vol, aes(x=TCSA, y=(pi*(spread/200)^2*tree_hect/10000))) +
   geom_point(aes(shape=grower), size=5, bg="black") +
   scale_shape_manual(values=c(21:25)) +
   annotate("text", x=300, y=0.25, size=8, 
-           label=lm_eqn(((spread/200)^2*tree_hect)~poly(TCSA, 2, raw=T), 
+           label=lm_eqn((pi*(spread/200)^2*tree_hect/10000)~poly(TCSA, 2, raw=T), 
                         df=avg_vol), parse = TRUE) +
   labs(x=tcsa_lab, y=ha_ha, shape = "") +
   theme_classic(base_size = 14, base_family = "Helvetica") +
@@ -99,7 +99,7 @@ ggplot(avg_vol, aes(x=TCSA, y=(pi*(spread/200)^2*tree_hect/10000))) +
         plot.margin = unit(c(0.3, 0.3, 0, 0), "cm"))
 dev.off()
 
-report_lm_poly(((spread/200)^2*tree_hect)~poly(TCSA, 2, raw=T), df=avg_vol)
+report_lm_poly((pi*(spread/200)^2*tree_hect/10000)~poly(TCSA, 2, raw=T), df=avg_vol)
 
 
 report_lm_poly(((spread/200)^2*tree_hect)~poly(age, 2, raw=T), df=avg_vol)
